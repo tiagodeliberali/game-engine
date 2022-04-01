@@ -5,7 +5,7 @@ export function getGL() {
 }
 
 export function initWebGL(htmlCanvasID: string) {
-  let canvas = document.getElementById(htmlCanvasID) as HTMLCanvasElement;
+  const canvas = document.getElementById(htmlCanvasID) as HTMLCanvasElement;
   mGL =
     canvas.getContext("webgl2") ||
     (canvas.getContext("experimental-webgl2") as WebGL2RenderingContext);
