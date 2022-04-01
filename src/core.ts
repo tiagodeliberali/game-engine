@@ -1,12 +1,14 @@
-let mGL: any = null;
+let mGL: WebGL2RenderingContext;
 
 export function getGL() {
   return mGL;
 }
 
 export function initWebGL(htmlCanvasID: string) {
-  let canvas = document.getElementById(htmlCanvasID) as any;
-  mGL = canvas.getContext("webgl2") || canvas.getContext("experimental-webgl2");
+  let canvas = document.getElementById(htmlCanvasID) as HTMLCanvasElement;
+  mGL =
+    canvas.getContext("webgl2") ||
+    (canvas.getContext("experimental-webgl2") as WebGL2RenderingContext);
 
   if (mGL === null) {
     document.write("<br><b>WebGL 2 is not supported!</b>");
