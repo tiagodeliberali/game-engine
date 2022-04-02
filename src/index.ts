@@ -1,7 +1,6 @@
-import { initWebGL, clearCanvas, drawSquare } from "./Core";
+import { Game } from "./my_game/Game";
 
 window.onload = function () {
-  initWebGL("GLCanvas");
-  clearCanvas();
-  drawSquare();
+  const game = new Game("GLCanvas");
+  game.init();
 };

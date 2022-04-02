@@ -1,6 +1,5 @@
-import { getGL } from "../WebGLContext";
-import { getGLVertexBuffer } from "../VertexBuffer";
 import { EngineError } from "./EngineError";
+import { VertexBuffer } from "./VertexBuffer";
 
 function loadShaderSource(id: string): string {
   const shaderText = document.getElementById(id);
@@ -25,11 +24,10 @@ export class SimpleShader {
   }
 
   static BuildAndCompileFromDocument(
+    gl: WebGL2RenderingContext,
     vertexShaderId: string,
     fragmentShaderId: string
   ): SimpleShader {
-    const gl = getGL();
-
     const vertexSource = loadShaderSource(vertexShaderId);
     const fragmentSource = loadShaderSource(fragmentShaderId);
 
@@ -39,7 +37,7 @@ export class SimpleShader {
     return shader;
   }
 
-  public activate() {
+  public activate(vertexBuffer: VertexBuffer) {
     if (!this.compiledShader) {
       throw new EngineError(SimpleShader.name, "Failed to initialize compiled");
     }
@@ -52,7 +50,7 @@ export class SimpleShader {
     }
 
     this.gl.useProgram(this.compiledShader);
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, getGLVertexBuffer());
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vertexBuffer.vertexBuffer);
     this.gl.vertexAttribPointer(
       this.vertexPositionRef,
       3,
