@@ -1,6 +1,8 @@
 import { getGL, setGL } from "./WebGLContext";
 import { initGLVertexBuffer } from "./VertexBuffer";
-import { activateShader, initShader } from "./ShaderSupport";
+import { SimpleShader } from "./engine/SimpleShader";
+
+let shader: SimpleShader;
 
 export function initWebGL(htmlCanvasID: string) {
   const canvas = document.getElementById(htmlCanvasID) as HTMLCanvasElement;
@@ -18,7 +20,10 @@ export function initWebGL(htmlCanvasID: string) {
   setGL(gl);
 
   initGLVertexBuffer();
-  initShader("VertexShader", "FragmentShader");
+  shader = SimpleShader.BuildAndCompileFromDocument(
+    "VertexShader",
+    "FragmentShader"
+  );
 }
 
 export function clearCanvas() {
@@ -27,10 +32,8 @@ export function clearCanvas() {
 }
 
 export function drawSquare() {
-  // Step A: Activate the shader
-  activateShader();
+  shader.activate();
 
-  // Step B. draw with the above settings
   const gl = getGL();
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 }
