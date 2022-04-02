@@ -15,13 +15,56 @@ export class SimpleShader {
   }
 
   private build() {
+    this.commonBuild(SimpleVertexSshader, SimpleFragmentShader);
+
+    this.vertexPositionRef = this.gl.getAttribLocation(
+      this.compiledShader!,
+      "aVertexPosition"
+    );
+
+    this.pixelColorRef = this.getUniformLocation("uPixelColor");
+  }
+
+  public activate(vertexBuffer: VertexBuffer, pixelColor: number[]) {
+    this.commonActivate(vertexBuffer);
+
+    if (this.vertexPositionRef === undefined) {
+      throw new EngineError(
+        SimpleShader.name,
+        "Failed to initialize position reference"
+      );
+    }
+
+    this.gl.vertexAttribPointer(
+      this.vertexPositionRef,
+      3,
+      this.gl.FLOAT,
+      false,
+      0,
+      0
+    );
+    this.gl.enableVertexAttribArray(this.vertexPositionRef);
+
+    if (this.pixelColorRef === undefined) {
+      throw new EngineError(
+        SimpleShader.name,
+        "Failed to initialize pixel color reference"
+      );
+    }
+    this.gl.uniform4fv(this.pixelColorRef, pixelColor);
+  }
+
+  private commonBuild(
+    vertexShaderSource: string,
+    fragmentShaderSource: string
+  ) {
     const vertexShader = this.loadAndCompileShader(
-      SimpleVertexSshader,
+      vertexShaderSource,
       this.gl.VERTEX_SHADER
     )!;
 
     const fragmentShader = this.loadAndCompileShader(
-      SimpleFragmentShader,
+      fragmentShaderSource,
       this.gl.FRAGMENT_SHADER
     )!;
 
@@ -31,26 +74,24 @@ export class SimpleShader {
     this.gl.linkProgram(this.compiledShader);
 
     if (
-      !this.gl.getProgramParameter(this.compiledShader, this.gl.LINK_STATUS)
+      !this.gl.getProgramParameter(this.compiledShader!, this.gl.LINK_STATUS)
     ) {
       throw new EngineError(SimpleShader.name, "Failed to link shader");
     }
-
-    this.vertexPositionRef = this.gl.getAttribLocation(
-      this.compiledShader,
-      "aVertexPosition"
-    );
-
-    this.pixelColorRef = this.getUniformLocation("uPixelColor");
   }
 
-  private getUniformLocation(parameter: string) {
+  private commonActivate(vertexBuffer: VertexBuffer) {
     if (this.compiledShader === undefined) {
       throw new EngineError(SimpleShader.name, "Failed to initialize compiled");
     }
 
+    this.gl.useProgram(this.compiledShader);
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vertexBuffer.vertexBuffer);
+  }
+
+  private getUniformLocation(parameter: string) {
     const parameterRef = this.gl.getUniformLocation(
-      this.compiledShader,
+      this.compiledShader!,
       parameter
     );
 
@@ -86,39 +127,5 @@ export class SimpleShader {
     }
 
     return compiledShader;
-  }
-
-  public activate(vertexBuffer: VertexBuffer, pixelColor: number[]) {
-    if (this.compiledShader === undefined) {
-      throw new EngineError(SimpleShader.name, "Failed to initialize compiled");
-    }
-
-    if (this.vertexPositionRef === undefined) {
-      throw new EngineError(
-        SimpleShader.name,
-        "Failed to initialize position reference"
-      );
-    }
-
-    if (this.pixelColorRef === undefined) {
-      throw new EngineError(
-        SimpleShader.name,
-        "Failed to initialize pixel color reference"
-      );
-    }
-
-    this.gl.useProgram(this.compiledShader);
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vertexBuffer.vertexBuffer);
-    this.gl.vertexAttribPointer(
-      this.vertexPositionRef,
-      3,
-      this.gl.FLOAT,
-      false,
-      0,
-      0
-    );
-
-    this.gl.enableVertexAttribArray(this.vertexPositionRef);
-    this.gl.uniform4fv(this.pixelColorRef, pixelColor);
   }
 }
