@@ -56,7 +56,7 @@ export function initShader(vertexShaderID: string, fragmentShaderID: string) {
   mVertexPositionRef = gl.getAttribLocation(mCompiledShader, "aVertexPosition");
 }
 
-export function activate() {
+export function activateShader() {
   const gl = getGL();
 
   // Step A: identify the compiled shader to use
