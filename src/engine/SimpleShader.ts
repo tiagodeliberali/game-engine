@@ -1,40 +1,13 @@
 import { EngineError } from "./EngineError";
 import { VertexBuffer } from "./VertexBuffer";
 
-function loadShaderSource(id: string): string {
-  const shaderText = document.getElementById(id);
-
-  if (!shaderText?.firstChild!.textContent) {
-    throw new EngineError(
-      SimpleShader.name,
-      "Failed to load shader source from document"
-    );
-  }
-
-  return shaderText?.firstChild!.textContent;
-}
-
 export class SimpleShader {
   compiledShader: WebGLProgram | undefined;
   vertexPositionRef: number | undefined;
   gl: WebGL2RenderingContext;
 
-  private constructor(gl: WebGL2RenderingContext) {
+  constructor(gl: WebGL2RenderingContext) {
     this.gl = gl;
-  }
-
-  static BuildAndCompileFromDocument(
-    gl: WebGL2RenderingContext,
-    vertexShaderId: string,
-    fragmentShaderId: string
-  ): SimpleShader {
-    const vertexSource = loadShaderSource(vertexShaderId);
-    const fragmentSource = loadShaderSource(fragmentShaderId);
-
-    const shader = new SimpleShader(gl);
-    shader.buildFromSources(vertexSource, fragmentSource);
-
-    return shader;
   }
 
   public activate(vertexBuffer: VertexBuffer) {
@@ -63,7 +36,7 @@ export class SimpleShader {
     this.gl.enableVertexAttribArray(this.vertexPositionRef);
   }
 
-  private buildFromSources(vertexSource: string, fragmentSource: string) {
+  public buildFromSources(vertexSource: string, fragmentSource: string) {
     const vertexShader = this.loadAndCompileShader(
       vertexSource,
       this.gl.VERTEX_SHADER

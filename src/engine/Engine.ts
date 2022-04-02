@@ -1,6 +1,8 @@
 import { VertexBuffer } from "./VertexBuffer";
 import { SimpleShader } from "./SimpleShader";
 import { EngineError } from "./EngineError";
+import SimpleVertexSshader from "../shader/simple_vs.glsl";
+import WhiteFragmentShader from "../shader/white_fs.glsl";
 
 export class Engine {
   gl: WebGL2RenderingContext;
@@ -19,11 +21,8 @@ export class Engine {
 
   private getShader(): SimpleShader {
     if (this.shader === undefined) {
-      this.shader = SimpleShader.BuildAndCompileFromDocument(
-        this.gl,
-        "VertexShader",
-        "FragmentShader"
-      );
+      this.shader = new SimpleShader(this.gl);
+      this.shader.buildFromSources(SimpleVertexSshader, WhiteFragmentShader);
     }
     return this.shader;
   }
