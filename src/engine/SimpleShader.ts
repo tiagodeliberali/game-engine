@@ -7,7 +7,7 @@ function loadShaderSource(id: string): string {
 
   if (!shaderText?.firstChild!.textContent) {
     throw new EngineError(
-      "SimpleShader",
+      SimpleShader.name,
       "Failed to load shader source from document"
     );
   }
@@ -41,12 +41,12 @@ export class SimpleShader {
 
   public activate() {
     if (!this.compiledShader) {
-      throw new EngineError("SimpleShader", "Failed to initialize compiled");
+      throw new EngineError(SimpleShader.name, "Failed to initialize compiled");
     }
 
     if (this.vertexPositionRef === undefined) {
       throw new EngineError(
-        "SimpleShader",
+        SimpleShader.name,
         "Failed to initialize position reference"
       );
     }
@@ -84,7 +84,7 @@ export class SimpleShader {
     if (
       !this.gl.getProgramParameter(this.compiledShader, this.gl.LINK_STATUS)
     ) {
-      throw new EngineError("SimpleShader", "Failed to link shader");
+      throw new EngineError(SimpleShader.name, "Failed to link shader");
     }
 
     this.vertexPositionRef = this.gl.getAttribLocation(
@@ -104,14 +104,14 @@ export class SimpleShader {
 
     if (!this.gl.getShaderParameter(compiledShader!, this.gl.COMPILE_STATUS)) {
       throw new EngineError(
-        "SimpleShader",
+        SimpleShader.name,
         "A shader compiling error occurred: " +
           this.gl.getShaderInfoLog(compiledShader!)
       );
     }
 
     if (!compiledShader) {
-      throw new EngineError("SimpleShader", "Failed to compile shader");
+      throw new EngineError(SimpleShader.name, "Failed to compile shader");
     }
 
     return compiledShader;
