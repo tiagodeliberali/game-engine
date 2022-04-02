@@ -1,49 +1,27 @@
 import { EngineError } from "./EngineError";
 import { VertexBuffer } from "./VertexBuffer";
+import SimpleVertexSshader from "../shader/simple_vs.glsl";
+import SimpleFragmentShader from "../shader/simple_fs.glsl";
 
 export class SimpleShader {
+  gl: WebGL2RenderingContext;
   compiledShader: WebGLProgram | undefined;
   vertexPositionRef: number | undefined;
-  gl: WebGL2RenderingContext;
+  pixelColorRef: WebGLUniformLocation | undefined;
 
   constructor(gl: WebGL2RenderingContext) {
     this.gl = gl;
+    this.build();
   }
 
-  public activate(vertexBuffer: VertexBuffer) {
-    if (!this.compiledShader) {
-      throw new EngineError(SimpleShader.name, "Failed to initialize compiled");
-    }
-
-    if (this.vertexPositionRef === undefined) {
-      throw new EngineError(
-        SimpleShader.name,
-        "Failed to initialize position reference"
-      );
-    }
-
-    this.gl.useProgram(this.compiledShader);
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vertexBuffer.vertexBuffer);
-    this.gl.vertexAttribPointer(
-      this.vertexPositionRef,
-      3,
-      this.gl.FLOAT,
-      false,
-      0,
-      0
-    );
-
-    this.gl.enableVertexAttribArray(this.vertexPositionRef);
-  }
-
-  public buildFromSources(vertexSource: string, fragmentSource: string) {
+  private build() {
     const vertexShader = this.loadAndCompileShader(
-      vertexSource,
+      SimpleVertexSshader,
       this.gl.VERTEX_SHADER
     )!;
 
     const fragmentShader = this.loadAndCompileShader(
-      fragmentSource,
+      SimpleFragmentShader,
       this.gl.FRAGMENT_SHADER
     )!;
 
@@ -62,6 +40,28 @@ export class SimpleShader {
       this.compiledShader,
       "aVertexPosition"
     );
+
+    this.pixelColorRef = this.getUniformLocation("uPixelColor");
+  }
+
+  private getUniformLocation(parameter: string) {
+    if (this.compiledShader === undefined) {
+      throw new EngineError(SimpleShader.name, "Failed to initialize compiled");
+    }
+
+    const parameterRef = this.gl.getUniformLocation(
+      this.compiledShader,
+      parameter
+    );
+
+    if (parameterRef === null) {
+      throw new EngineError(
+        SimpleShader.name,
+        `Could not find reference for shader ${parameter} parameter`
+      );
+    }
+
+    return parameterRef;
   }
 
   private loadAndCompileShader(
@@ -86,5 +86,39 @@ export class SimpleShader {
     }
 
     return compiledShader;
+  }
+
+  public activate(vertexBuffer: VertexBuffer, pixelColor: number[]) {
+    if (this.compiledShader === undefined) {
+      throw new EngineError(SimpleShader.name, "Failed to initialize compiled");
+    }
+
+    if (this.vertexPositionRef === undefined) {
+      throw new EngineError(
+        SimpleShader.name,
+        "Failed to initialize position reference"
+      );
+    }
+
+    if (this.pixelColorRef === undefined) {
+      throw new EngineError(
+        SimpleShader.name,
+        "Failed to initialize pixel color reference"
+      );
+    }
+
+    this.gl.useProgram(this.compiledShader);
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vertexBuffer.vertexBuffer);
+    this.gl.vertexAttribPointer(
+      this.vertexPositionRef,
+      3,
+      this.gl.FLOAT,
+      false,
+      0,
+      0
+    );
+
+    this.gl.enableVertexAttribArray(this.vertexPositionRef);
+    this.gl.uniform4fv(this.pixelColorRef, pixelColor);
   }
 }
