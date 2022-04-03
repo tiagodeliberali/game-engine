@@ -1,4 +1,4 @@
-import { Engine } from "../engine/Engine";
+import { Engine } from "../engine";
 
 export class Game {
   engine: Engine;
@@ -9,6 +9,7 @@ export class Game {
 
   public init() {
     this.engine.clearCanvas();
-    this.engine.drawSquare();
+    this.engine.drawSquare([0.5, 0.5, 0.5, 1]);
+    this.engine.drawSquare([0.5, 0.1, 0.5, 1]);
   }
 }

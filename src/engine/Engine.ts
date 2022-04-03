@@ -1,20 +1,13 @@
 import { VertexBuffer } from "./VertexBuffer";
 import { SimpleShader } from "./SimpleShader";
-import { EngineError } from "./EngineError";
+import { initGL } from "./GL";
 
 export class Engine {
-  gl: WebGL2RenderingContext;
+  readonly gl: WebGL2RenderingContext;
   shader: SimpleShader | undefined;
 
   constructor(htmlCanvasID: string) {
-    const canvas = document.getElementById(htmlCanvasID) as HTMLCanvasElement;
-    this.gl =
-      canvas.getContext("webgl2") ||
-      (canvas.getContext("experimental-webgl2") as WebGL2RenderingContext);
-
-    if (this.gl === null) {
-      throw new EngineError(Engine.name, "WebGL not supported by the browser");
-    }
+    this.gl = initGL(htmlCanvasID);
   }
 
   private getShader(): SimpleShader {
@@ -24,11 +17,11 @@ export class Engine {
     return this.shader;
   }
 
-  public drawSquare() {
+  public drawSquare(color: number[]) {
     const vertexBuffer = new VertexBuffer(this.gl);
     vertexBuffer.loadSquare();
 
-    this.getShader().activate(vertexBuffer, [0.5, 0.5, 0.5, 1]);
+    this.getShader().activate(vertexBuffer, color);
 
     this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
   }
