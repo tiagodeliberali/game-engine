@@ -8,6 +8,12 @@ Based on the book `Build Your Own 2D Game Engine and Create Great Web Games: Usi
 
 > npm install
 > 
-> npm run all
+> npm run build
 
 You can launch a local server with hot reload using `npm run server`
+
+# commit
+
+Run pretty and lint before commiting to the repo:
+
+> npm run all
