@@ -1,6 +1,6 @@
 import { SimpleShader } from "./SimpleShader";
 import { getConstColorShader } from "./ShaderLib";
-import { getGL } from "./GL";
+import { getGL } from "../GL";
 import { VertexBuffer } from "./VertexBuffer";
 import { Color } from "./Color";
 import { Transform } from "./Transform";

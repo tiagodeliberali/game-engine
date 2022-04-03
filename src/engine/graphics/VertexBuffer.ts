@@ -1,4 +1,4 @@
-import { EngineError } from "./EngineError";
+import { EngineError } from "../EngineError";
 
 export class VertexBuffer {
   gl: WebGL2RenderingContext;

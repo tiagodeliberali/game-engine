@@ -1,5 +1,5 @@
 import { mat4, vec3 } from "gl-matrix";
-import { Vec2d } from "./DataStructures";
+import { Vec2d } from "../DataStructures";
 
 type TransformDef = {
   position: Vec2d;

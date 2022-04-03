@@ -1,8 +1,8 @@
 import { initGL, clearCanvas, getGL } from "./GL";
-import { Renderable } from "./Renderable";
-import { Camera } from "./Camera";
-import { Color } from "./Color";
 import { Vec2d } from "./DataStructures";
+import { Renderable } from "./graphics/Renderable";
+import { Camera } from "./graphics/Camera";
+import { Color } from "./graphics/Color";
 
 export {
   getGL,

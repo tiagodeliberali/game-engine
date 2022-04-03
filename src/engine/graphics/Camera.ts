@@ -1,7 +1,7 @@
 import { mat4, vec3 } from "gl-matrix";
 import { Color } from "./Color";
-import { getGL, clearCanvas } from "./GL";
-import { Vec2d } from "./DataStructures";
+import { getGL, clearCanvas } from "../GL";
+import { Vec2d } from "../DataStructures";
 
 export type ViewPortDef = {
   bottomLeftCorner: Vec2d;
