@@ -9,4 +9,4 @@ Based on the book `Build Your Own 2D Game Engine and Create Great Web Games: Usi
 > npm install
 > npm run all
 
-You can launch a local server like Live Server to open the `./build` folder.
+You can launch a local server with hot reload using `npm run server`
