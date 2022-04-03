@@ -1,32 +1,33 @@
 import { mat4, vec3 } from "gl-matrix";
+import { Vec2d } from "./DataStructures";
 
 type TransformDef = {
-  position: number[];
+  position: Vec2d;
   rotationInDegree: number;
-  scale: number[];
+  scale: Vec2d;
 };
 
 export class Transform {
-  private position: number[] = [0, 0];
+  private position: Vec2d = new Vec2d(0, 0);
   private rotation: number;
-  private scale: number[] = [1, 1];
+  private scale: Vec2d = new Vec2d(1, 1);
 
   constructor() {
     this.rotation = 0;
   }
 
   public setTransform(transformDef: TransformDef) {
-    this.setPosition(transformDef.position[0], transformDef.position[1]);
+    this.setPosition(transformDef.position);
     this.setRotationInDegree(transformDef.rotationInDegree);
-    this.setScale(transformDef.scale[0], transformDef.scale[1]);
+    this.setScale(transformDef.scale);
   }
 
-  public setPosition(horizontal: number, vertical: number) {
-    this.position = [horizontal, vertical];
+  public setPosition(point: Vec2d) {
+    this.position = point;
   }
 
-  public setScale(horizontal: number, vertical: number) {
-    this.scale = [horizontal, vertical];
+  public setScale(scale: Vec2d) {
+    this.scale = scale;
   }
 
   public setRotationInRad(rotationInRadians: number) {
@@ -46,7 +47,7 @@ export class Transform {
     mat4.translate(
       trsMatrix,
       trsMatrix,
-      vec3.fromValues(this.position[0], this.position[1], 0.0)
+      vec3.fromValues(this.position.x, this.position.y, 0.0)
     );
 
     mat4.rotateZ(trsMatrix, trsMatrix, this.rotation);
@@ -54,7 +55,7 @@ export class Transform {
     mat4.scale(
       trsMatrix,
       trsMatrix,
-      vec3.fromValues(this.scale[0], this.scale[1], 1.0)
+      vec3.fromValues(this.scale.x, this.scale.y, 1.0)
     );
 
     return trsMatrix;

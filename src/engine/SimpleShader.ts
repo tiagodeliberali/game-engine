@@ -3,6 +3,7 @@ import { VertexBuffer } from "./VertexBuffer";
 import SimpleVertexSshader from "../shader/simple_vs.glsl";
 import SimpleFragmentShader from "../shader/simple_fs.glsl";
 import { mat4 } from "gl-matrix";
+import { Color } from "./Color";
 
 export class SimpleShader {
   gl: WebGL2RenderingContext;
@@ -10,6 +11,7 @@ export class SimpleShader {
   vertexPositionRef: number | undefined;
   pixelColorRef: WebGLUniformLocation | undefined;
   modelMatrixRef: WebGLUniformLocation | undefined;
+  cameraXformMatrix: WebGLUniformLocation | undefined;
 
   constructor(gl: WebGL2RenderingContext) {
     this.gl = gl;
@@ -26,12 +28,14 @@ export class SimpleShader {
 
     this.pixelColorRef = this.getUniformLocation("uPixelColor");
     this.modelMatrixRef = this.getUniformLocation("uModelXformMatrix");
+    this.cameraXformMatrix = this.getUniformLocation("uCameraXformMatrix");
   }
 
   public activate(
     vertexBuffer: VertexBuffer,
-    pixelColor: number[],
-    trsMatrix: mat4
+    pixelColor: Color,
+    trsMatrix: mat4,
+    cameraMatrix: mat4
   ) {
     this.commonActivate(vertexBuffer);
 
@@ -62,7 +66,7 @@ export class SimpleShader {
       );
     }
 
-    this.gl.uniform4fv(this.pixelColorRef, pixelColor);
+    this.gl.uniform4fv(this.pixelColorRef, pixelColor.getNormalizedArray());
 
     // # pixelColorRef configuration
     if (this.modelMatrixRef === undefined) {
@@ -73,6 +77,16 @@ export class SimpleShader {
     }
 
     this.gl.uniformMatrix4fv(this.modelMatrixRef, false, trsMatrix);
+
+    // # pixelColorRef configuration
+    if (this.cameraXformMatrix === undefined) {
+      throw new EngineError(
+        SimpleShader.name,
+        "Failed to initialize camera matrix reference"
+      );
+    }
+
+    this.gl.uniformMatrix4fv(this.cameraXformMatrix, false, cameraMatrix);
   }
 
   private commonBuild(

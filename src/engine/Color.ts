@@ -24,6 +24,14 @@ export class Color {
     return new Color();
   }
 
+  public static LightGray() {
+    return Color.FromColorDef({
+      red: 230,
+      green: 230,
+      blue: 230,
+    });
+  }
+
   public set(colorDef: ColorDef) {
     this.red = colorDef.red;
     this.green = colorDef.green;

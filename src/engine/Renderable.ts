@@ -4,6 +4,7 @@ import { getGL } from "./GL";
 import { VertexBuffer } from "./VertexBuffer";
 import { Color } from "./Color";
 import { Transform } from "./Transform";
+import { Camera } from "./Camera";
 
 export class Renderable {
   private gl: WebGL2RenderingContext;
@@ -23,11 +24,12 @@ export class Renderable {
     this.trsMatrix = new Transform();
   }
 
-  public draw() {
+  public draw(camera: Camera) {
     this.shader.activate(
       this.vertexBuffer,
-      this.color.getNormalizedArray(),
-      this.trsMatrix.getTrsMatrix()
+      this.color,
+      this.trsMatrix.getTrsMatrix(),
+      camera.getCameraMatrix()
     );
     this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
   }
