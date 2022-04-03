@@ -1,15 +1,21 @@
-import { Engine } from "../engine";
+import { initGL, clearCanvas, Renderable } from "../engine";
 
 export class Game {
-  engine: Engine;
+  square1: Renderable;
+  square2: Renderable;
 
   constructor(canvasId: string) {
-    this.engine = new Engine(canvasId);
+    initGL(canvasId);
+    clearCanvas([0, 0.5, 0]);
+
+    this.square1 = new Renderable();
+
+    this.square2 = new Renderable();
+    this.square2.color = [1, 0.5, 0, 1];
   }
 
   public init() {
-    this.engine.clearCanvas();
-    this.engine.drawSquare([0.5, 0.5, 0.5, 1]);
-    this.engine.drawSquare([0.5, 0.1, 0.5, 1]);
+    this.square1.draw();
+    this.square2.draw();
   }
 }

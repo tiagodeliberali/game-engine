@@ -1,11 +1,10 @@
-import { getGL } from "./GL";
 import { SimpleShader } from "./SimpleShader";
 
 let constColorShader: SimpleShader | undefined;
 
-export function getConstColorShader(): SimpleShader {
+export function getConstColorShader(gl: WebGL2RenderingContext): SimpleShader {
   if (constColorShader === undefined) {
-    constColorShader = new SimpleShader(getGL());
+    constColorShader = new SimpleShader(gl);
   }
 
   return constColorShader;

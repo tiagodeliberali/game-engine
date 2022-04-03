@@ -28,6 +28,7 @@ export class SimpleShader {
   public activate(vertexBuffer: VertexBuffer, pixelColor: number[]) {
     this.commonActivate(vertexBuffer);
 
+    // # vertexPositionRef configuration
     if (this.vertexPositionRef === undefined) {
       throw new EngineError(
         SimpleShader.name,
@@ -43,14 +44,17 @@ export class SimpleShader {
       0,
       0
     );
+
     this.gl.enableVertexAttribArray(this.vertexPositionRef);
 
+    // # pixelColorRef configuration
     if (this.pixelColorRef === undefined) {
       throw new EngineError(
         SimpleShader.name,
         "Failed to initialize pixel color reference"
       );
     }
+
     this.gl.uniform4fv(this.pixelColorRef, pixelColor);
   }
 

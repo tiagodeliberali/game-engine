@@ -1,3 +1,4 @@
-import { Engine } from "./Engine";
+import { initGL, clearCanvas } from "./GL";
+import { Renderable } from "./Renderable";
 
-export { Engine };
+export { initGL, clearCanvas, Renderable };
