@@ -2,12 +2,14 @@ import { EngineError } from "./EngineError";
 import { VertexBuffer } from "./VertexBuffer";
 import SimpleVertexSshader from "../shader/simple_vs.glsl";
 import SimpleFragmentShader from "../shader/simple_fs.glsl";
+import { mat4 } from "gl-matrix";
 
 export class SimpleShader {
   gl: WebGL2RenderingContext;
   compiledShader: WebGLProgram | undefined;
   vertexPositionRef: number | undefined;
   pixelColorRef: WebGLUniformLocation | undefined;
+  modelMatrixRef: WebGLUniformLocation | undefined;
 
   constructor(gl: WebGL2RenderingContext) {
     this.gl = gl;
@@ -23,9 +25,14 @@ export class SimpleShader {
     );
 
     this.pixelColorRef = this.getUniformLocation("uPixelColor");
+    this.modelMatrixRef = this.getUniformLocation("uModelXformMatrix");
   }
 
-  public activate(vertexBuffer: VertexBuffer, pixelColor: number[]) {
+  public activate(
+    vertexBuffer: VertexBuffer,
+    pixelColor: number[],
+    trsMatrix: mat4
+  ) {
     this.commonActivate(vertexBuffer);
 
     // # vertexPositionRef configuration
@@ -56,6 +63,16 @@ export class SimpleShader {
     }
 
     this.gl.uniform4fv(this.pixelColorRef, pixelColor);
+
+    // # pixelColorRef configuration
+    if (this.modelMatrixRef === undefined) {
+      throw new EngineError(
+        SimpleShader.name,
+        "Failed to initialize model matrix reference"
+      );
+    }
+
+    this.gl.uniformMatrix4fv(this.modelMatrixRef, false, trsMatrix);
   }
 
   private commonBuild(

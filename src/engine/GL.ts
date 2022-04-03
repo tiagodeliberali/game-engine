@@ -1,4 +1,5 @@
 import { EngineError } from "./EngineError";
+import { Color } from "./Color";
 
 const defaultGlName = "GLCanvas";
 let gl: WebGL2RenderingContext | undefined;
@@ -32,11 +33,16 @@ export function getGL(): WebGL2RenderingContext {
   return gl;
 }
 
-export function clearCanvas(color: number[]) {
+export function clearCanvas(color: Color) {
   if (gl === undefined) {
     gl = initGL(defaultGlName);
   }
 
-  gl.clearColor(color[0], color[1], color[2], 1.0);
+  gl.clearColor(
+    color.getRedNormalized(),
+    color.getGreenNormalized(),
+    color.getBlueNormalized(),
+    1.0
+  );
   gl.clear(gl.COLOR_BUFFER_BIT);
 }

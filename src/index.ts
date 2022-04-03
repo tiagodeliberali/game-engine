@@ -1,6 +1,6 @@
-import { Game } from "./my_game/Game";
+import { Jogo } from "./my_game/Game";
 
 window.onload = function () {
-  const game = new Game("GLCanvas");
+  const game = new Jogo();
   game.init();
 };
