@@ -1,28 +1,35 @@
 import {
-  clearCanvas,
   Renderable,
   Camera,
   Color,
   Vec2d,
-  SceneDef,
+  BasicScene,
   Keys,
   isKeyPressed,
 } from "../engine";
 
-export class InitialScene implements SceneDef {
-  blocos: Renderable[] = [];
-  camera: Camera | undefined;
+export class InitialScene extends BasicScene {
   timestamp: number | undefined;
+
+  constructor() {
+    super(
+      Color.FromColorDef({
+        red: 74,
+        green: 237,
+        blue: 188,
+      })
+    );
+  }
 
   public init() {
     this.timestamp = performance.now();
-    this.blocos = this.blocos.concat(this.buildCorners());
+    this.renderables = this.renderables.concat(this.buildCorners());
     //this.blocos = this.blocos.concat(this.buildEnderman());
   }
 
   public update() {
-    if (this.blocos && this.blocos.length > 0) {
-      const transform = this.blocos[0].trsMatrix;
+    if (this.renderables && this.renderables.length > 0) {
+      const transform = this.renderables[0].trsMatrix;
       transform.addToRotationInDegree(10);
       const scale = Math.min(
         5 + (performance.now() - this.timestamp!) / 1500,
@@ -32,9 +39,9 @@ export class InitialScene implements SceneDef {
       transform.setScale(new Vec2d(scale, scale));
     }
 
-    if (this.blocos && this.blocos.length > 1) {
+    if (this.renderables && this.renderables.length > 1) {
       const speed = 0.2;
-      const transform = this.blocos[1].trsMatrix;
+      const transform = this.renderables[1].trsMatrix;
 
       if (isKeyPressed(Keys.Left)) {
         transform.addToHorizontalPosition(-speed);
@@ -49,18 +56,6 @@ export class InitialScene implements SceneDef {
         transform.addToVerticalPosition(-speed);
       }
     }
-  }
-
-  public draw() {
-    clearCanvas(
-      Color.FromColorDef({
-        red: 74,
-        green: 237,
-        blue: 188,
-      })
-    );
-    this.camera?.drawViewport();
-    this.blocos.forEach((bloco) => bloco.draw(this.camera!));
   }
 
   private buildCorners() {
