@@ -41,6 +41,10 @@ export class Transform {
     this.setRotationInRad((rotationInDegree * Math.PI) / 180.0);
   }
 
+  public getRotationInDegree(): number {
+    return (this.rotation * 180.0) / Math.PI;
+  }
+
   public getTrsMatrix() {
     const trsMatrix = mat4.create();
 

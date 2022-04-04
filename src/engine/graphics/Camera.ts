@@ -12,6 +12,8 @@ export class Camera {
   private gl: WebGL2RenderingContext;
   private center: Vec2d;
   private size: Vec2d;
+  private viewport: ViewPortDef;
+  private background: Color;
   private cameraMatrix: mat4;
 
   constructor(
@@ -23,9 +25,11 @@ export class Camera {
     this.gl = getGL();
     this.center = center;
     this.size = size;
+    this.viewport = viewport;
+    this.background = background;
     this.cameraMatrix = mat4.create();
 
-    this.prepareViewport(viewport, background);
+    this.drawViewport();
     this.configureCamera();
   }
 
@@ -43,22 +47,22 @@ export class Camera {
     this.configureCamera();
   }
 
-  private prepareViewport(viewport: ViewPortDef, background: Color) {
+  public drawViewport() {
     this.gl.viewport(
-      viewport.bottomLeftCorner.x,
-      viewport.bottomLeftCorner.y,
-      viewport.size.x,
-      viewport.size.y
+      this.viewport.bottomLeftCorner.x,
+      this.viewport.bottomLeftCorner.y,
+      this.viewport.size.x,
+      this.viewport.size.y
     );
     this.gl.scissor(
-      viewport.bottomLeftCorner.x,
-      viewport.bottomLeftCorner.y,
-      viewport.size.x,
-      viewport.size.y
+      this.viewport.bottomLeftCorner.x,
+      this.viewport.bottomLeftCorner.y,
+      this.viewport.size.x,
+      this.viewport.size.y
     );
 
     this.gl.enable(this.gl.SCISSOR_TEST);
-    clearCanvas(background);
+    clearCanvas(this.background);
     this.gl.disable(this.gl.SCISSOR_TEST);
   }
 

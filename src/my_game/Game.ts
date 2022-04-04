@@ -1,10 +1,30 @@
-import { limparTela, Bloco, Camera, Color, Vec2d } from "../engine";
+import { limparTela, Bloco, Camera, Color, Vec2d, SceneDef } from "../engine";
 
-export class Jogo {
+export class CenaInicial implements SceneDef {
   blocos: Bloco[] = [];
   camera: Camera | undefined;
+  timestamp: number | undefined;
 
-  constructor() {
+  public init() {
+    this.timestamp = performance.now();
+    this.blocos = this.blocos.concat(this.buildCorners());
+    //this.blocos = this.blocos.concat(this.buildEnderman());
+  }
+
+  public update() {
+    if (this.blocos && this.blocos.length > 0) {
+      const transform = this.blocos[0].trsMatrix;
+      transform.setRotationInDegree(transform.getRotationInDegree() + 10);
+      const scale = Math.min(
+        5 + (performance.now() - this.timestamp!) / 500,
+        15
+      );
+
+      transform.setScale(new Vec2d(scale, scale));
+    }
+  }
+
+  public draw() {
     limparTela(
       Color.FromColorDef({
         red: 74,
@@ -12,19 +32,14 @@ export class Jogo {
         blue: 188,
       })
     );
-
-    this.blocos = this.blocos.concat(this.buildCorners());
-    //this.blocos = this.blocos.concat(this.buildEnderman());
-  }
-
-  public init() {
+    this.camera?.drawViewport();
     this.blocos.forEach((bloco) => bloco.draw(this.camera!));
   }
 
   private buildCorners() {
     this.camera = new Camera(
-      new Vec2d(25, 55),
-      new Vec2d(60, 30),
+      new Vec2d(20, 60),
+      new Vec2d(30, 15),
       {
         bottomLeftCorner: new Vec2d(20, 40),
         size: new Vec2d(600, 300),
@@ -33,7 +48,7 @@ export class Jogo {
     );
 
     const mBlueSq = new Bloco();
-    mBlueSq.color.set({ red: 0, green: 0, blue: 255 });
+    mBlueSq.color.set({ red: 100, green: 0, blue: 255 });
     mBlueSq.trsMatrix.setTransform({
       position: new Vec2d(20, 60),
       scale: new Vec2d(5, 5),

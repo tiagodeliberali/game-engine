@@ -1,6 +1,7 @@
-import { Jogo } from "./my_game/Game";
+import { GameEngine } from "./engine";
+import { CenaInicial } from "./my_game/Game";
 
-window.onload = function () {
-  const game = new Jogo();
-  game.init();
-};
+const cenaInicial = new CenaInicial();
+
+const engine = new GameEngine(cenaInicial);
+engine.start();
