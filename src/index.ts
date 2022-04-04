@@ -1,5 +1,5 @@
 import { GameEngine } from "./engine";
-import { CenaInicial } from "./my_game/Game";
+import { CenaInicial } from "./my_game";
 
 const cenaInicial = new CenaInicial();
 
