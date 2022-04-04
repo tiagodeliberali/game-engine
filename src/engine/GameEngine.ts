@@ -1,4 +1,5 @@
-import { start } from "./Loop";
+import { initKeyboard } from "./input/Keyboard";
+import { startLoop } from "./Loop";
 import { SceneDef } from "./Scene";
 
 export class GameEngine {
@@ -9,6 +10,7 @@ export class GameEngine {
   }
 
   start() {
-    start(this.currentScene);
+    initKeyboard();
+    startLoop(this.currentScene);
   }
 }

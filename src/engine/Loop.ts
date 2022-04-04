@@ -1,5 +1,6 @@
 import { EngineError } from "./EngineError";
 import { SceneDef } from "./Scene";
+import { updateKeyboard } from "./input/Keyboard";
 
 const kUPS = 60; // Updates per second
 const kMPF = 1000 / kUPS; // Milliseconds per update.
@@ -12,7 +13,7 @@ let frameID = -1;
 
 let currentScene: SceneDef | undefined;
 
-export function start(scene: SceneDef) {
+export function startLoop(scene: SceneDef) {
   if (loopRunning) {
     throw new Error("loop already running");
   }
@@ -25,7 +26,7 @@ export function start(scene: SceneDef) {
   frameID = requestAnimationFrame(loopOnce);
 }
 
-export function stop() {
+export function stopLoop() {
   loopRunning = false;
   cancelAnimationFrame(frameID);
 }
@@ -39,6 +40,7 @@ function loopOnce(currentTime: number) {
     frameID = requestAnimationFrame(loopOnce);
 
     currentScene.draw();
+    updateKeyboard();
 
     const elapsedTime = currentTime - prevTime;
     prevTime = currentTime;

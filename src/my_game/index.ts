@@ -1,3 +1,3 @@
-import { CenaInicial } from "./InitialScene";
+import { InitialScene } from "./InitialScene";
 
-export { CenaInicial };
+export { InitialScene };

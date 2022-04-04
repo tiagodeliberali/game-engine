@@ -37,8 +37,25 @@ export class Transform {
     }
   }
 
+  private convertDegreeToRads = (rotation: number) =>
+    (rotation * Math.PI) / 180.0;
+
   public setRotationInDegree(rotationInDegree: number) {
-    this.setRotationInRad((rotationInDegree * Math.PI) / 180.0);
+    this.setRotationInRad(this.convertDegreeToRads(rotationInDegree));
+  }
+
+  public addToRotationInDegree(rotationInDegree: number) {
+    this.setRotationInRad(
+      this.rotation + this.convertDegreeToRads(rotationInDegree)
+    );
+  }
+
+  public addToHorizontalPosition(value: number) {
+    this.position.x += value;
+  }
+
+  public addToVerticalPosition(value: number) {
+    this.position.y += value;
   }
 
   public getRotationInDegree(): number {

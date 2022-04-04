@@ -5,16 +5,20 @@ import { Camera } from "./graphics/Camera";
 import { Color } from "./graphics/Color";
 import { SceneDef } from "./Scene";
 import { GameEngine } from "./GameEngine";
+import { isKeyPressed, isKeyClicked, Keys } from "./input/Keyboard";
 
 export {
   getGL,
   initGL,
-  clearCanvas as limparTela,
-  Renderable as Bloco,
+  clearCanvas,
+  Renderable,
   Camera,
   Color,
   Vec2d,
   GameEngine,
+  isKeyPressed,
+  isKeyClicked,
+  Keys,
 };
 
 export type { SceneDef };

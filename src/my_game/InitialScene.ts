@@ -1,7 +1,16 @@
-import { limparTela, Bloco, Camera, Color, Vec2d, SceneDef } from "../engine";
+import {
+  clearCanvas,
+  Renderable,
+  Camera,
+  Color,
+  Vec2d,
+  SceneDef,
+  Keys,
+  isKeyPressed,
+} from "../engine";
 
-export class CenaInicial implements SceneDef {
-  blocos: Bloco[] = [];
+export class InitialScene implements SceneDef {
+  blocos: Renderable[] = [];
   camera: Camera | undefined;
   timestamp: number | undefined;
 
@@ -14,18 +23,36 @@ export class CenaInicial implements SceneDef {
   public update() {
     if (this.blocos && this.blocos.length > 0) {
       const transform = this.blocos[0].trsMatrix;
-      transform.setRotationInDegree(transform.getRotationInDegree() + 10);
+      transform.addToRotationInDegree(10);
       const scale = Math.min(
-        5 + (performance.now() - this.timestamp!) / 500,
+        5 + (performance.now() - this.timestamp!) / 1500,
         15
       );
 
       transform.setScale(new Vec2d(scale, scale));
     }
+
+    if (this.blocos && this.blocos.length > 1) {
+      const speed = 0.2;
+      const transform = this.blocos[1].trsMatrix;
+
+      if (isKeyPressed(Keys.Left)) {
+        transform.addToHorizontalPosition(-speed);
+      }
+      if (isKeyPressed(Keys.Right)) {
+        transform.addToHorizontalPosition(speed);
+      }
+      if (isKeyPressed(Keys.Up)) {
+        transform.addToVerticalPosition(speed);
+      }
+      if (isKeyPressed(Keys.Down)) {
+        transform.addToVerticalPosition(-speed);
+      }
+    }
   }
 
   public draw() {
-    limparTela(
+    clearCanvas(
       Color.FromColorDef({
         red: 74,
         green: 237,
@@ -47,7 +74,7 @@ export class CenaInicial implements SceneDef {
       Color.LightGray()
     );
 
-    const mBlueSq = new Bloco();
+    const mBlueSq = new Renderable();
     mBlueSq.color.set({ red: 100, green: 0, blue: 255 });
     mBlueSq.trsMatrix.setTransform({
       position: new Vec2d(20, 60),
@@ -55,7 +82,7 @@ export class CenaInicial implements SceneDef {
       rotationInDegree: 25,
     });
 
-    const mRedSq = new Bloco();
+    const mRedSq = new Renderable();
     mRedSq.color.set({ red: 255, green: 0, blue: 0 });
     mRedSq.trsMatrix.setTransform({
       position: new Vec2d(20, 60),
@@ -63,19 +90,19 @@ export class CenaInicial implements SceneDef {
       rotationInDegree: 0,
     });
 
-    const mTLSq = new Bloco();
+    const mTLSq = new Renderable();
     mTLSq.color.set({ red: 0, green: 0, blue: 255 });
     mTLSq.trsMatrix.setPosition(new Vec2d(10, 65));
 
-    const mTRSq = new Bloco();
+    const mTRSq = new Renderable();
     mTRSq.color.set({ red: 100, green: 100, blue: 255 });
     mTRSq.trsMatrix.setPosition(new Vec2d(30, 65));
 
-    const mBRSq = new Bloco();
+    const mBRSq = new Renderable();
     mBRSq.color.set({ red: 100, green: 155, blue: 100 });
     mBRSq.trsMatrix.setPosition(new Vec2d(30, 55));
 
-    const mBLSq = new Bloco();
+    const mBLSq = new Renderable();
     mBLSq.color.set({ red: 255, green: 100, blue: 100 });
     mBLSq.trsMatrix.setPosition(new Vec2d(10, 55));
 
@@ -93,14 +120,14 @@ export class CenaInicial implements SceneDef {
       Color.LightGray()
     );
 
-    const cabeca = new Bloco();
+    const cabeca = new Renderable();
     cabeca.color.set({
       red: 0,
       green: 0,
       blue: 0,
     });
 
-    const olho1 = new Bloco();
+    const olho1 = new Renderable();
     olho1.trsMatrix.setTransform({
       position: new Vec2d(-0.25, 0.25),
       rotationInDegree: 0,
@@ -112,7 +139,7 @@ export class CenaInicial implements SceneDef {
       blue: 237,
     });
 
-    const olho2 = new Bloco();
+    const olho2 = new Renderable();
     olho2.trsMatrix.setTransform({
       position: new Vec2d(0.25, 0.25),
       rotationInDegree: 0,
@@ -124,7 +151,7 @@ export class CenaInicial implements SceneDef {
       blue: 237,
     });
 
-    const boca = new Bloco();
+    const boca = new Renderable();
     boca.trsMatrix.setTransform({
       position: new Vec2d(0, -0.2),
       rotationInDegree: 0,
@@ -136,7 +163,7 @@ export class CenaInicial implements SceneDef {
       blue: 188,
     });
 
-    const bocaLado1 = new Bloco();
+    const bocaLado1 = new Renderable();
     bocaLado1.trsMatrix.setTransform({
       position: new Vec2d(-0.2, -0.2),
       rotationInDegree: 0,
@@ -148,7 +175,7 @@ export class CenaInicial implements SceneDef {
       blue: 0,
     });
 
-    const bocaLado2 = new Bloco();
+    const bocaLado2 = new Renderable();
     bocaLado2.trsMatrix.setTransform({
       position: new Vec2d(0.2, -0.2),
       rotationInDegree: 0,

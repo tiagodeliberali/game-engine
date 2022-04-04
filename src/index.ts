@@ -1,7 +1,7 @@
 import { GameEngine } from "./engine";
-import { CenaInicial } from "./my_game";
+import { InitialScene } from "./my_game";
 
-const cenaInicial = new CenaInicial();
+const initialScene = new InitialScene();
 
-const engine = new GameEngine(cenaInicial);
+const engine = new GameEngine(initialScene);
 engine.start();
