@@ -2,9 +2,11 @@ import { EngineError } from "../EngineError";
 import { MapEntry } from "./MapEntry";
 import { TextProcessor } from "./TextProcessor";
 
+export type ResourceContent = string;
+
 export interface IResourceProcessor {
-  decode: (data: any) => any;
-  parse: (data: any) => MapEntry;
+  decode: (data: Response) => Promise<ResourceContent>;
+  parse: (data: ResourceContent) => MapEntry;
 }
 
 export class ResourceManager {
@@ -16,7 +18,7 @@ export class ResourceManager {
     this.outstandingPromises = [];
   }
 
-  public get(path: string) {
+  public get(path: string): ResourceContent {
     const entry = this.resourceMap.get(path);
 
     if (entry === undefined) {
@@ -26,7 +28,7 @@ export class ResourceManager {
       );
     }
 
-    if (!entry.isLoaded) {
+    if (!entry.isLoaded || entry.content === null) {
       throw new EngineError(
         ResourceManager.name,
         "Error [" + path + "]: not loaded"
@@ -37,12 +39,12 @@ export class ResourceManager {
     return entry.content;
   }
 
-  public loadText(path: string) {
+  public loadText(path: string): void {
     const textProcessor = new TextProcessor();
     this.loadDecodeParse(path, textProcessor);
   }
 
-  public loadDecodeParse(path: string, processor: IResourceProcessor) {
+  public loadDecodeParse(path: string, processor: IResourceProcessor): void {
     if (!this.resourceMap.has(path)) {
       this.resourceMap.set(path, MapEntry.EmptyEntry());
 
@@ -58,10 +60,10 @@ export class ResourceManager {
     }
   }
 
-  public unload(path: string) {
+  public unload(path: string): boolean {
     const entry = this.resourceMap.get(path);
     if (entry === undefined) {
-      return;
+      return false;
     }
 
     entry.decRef();

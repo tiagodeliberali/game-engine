@@ -1,11 +1,12 @@
 import { EngineError } from "../EngineError";
+import { ResourceContent } from "./ResourceManager";
 
 export class MapEntry {
   isLoaded: boolean;
-  content: any;
+  content: ResourceContent | null;
   refCount: number;
 
-  private constructor(content: any) {
+  private constructor(content: ResourceContent | null) {
     this.content = content;
     this.isLoaded = content !== null;
     this.refCount = 1;
@@ -15,7 +16,7 @@ export class MapEntry {
     return new MapEntry(null);
   }
 
-  public static Entry(content: any) {
+  public static Entry(content: ResourceContent) {
     if (content === null || content === undefined) {
       throw new EngineError(
         MapEntry.name,
@@ -33,7 +34,7 @@ export class MapEntry {
     this.refCount++;
   }
 
-  set(content: any) {
+  set(content: ResourceContent) {
     this.content = content;
   }
 
