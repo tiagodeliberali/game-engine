@@ -1,7 +1,5 @@
 import { EngineError } from "../EngineError";
 import { VertexBuffer } from "./VertexBuffer";
-import SimpleVertexSshader from "../../shader/simple_vs.glsl";
-import SimpleFragmentShader from "../../shader/simple_fs.glsl";
 import { mat4 } from "gl-matrix";
 import { Color } from "./Color";
 
@@ -13,13 +11,17 @@ export class SimpleShader {
   modelMatrixRef: WebGLUniformLocation | undefined;
   cameraXformMatrix: WebGLUniformLocation | undefined;
 
-  constructor(gl: WebGL2RenderingContext) {
+  constructor(
+    gl: WebGL2RenderingContext,
+    vertexShaderSource: string,
+    fragmentShaderSource: string
+  ) {
     this.gl = gl;
-    this.build();
+    this.build(vertexShaderSource, fragmentShaderSource);
   }
 
-  private build() {
-    this.commonBuild(SimpleVertexSshader, SimpleFragmentShader);
+  private build(vertexShaderSource: string, fragmentShaderSource: string) {
+    this.commonBuild(vertexShaderSource, fragmentShaderSource);
 
     this.vertexPositionRef = this.gl.getAttribLocation(
       this.compiledShader!,

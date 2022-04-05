@@ -1,6 +1,10 @@
+import { initShaderLib } from "./graphics/ShaderLib";
 import { initKeyboard } from "./input/Keyboard";
 import { startLoop } from "./Loop";
+import { GetResourceManager } from "./resources";
 import { SceneDef } from "./Scene";
+
+const resourceManager = GetResourceManager();
 
 export class GameEngine {
   currentScene: SceneDef;
@@ -9,8 +13,10 @@ export class GameEngine {
     this.currentScene = scene;
   }
 
-  start() {
+  public async start() {
+    initShaderLib();
     initKeyboard();
+    await resourceManager.waitOnPromises();
     startLoop(this.currentScene);
   }
 }

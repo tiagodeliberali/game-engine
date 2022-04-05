@@ -1,5 +1,6 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   mode: "development",
@@ -24,6 +25,9 @@ module.exports = {
       favicon: "./public/favicon.ico",
       hash: true,
       template: "./public/index.html",
+    }),
+    new CopyPlugin({
+      patterns: [{ from: "./src/shaders", to: "./shaders" }],
     }),
   ],
   resolve: {
