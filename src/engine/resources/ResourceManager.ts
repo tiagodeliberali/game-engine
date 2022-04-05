@@ -6,7 +6,7 @@ export type ResourceContent = string;
 
 export interface IResourceProcessor {
   decode: (data: Response) => Promise<ResourceContent>;
-  parse: (data: ResourceContent) => MapEntry;
+  parse: (data: ResourceContent) => Promise<MapEntry>;
 }
 
 export class ResourceManager {
