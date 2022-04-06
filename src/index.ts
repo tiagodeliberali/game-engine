@@ -4,4 +4,4 @@ import { InitialScene } from "./my_game";
 const initialScene = new InitialScene();
 
 const engine = new GameEngine(initialScene);
-engine.start();
+engine.startGame();

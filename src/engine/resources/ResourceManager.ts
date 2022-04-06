@@ -10,7 +10,8 @@ export interface IResourceProcessor {
 }
 
 export class ResourceManager {
-  resourceMap: Map<string, MapEntry> = new Map();
+  globalResourceMap: Map<string, MapEntry> = new Map();
+  sceneResourceMap: Map<string, MapEntry> = new Map();
   outstandingPromises: Promise<Map<string, MapEntry>>[] = [];
 
   public async waitOnPromises() {
@@ -19,7 +20,8 @@ export class ResourceManager {
   }
 
   public get(path: string): ResourceContent {
-    const entry = this.resourceMap.get(path);
+    const entry =
+      this.globalResourceMap.get(path) || this.sceneResourceMap.get(path);
 
     if (entry === undefined) {
       throw new EngineError(
@@ -39,19 +41,27 @@ export class ResourceManager {
     return entry.content;
   }
 
-  public loadText(path: string): void {
+  public loadText(path: string, isGlobal?: boolean): void {
     const textProcessor = new TextProcessor();
-    this.loadDecodeParse(path, textProcessor);
+    this.loadDecodeParse(path, textProcessor, isGlobal || false);
   }
 
-  public loadDecodeParse(path: string, processor: IResourceProcessor): void {
-    if (!this.resourceMap.has(path)) {
-      this.resourceMap.set(path, MapEntry.EmptyEntry());
+  public loadDecodeParse(
+    path: string,
+    processor: IResourceProcessor,
+    isGlobal: boolean
+  ): void {
+    if (!this.globalResourceMap.has(path) && !this.sceneResourceMap.has(path)) {
+      this.globalResourceMap.set(path, MapEntry.EmptyEntry());
 
       const fetchPromise = fetch(path)
         .then((res) => processor.decode(res))
         .then((data) => processor.parse(data))
-        .then((data) => this.resourceMap.set(path, data))
+        .then((data) =>
+          isGlobal
+            ? this.globalResourceMap.set(path, data)
+            : this.sceneResourceMap.set(path, data)
+        )
         .catch((err) => {
           throw err;
         });
@@ -60,8 +70,12 @@ export class ResourceManager {
     }
   }
 
+  public unloadScene() {
+    this.sceneResourceMap.clear();
+  }
+
   public unload(path: string): boolean {
-    const entry = this.resourceMap.get(path);
+    const entry = this.globalResourceMap.get(path);
     if (entry === undefined) {
       return false;
     }
@@ -69,7 +83,7 @@ export class ResourceManager {
     entry.decRef();
 
     if (entry.canRemove()) {
-      this.resourceMap.delete(path);
+      this.globalResourceMap.delete(path);
     }
 
     return entry.canRemove();

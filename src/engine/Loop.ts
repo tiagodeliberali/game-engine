@@ -1,5 +1,5 @@
 import { EngineError } from "./EngineError";
-import { SceneDef } from "./Scene";
+import { AbstractScene } from "./scene";
 import { updateKeyboard } from "./input/Keyboard";
 
 const kUPS = 60; // Updates per second
@@ -11,15 +11,14 @@ let lagTime: number;
 let loopRunning = false;
 let frameID = -1;
 
-let currentScene: SceneDef | undefined;
+let currentScene: AbstractScene | undefined;
 
-export function startLoop(scene: SceneDef) {
+export function startLoop(scene: AbstractScene) {
   if (loopRunning) {
     throw new Error("loop already running");
   }
 
   currentScene = scene;
-  currentScene.init();
   prevTime = performance.now();
   lagTime = 0.0;
   loopRunning = true;
@@ -39,7 +38,7 @@ function loopOnce(currentTime: number) {
   if (loopRunning) {
     frameID = requestAnimationFrame(loopOnce);
 
-    currentScene.draw();
+    currentScene.draw && currentScene.draw();
     updateKeyboard();
 
     const elapsedTime = currentTime - prevTime;
@@ -47,7 +46,7 @@ function loopOnce(currentTime: number) {
     lagTime += elapsedTime;
 
     while (lagTime >= kMPF && loopRunning) {
-      currentScene.update();
+      currentScene.update && currentScene.update();
       lagTime -= kMPF;
     }
   }

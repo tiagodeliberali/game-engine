@@ -3,7 +3,7 @@ import { Vec2d } from "./DataStructures";
 import { Renderable } from "./graphics/Renderable";
 import { Camera } from "./graphics/Camera";
 import { Color } from "./graphics/Color";
-import { BasicScene } from "./Scene";
+import { BasicScene } from "./scene/BasicScene";
 import { GameEngine } from "./GameEngine";
 import { isKeyPressed, isKeyClicked, Keys } from "./input/Keyboard";
 

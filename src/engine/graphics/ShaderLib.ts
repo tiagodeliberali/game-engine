@@ -6,8 +6,8 @@ const fragmentPath = "/shaders/simple_fs.glsl";
 const resourceManager = GetResourceManager();
 
 export function initShaderLib() {
-  resourceManager.loadText(vertexPath);
-  resourceManager.loadText(fragmentPath);
+  resourceManager.loadText(vertexPath, true);
+  resourceManager.loadText(fragmentPath, true);
 }
 
 let constColorShader: SimpleShader | undefined;

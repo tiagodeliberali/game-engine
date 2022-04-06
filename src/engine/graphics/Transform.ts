@@ -58,6 +58,10 @@ export class Transform {
     this.position.y += value;
   }
 
+  public getHorizontalPosition() {
+    return this.position.x;
+  }
+
   public getRotationInDegree(): number {
     return (this.rotation * 180.0) / Math.PI;
   }
