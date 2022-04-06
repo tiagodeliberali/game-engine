@@ -1,5 +1,5 @@
 import { EngineError } from "./EngineError";
-import { Color } from "./graphics/Color";
+import { Color } from "./graphics";
 
 const defaultGlName = "GLCanvas";
 let gl: WebGL2RenderingContext | undefined;

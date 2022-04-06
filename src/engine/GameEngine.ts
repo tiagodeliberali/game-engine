@@ -1,6 +1,6 @@
 import { EngineError } from "./EngineError";
-import { initShaderLib } from "./graphics/ShaderLib";
-import { initKeyboard } from "./input/Keyboard";
+import { initShaderLib } from "./graphics";
+import { initKeyboard } from "./input";
 import { startLoop, stopLoop } from "./Loop";
 import { GetResourceManager } from "./resources";
 import { AbstractScene } from "./scene";

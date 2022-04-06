@@ -1,7 +1,5 @@
 import { clearCanvas } from "../GL";
-import { Camera } from "../graphics/Camera";
-import { Color } from "../graphics/Color";
-import { Renderable } from "../graphics/Renderable";
+import { Camera, Color, Renderable } from "../graphics";
 import { AbstractScene } from "./AbstractScene";
 
 export class BasicScene extends AbstractScene {

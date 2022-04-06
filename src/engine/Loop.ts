@@ -1,6 +1,6 @@
 import { EngineError } from "./EngineError";
 import { AbstractScene } from "./scene";
-import { updateKeyboard } from "./input/Keyboard";
+import { updateKeyboard } from "./input";
 
 const kUPS = 60; // Updates per second
 const kMPF = 1000 / kUPS; // Milliseconds per update.
