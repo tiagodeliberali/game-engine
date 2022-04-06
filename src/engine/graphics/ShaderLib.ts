@@ -16,8 +16,8 @@ export function getConstColorShader(gl: WebGL2RenderingContext): SimpleShader {
   if (constColorShader === undefined) {
     constColorShader = new SimpleShader(
       gl,
-      resourceManager.get(vertexPath),
-      resourceManager.get(fragmentPath)
+      resourceManager.get(vertexPath) as string,
+      resourceManager.get(fragmentPath) as string
     );
   }
 

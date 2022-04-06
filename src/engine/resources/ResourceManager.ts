@@ -2,11 +2,9 @@ import { EngineError } from "../EngineError";
 import { MapEntry } from "./MapEntry";
 import { TextProcessor } from "./TextProcessor";
 
-export type ResourceContent = string;
-
 export interface IResourceProcessor {
-  decode: (data: Response) => Promise<ResourceContent>;
-  parse: (data: ResourceContent) => Promise<MapEntry>;
+  decode: (data: Response) => Promise<unknown>;
+  parse: (data: unknown) => Promise<MapEntry>;
 }
 
 export class ResourceManager {
@@ -19,7 +17,7 @@ export class ResourceManager {
     this.outstandingPromises = [];
   }
 
-  public get(path: string): ResourceContent {
+  public get(path: string): unknown {
     const entry =
       this.globalResourceMap.get(path) || this.sceneResourceMap.get(path);
 

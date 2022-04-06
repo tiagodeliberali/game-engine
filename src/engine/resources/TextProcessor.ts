@@ -1,12 +1,12 @@
 import { MapEntry } from "./MapEntry";
-import { IResourceProcessor, ResourceContent } from "./ResourceManager";
+import { IResourceProcessor } from "./ResourceManager";
 
 export class TextProcessor implements IResourceProcessor {
-  async decode(data: Response): Promise<ResourceContent> {
+  async decode(data: Response): Promise<unknown> {
     return await data.text();
   }
 
-  async parse(text: ResourceContent): Promise<MapEntry> {
-    return MapEntry.Entry(text);
+  async parse(text: unknown): Promise<MapEntry> {
+    return MapEntry.Entry(text as string);
   }
 }
