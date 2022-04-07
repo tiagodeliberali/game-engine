@@ -13,10 +13,6 @@ module.exports = {
         use: "ts-loader",
         exclude: /node_modules/,
       },
-      {
-        test: /\.(glsl|vs|fs)$/,
-        loader: "ts-shader-loader",
-      },
     ],
   },
   plugins: [
