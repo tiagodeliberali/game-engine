@@ -19,7 +19,7 @@ export class Renderable {
     this.shader = getConstColorShader(this.gl);
 
     this.vertexBuffer = new VertexBuffer(this.gl);
-    this.vertexBuffer.loadSquare();
+    this.vertexBuffer.initSquare();
 
     this.trsMatrix = new Transform();
   }

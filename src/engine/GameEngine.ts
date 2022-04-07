@@ -1,56 +1,53 @@
-import { EngineError } from "./EngineError";
-import { initShaderLib } from "./graphics";
-import { initKeyboard } from "./input";
-import { startLoop, stopLoop } from "./Loop";
-import { GetResourceManager } from "./resources";
+import { loadShaderLib } from "./graphics";
+import { initKeyboard, updateKeyboard } from "./input";
+import { initLoop, stopLoop } from "./Loop";
+import { getResourceManager } from "./resources";
 import { AbstractScene } from "./scene";
 
-const resourceManager = GetResourceManager();
+const resourceManager = getResourceManager();
 
 export class GameEngine {
-  currentScene: AbstractScene | undefined;
+  currentScene: AbstractScene;
 
   constructor(scene: AbstractScene) {
-    this.registerScene(scene);
-  }
-
-  public async startGame() {
-    if (this.currentScene === undefined) {
-      throw new EngineError(GameEngine.name, "Scene not defined.");
-    }
-
-    initShaderLib();
-    initKeyboard();
-
-    // load global resources alredy registered
-    await resourceManager.waitOnPromises();
-
-    await this.initScene();
-  }
-
-  private registerScene(scene: AbstractScene) {
     this.currentScene = scene;
     this.currentScene.registerGameEngine(this);
   }
 
-  private async initScene() {
-    if (
-      this.currentScene !== undefined &&
-      this.currentScene.init !== undefined
-    ) {
-      this.currentScene.init();
-    }
-
-    // load resources added by the scene
-    await resourceManager.waitOnPromises();
-
-    startLoop(this.currentScene!);
+  public async startGame() {
+    loadShaderLib();
+    initKeyboard();
+    await this.startScene();
   }
 
-  public async loadScene(scene: AbstractScene) {
+  private async startScene() {
+    this.currentScene.load();
+    await resourceManager.waitOnLoading();
+
+    this.currentScene.init();
+
+    initLoop(
+      () => this.drawLoop(),
+      () => this.updateLoop()
+    );
+  }
+
+  private drawLoop() {
+    this.currentScene!.draw && this.currentScene!.draw();
+    updateKeyboard();
+  }
+
+  private updateLoop() {
+    this.currentScene!.update && this.currentScene!.update();
+  }
+
+  public async changeScene(scene: AbstractScene) {
     stopLoop();
     resourceManager.unloadScene();
-    this.registerScene(scene);
-    await this.initScene();
+
+    this.currentScene = scene;
+    this.currentScene.registerGameEngine(this);
+
+    await this.startScene();
   }
 }

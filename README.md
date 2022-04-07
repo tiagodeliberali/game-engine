@@ -17,3 +17,13 @@ You can launch a local server with hot reload using `npm run server`
 Run pretty and lint before commiting to the repo:
 
 > npm run all
+
+# Basic concepts
+
+To make it easier to reason about names, I am adding the definitions bellow and I tried hard to follow them:
+
+- Load: Get external resources using `ResourceManager`.
+- Init: Executed once in a context, after all resources loaded. Run single time actions.
+- Start: Load and Init.
+- Update: Run every loop cycle and should not draw. Can run more than once in a loop cycle.
+- Draw: Run every loop cycle.

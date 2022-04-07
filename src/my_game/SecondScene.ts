@@ -1,6 +1,9 @@
-import { Renderable, Camera, Color, Vec2d, BasicScene } from "../engine";
+import { Renderable, Camera, Color, Vec2d, BasicScene, Audio } from "../engine";
+
+const backgroundMusicPath = "/sounds/background_music.mp3";
 
 export class SecondScene extends BasicScene {
+  backgroundMusic: Audio | undefined;
   constructor() {
     super(
       new Camera(
@@ -20,8 +23,14 @@ export class SecondScene extends BasicScene {
     );
   }
 
+  public load() {
+    this.loadResource(backgroundMusicPath);
+  }
+
   public init() {
     this.renderables = this.buildEnderman();
+    this.backgroundMusic = this.getResource(backgroundMusicPath) as Audio;
+    this.backgroundMusic.playLoop(1);
   }
 
   public update() {

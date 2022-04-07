@@ -27,7 +27,10 @@ module.exports = {
       template: "./public/index.html",
     }),
     new CopyPlugin({
-      patterns: [{ from: "./src/shaders", to: "./shaders" }],
+      patterns: [
+        { from: "./src/shaders", to: "./shaders" },
+        { from: "./src/sounds", to: "./sounds" },
+      ],
     }),
   ],
   resolve: {

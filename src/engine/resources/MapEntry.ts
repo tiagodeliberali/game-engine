@@ -4,6 +4,7 @@ export class MapEntry {
   isLoaded: boolean;
   content: unknown | null;
   refCount: number;
+  unload?: () => void;
 
   private constructor(content: unknown | null) {
     this.content = content;
@@ -15,14 +16,17 @@ export class MapEntry {
     return new MapEntry(null);
   }
 
-  public static Entry(content: unknown) {
+  public static Entry(content: unknown, unload?: () => void) {
     if (content === null || content === undefined) {
       throw new EngineError(
         MapEntry.name,
         "Entry content cannot be null or undefined"
       );
     }
-    return new MapEntry(content);
+
+    const entry = new MapEntry(content);
+    entry.unload = unload;
+    return entry;
   }
 
   decRef() {

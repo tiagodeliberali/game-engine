@@ -14,7 +14,7 @@ export class VertexBuffer {
     this.vertexBuffer = buffer;
   }
 
-  public load(vertices: number[]) {
+  public init(vertices: number[]) {
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexBuffer);
 
     this.gl.bufferData(
@@ -24,11 +24,11 @@ export class VertexBuffer {
     );
   }
 
-  public loadSquare() {
+  public initSquare() {
     const verticesOfSquare = [
       0.5, 0.5, 0.0, -0.5, 0.5, 0.0, 0.5, -0.5, 0.0, -0.5, -0.5, 0.0,
     ];
 
-    this.load(verticesOfSquare);
+    this.init(verticesOfSquare);
   }
 }

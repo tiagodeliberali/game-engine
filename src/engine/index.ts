@@ -4,6 +4,7 @@ import { Renderable, Camera, Color } from "./graphics";
 import { BasicScene } from "./scene";
 import { GameEngine } from "./GameEngine";
 import { isKeyPressed, isKeyClicked, Keys } from "./input";
+import { Audio } from "./resources";
 
 export {
   getGL,
@@ -18,4 +19,5 @@ export {
   isKeyClicked,
   Keys,
   BasicScene,
+  Audio,
 };

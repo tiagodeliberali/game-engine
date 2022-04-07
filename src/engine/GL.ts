@@ -4,8 +4,10 @@ import { Color } from "./graphics";
 const defaultGlName = "GLCanvas";
 let gl: WebGL2RenderingContext | undefined;
 
-export function initGL(htmlCanvasID: string): WebGL2RenderingContext {
-  const canvas = document.getElementById(htmlCanvasID) as HTMLCanvasElement;
+export function initGL(htmlCanvasID?: string): WebGL2RenderingContext {
+  const canvas = document.getElementById(
+    htmlCanvasID || defaultGlName
+  ) as HTMLCanvasElement;
 
   if (canvas === null) {
     throw new EngineError(

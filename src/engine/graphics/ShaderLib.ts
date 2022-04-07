@@ -1,13 +1,13 @@
 import { SimpleShader } from "./SimpleShader";
-import { GetResourceManager } from "../resources";
+import { getResourceManager } from "../resources";
 
 const vertexPath = "/shaders/simple_vs.glsl";
 const fragmentPath = "/shaders/simple_fs.glsl";
-const resourceManager = GetResourceManager();
+const resourceManager = getResourceManager();
 
-export function initShaderLib() {
-  resourceManager.loadText(vertexPath, true);
-  resourceManager.loadText(fragmentPath, true);
+export function loadShaderLib() {
+  resourceManager.loadGlobal(vertexPath);
+  resourceManager.loadGlobal(fragmentPath);
 }
 
 let constColorShader: SimpleShader | undefined;

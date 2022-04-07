@@ -16,6 +16,6 @@ export class BasicScene extends AbstractScene {
   public draw() {
     clearCanvas(this.color);
     this.camera.drawViewport();
-    this.renderables.forEach((bloco) => bloco.draw(this.camera!));
+    this.renderables.forEach((renderable) => renderable.draw(this.camera!));
   }
 }

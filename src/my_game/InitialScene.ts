@@ -6,12 +6,20 @@ import {
   BasicScene,
   Keys,
   isKeyPressed,
+  Audio,
 } from "../engine";
 
 import { SecondScene } from "./SecondScene";
 
+const backgroundMusicPath = "/sounds/background_music.mp3";
+const footCuePath = "/sounds/footstep.wav";
+const stageCuePath = "/sounds/change_level.wav";
+
 export class InitialScene extends BasicScene {
   timestamp: number | undefined;
+  backgroundMusic: Audio | undefined;
+  footCue: Audio | undefined;
+  stageCue: Audio | undefined;
 
   constructor() {
     super(
@@ -32,8 +40,18 @@ export class InitialScene extends BasicScene {
     );
   }
 
+  public load() {
+    this.loadResource(backgroundMusicPath);
+    this.loadResource(footCuePath);
+    this.loadResource(stageCuePath);
+  }
+
   public init() {
     this.timestamp = performance.now();
+
+    this.backgroundMusic = this.getResource(backgroundMusicPath) as Audio;
+    this.footCue = this.getResource(footCuePath) as Audio;
+    this.stageCue = this.getResource(stageCuePath) as Audio;
 
     this.renderables = this.renderables.concat(this.buildCorners());
   }
@@ -43,7 +61,7 @@ export class InitialScene extends BasicScene {
       const transform = this.renderables[0].trsMatrix;
       transform.addToRotationInDegree(10);
       const scale = Math.min(
-        5 + (performance.now() - this.timestamp!) / 1500,
+        5 + (performance.now() - this.timestamp!) / 3000,
         15
       );
 
@@ -54,21 +72,32 @@ export class InitialScene extends BasicScene {
       const speed = 0.2;
       const transform = this.renderables[1].trsMatrix;
 
+      let isWalking = false;
       if (isKeyPressed(Keys.Left)) {
         transform.addToHorizontalPosition(-speed);
+        isWalking = true;
       }
       if (isKeyPressed(Keys.Right)) {
         transform.addToHorizontalPosition(speed);
+        isWalking = true;
       }
       if (isKeyPressed(Keys.Up)) {
         transform.addToVerticalPosition(speed);
+        isWalking = true;
       }
       if (isKeyPressed(Keys.Down)) {
         transform.addToVerticalPosition(-speed);
+        isWalking = true;
+      }
+
+      if (isWalking) {
+        this.footCue!.playLoop(1);
+      } else {
+        this.footCue!.stop();
       }
 
       if (transform.getHorizontalPosition() > 35) {
-        this.loadScene(new SecondScene());
+        this.goToScene(new SecondScene());
       }
     }
   }

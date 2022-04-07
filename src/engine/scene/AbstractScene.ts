@@ -1,5 +1,6 @@
 import { EngineError } from "../EngineError";
 import { GameEngine } from "../GameEngine";
+import { getResourceManager } from "../resources";
 
 export abstract class AbstractScene {
   private gameEngine: GameEngine | undefined;
@@ -8,23 +9,35 @@ export abstract class AbstractScene {
     this.gameEngine = engine;
   }
 
-  loadScene(scene: AbstractScene) {
+  goToScene(scene: AbstractScene) {
     if (this.gameEngine === undefined) {
       throw new EngineError(AbstractScene.name, "No game engine registered");
     }
 
-    this.gameEngine.loadScene(scene);
+    this.gameEngine.changeScene(scene);
+  }
+
+  loadResource(path: string, extension?: string) {
+    getResourceManager().loadScene(path, extension);
+  }
+
+  getResource(path: string) {
+    return getResourceManager().get(path);
+  }
+
+  load() {
+    // time to load all resources with resource manager
   }
 
   init() {
-    // virtual method.
+    // all one time actions that should be executed in the begining of the scene
   }
 
   draw() {
-    // virtual method.
+    // draw stuff every loop iteration
   }
 
   update() {
-    // virtual method.
+    // update stuff every loop iteration
   }
 }

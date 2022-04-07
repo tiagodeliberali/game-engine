@@ -1,7 +1,3 @@
-import { EngineError } from "./EngineError";
-import { AbstractScene } from "./scene";
-import { updateKeyboard } from "./input";
-
 const kUPS = 60; // Updates per second
 const kMPF = 1000 / kUPS; // Milliseconds per update.
 
@@ -11,14 +7,22 @@ let lagTime: number;
 let loopRunning = false;
 let frameID = -1;
 
-let currentScene: AbstractScene | undefined;
+let loopDrawAction = () => {
+  // virtual method
+};
 
-export function startLoop(scene: AbstractScene) {
+let loopUpdateAction = () => {
+  // virtual method
+};
+
+export function initLoop(drawAction?: () => void, updateAction?: () => void) {
   if (loopRunning) {
     throw new Error("loop already running");
   }
 
-  currentScene = scene;
+  loopDrawAction = drawAction || loopDrawAction;
+  loopUpdateAction = updateAction || loopUpdateAction;
+
   prevTime = performance.now();
   lagTime = 0.0;
   loopRunning = true;
@@ -31,22 +35,17 @@ export function stopLoop() {
 }
 
 function loopOnce(currentTime: number) {
-  if (currentScene === undefined) {
-    throw new EngineError("Loop", "Current scene not initialized");
-  }
-
   if (loopRunning) {
     frameID = requestAnimationFrame(loopOnce);
 
-    currentScene.draw && currentScene.draw();
-    updateKeyboard();
+    loopDrawAction();
 
     const elapsedTime = currentTime - prevTime;
     prevTime = currentTime;
     lagTime += elapsedTime;
 
     while (lagTime >= kMPF && loopRunning) {
-      currentScene.update && currentScene.update();
+      loopUpdateAction();
       lagTime -= kMPF;
     }
   }
