@@ -23,7 +23,7 @@ Run pretty and lint before commiting to the repo:
 To make it easier to reason about names, I am adding the definitions bellow and I tried hard to follow them:
 
 - Load: Get external resources using `ResourceManager`.
-- Init: Executed once in a context, after all resources loaded. Run single time actions.
+- Init: Executed once in a context, after all resources loaded.
 - Start: Load and Init.
 - Update: Run every loop cycle and should not draw. Can run more than once in a loop cycle.
 - Draw: Run every loop cycle.
