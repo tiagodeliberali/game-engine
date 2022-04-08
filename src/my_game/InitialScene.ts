@@ -18,7 +18,6 @@ const pokemonTexturePath = "/textures/character.png";
 
 export class InitialScene extends BasicScene {
   timestamp: number | undefined;
-  backgroundMusic: Audio | undefined;
   footCue: Audio | undefined;
   stageCue: Audio | undefined;
   pokemonTexture: Texture | undefined;
@@ -90,6 +89,7 @@ export class InitialScene extends BasicScene {
       }
 
       if (transform.getHorizontalPosition() > 35) {
+        this.stageCue?.playOnce(1);
         this.goToScene(new SecondScene());
       }
     }

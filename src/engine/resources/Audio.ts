@@ -49,8 +49,6 @@ export class Audio {
       throw new EngineError(Audio.name, "Audio not initialized");
     }
 
-    this.stop();
-
     const source = this.getSource();
     source.start(0);
     this.setSourceVolume(volume);
