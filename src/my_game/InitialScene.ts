@@ -10,7 +10,6 @@ import {
   Audio,
   Texture,
 } from "../engine";
-
 import { SecondScene } from "./SecondScene";
 
 const footCuePath = "/sounds/footstep.wav";
@@ -25,22 +24,13 @@ export class InitialScene extends BasicScene {
   pokemonTexture: Texture | undefined;
 
   constructor() {
-    super(
-      new Camera(
-        new Vec2d(20, 60),
-        new Vec2d(30, 15),
-        {
-          bottomLeftCorner: new Vec2d(20, 40),
-          size: new Vec2d(600, 300),
-        },
-        Color.LightGray()
-      ),
-      Color.FromColorDef({
-        red: 74,
-        green: 237,
-        blue: 188,
-      })
-    );
+    const color = Color.FromColorDef({
+      red: 74,
+      green: 237,
+      blue: 188,
+    });
+
+    super(new Camera(new Vec2d(20, 60), new Vec2d(30, 15)), color);
   }
 
   public load() {

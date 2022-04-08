@@ -1,21 +1,23 @@
 import { clearCanvas } from "../GL";
-import { Camera, Color, Renderable } from "../graphics";
+import { Camera, Color, Renderable, Viewport } from "../graphics";
 import { AbstractScene } from "./AbstractScene";
 
 export class BasicScene extends AbstractScene {
-  private camera: Camera;
-  private color: Color;
+  protected camera: Camera;
+  protected viewport: Viewport;
+  protected color: Color;
   protected renderables: Renderable[] = [];
 
   constructor(camera: Camera, canvasColor: Color) {
     super();
     this.camera = camera;
+    this.viewport = Viewport.Default(canvasColor);
     this.color = canvasColor;
   }
 
   public draw() {
     clearCanvas(this.color);
-    this.camera.drawViewport();
+    this.viewport.draw();
     this.renderables.forEach((renderable) => renderable.draw(this.camera!));
   }
 

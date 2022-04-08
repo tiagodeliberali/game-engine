@@ -1,8 +1,10 @@
+import { Vec2d } from "./DataStructures";
 import { EngineError } from "./EngineError";
 import { Color } from "./graphics";
 
 const defaultGlName = "GLCanvas";
 let gl: WebGL2RenderingContext | undefined;
+let canvasSize: Vec2d | undefined;
 
 export function initGL(htmlCanvasID?: string): WebGL2RenderingContext {
   const canvas = document.getElementById(
@@ -15,6 +17,8 @@ export function initGL(htmlCanvasID?: string): WebGL2RenderingContext {
       `Could not find <canvas /> element with name ${htmlCanvasID} in the document.`
     );
   }
+
+  canvasSize = new Vec2d(canvas.width, canvas.height);
 
   gl =
     canvas.getContext("webgl2", { alpha: false }) ||
@@ -31,6 +35,14 @@ export function initGL(htmlCanvasID?: string): WebGL2RenderingContext {
   gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
   return gl;
+}
+
+export function getCanvasSize(): Vec2d {
+  if (canvasSize === undefined) {
+    throw new EngineError("GL", "Canvas not initialized");
+  }
+
+  return canvasSize;
 }
 
 export function getGL(): WebGL2RenderingContext {

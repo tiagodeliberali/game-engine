@@ -1,4 +1,5 @@
 import { Renderable, Camera, Color, Vec2d, BasicScene, Audio } from "../engine";
+import { Viewport } from "../engine/graphics";
 
 const backgroundMusicPath = "/sounds/background_music.mp3";
 
@@ -6,20 +7,18 @@ export class SecondScene extends BasicScene {
   backgroundMusic: Audio | undefined;
   constructor() {
     super(
-      new Camera(
-        new Vec2d(0, 0),
-        new Vec2d(1, 1),
-        {
-          bottomLeftCorner: new Vec2d(20, 40),
-          size: new Vec2d(600, 300),
-        },
-        Color.LightGray()
-      ),
+      new Camera(new Vec2d(0, 0), new Vec2d(1, 1)),
       Color.FromColorDef({
         red: 20,
         green: 100,
         blue: 200,
       })
+    );
+
+    this.viewport = new Viewport(
+      new Vec2d(20, 40),
+      new Vec2d(600, 300),
+      Color.LightGray()
     );
   }
 
