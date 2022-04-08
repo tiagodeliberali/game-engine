@@ -78,7 +78,7 @@ export class SimpleShader {
     this.gl.uniformMatrix4fv(this.cameraXformMatrix, false, cameraMatrix);
   }
 
-  private getUniformLocation(parameter: string) {
+  protected getUniformLocation(parameter: string) {
     const parameterRef = this.gl.getUniformLocation(
       this.compiledShader,
       parameter

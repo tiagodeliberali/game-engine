@@ -44,6 +44,7 @@ export class GameEngine {
   public async changeScene(scene: AbstractScene) {
     stopLoop();
     resourceManager.unloadScene();
+    this.currentScene.unload();
 
     this.currentScene = scene;
     this.currentScene.registerGameEngine(this);

@@ -18,4 +18,10 @@ export class BasicScene extends AbstractScene {
     this.camera.drawViewport();
     this.renderables.forEach((renderable) => renderable.draw(this.camera!));
   }
+
+  unload() {
+    this.renderables.forEach((renderable) => {
+      renderable.unload();
+    });
+  }
 }

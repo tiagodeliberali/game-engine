@@ -7,9 +7,9 @@ import { Transform } from "./Transform";
 import { Camera } from "./Camera";
 
 export class Renderable {
-  private gl: WebGL2RenderingContext;
-  private shader: SimpleShader;
-  private vertexBuffer: VertexBuffer;
+  protected gl: WebGL2RenderingContext;
+  protected shader: SimpleShader;
+  protected vertexBuffer: VertexBuffer;
   color: Color;
   trsMatrix: Transform;
 
@@ -32,5 +32,9 @@ export class Renderable {
       camera.getCameraMatrix()
     );
     this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
+  }
+
+  unload() {
+    //
   }
 }

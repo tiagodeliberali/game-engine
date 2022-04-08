@@ -1,9 +1,9 @@
 import { EngineError } from "../EngineError";
 import { MapEntry } from "./MapEntry";
-import { IResourceProcessor } from "./IResourceProcessor";
+import { ResourceProcessor } from "./ResourceProcessor";
 
 export class ResourceManager {
-  processors: Map<string, IResourceProcessor> = new Map();
+  processors: Map<string, ResourceProcessor> = new Map();
   globalResourceMap: Map<string, MapEntry> = new Map();
   sceneResourceMap: Map<string, MapEntry> = new Map();
   outstandingPromises: Promise<Map<string, MapEntry>>[] = [];
@@ -13,7 +13,7 @@ export class ResourceManager {
     this.outstandingPromises = [];
   }
 
-  public addResourceProcessor(processor: IResourceProcessor) {
+  public addResourceProcessor(processor: ResourceProcessor) {
     processor
       .extensions()
       .forEach((extension) => this.processors.set(extension, processor));
@@ -62,12 +62,12 @@ export class ResourceManager {
       );
     }
 
-    this.loadDecodeParse(path, processor, isGlobal);
+    this.loadParse(path, processor, isGlobal);
   }
 
-  public loadDecodeParse(
+  public loadParse(
     path: string,
-    processor: IResourceProcessor,
+    processor: ResourceProcessor,
     isGlobal: boolean
   ): void {
     if (!this.globalResourceMap.has(path) && !this.sceneResourceMap.has(path)) {
@@ -75,9 +75,9 @@ export class ResourceManager {
         ? this.globalResourceMap.set(path, MapEntry.EmptyEntry())
         : this.sceneResourceMap.set(path, MapEntry.EmptyEntry());
 
-      const fetchPromise = fetch(path)
-        .then((res) => processor.decode(res))
-        .then((data) => processor.parse(data))
+      const fetchPromise = processor
+        .fetch(path)
+        .then((res) => processor.parse(res))
         .then((data) =>
           isGlobal
             ? this.globalResourceMap.set(path, data)

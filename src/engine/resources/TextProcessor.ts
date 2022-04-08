@@ -1,16 +1,14 @@
 import { MapEntry } from "./MapEntry";
-import { IResourceProcessor } from "./IResourceProcessor";
+import { ResourceProcessor } from "./ResourceProcessor";
 
-export class TextProcessor implements IResourceProcessor {
+export class TextProcessor extends ResourceProcessor {
   extensions() {
     return ["glsl", "txt"];
   }
 
-  async decode(data: Response): Promise<unknown> {
-    return await data.text();
-  }
-
-  async parse(text: unknown): Promise<MapEntry> {
-    return MapEntry.Entry(text as string);
+  async parse(data: unknown): Promise<MapEntry> {
+    const response = data as Response;
+    const text = await response.text();
+    return MapEntry.Entry(text);
   }
 }

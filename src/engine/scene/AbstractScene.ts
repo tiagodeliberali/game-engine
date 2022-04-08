@@ -40,4 +40,8 @@ export abstract class AbstractScene {
   update() {
     // update stuff every loop iteration
   }
+
+  unload() {
+    // unload all objects
+  }
 }

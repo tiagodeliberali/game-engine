@@ -1,14 +1,16 @@
-type ColorDef = { red: number; green: number; blue: number };
+type ColorDef = { red: number; green: number; blue: number; alpha?: number };
 
 export class Color {
   red: number;
   green: number;
   blue: number;
+  alpha: number;
 
   private constructor() {
     this.red = 0;
     this.green = 0;
     this.blue = 0;
+    this.alpha = 1;
   }
 
   public static FromColorDef(colorDef: ColorDef) {
@@ -16,8 +18,18 @@ export class Color {
     color.red = colorDef.red;
     color.green = colorDef.green;
     color.blue = colorDef.blue;
+    color.alpha = colorDef.alpha === undefined ? 1 : colorDef.alpha;
 
     return color;
+  }
+
+  static Transparent(): Color {
+    return Color.FromColorDef({
+      red: 0,
+      green: 0,
+      blue: 0,
+      alpha: 0,
+    });
   }
 
   public static Black() {
@@ -55,7 +67,7 @@ export class Color {
       this.getRedNormalized(),
       this.getGreenNormalized(),
       this.getBlueNormalized(),
-      1,
+      this.alpha,
     ];
   }
 }

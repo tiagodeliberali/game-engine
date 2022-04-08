@@ -1,18 +1,16 @@
 import { MapEntry } from "./MapEntry";
-import { IResourceProcessor } from "./IResourceProcessor";
+import { ResourceProcessor } from "./ResourceProcessor";
 import { Audio } from "./Audio";
 
-export class AudioProcessor implements IResourceProcessor {
+export class AudioProcessor extends ResourceProcessor {
   extensions() {
     return ["wav", "mp3"];
   }
 
-  async decode(data: Response): Promise<unknown> {
-    return await data.arrayBuffer();
-  }
-
   async parse(data: unknown): Promise<MapEntry> {
-    const audio = await Audio.BuildAudioAsync(data as ArrayBuffer);
+    const response = data as Response;
+    const buffer = await response.arrayBuffer();
+    const audio = await Audio.BuildAudioAsync(buffer);
     return MapEntry.Entry(audio, () => audio.stop());
   }
 }

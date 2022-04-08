@@ -1,8 +1,10 @@
 import { ResourceManager } from "./ResourceManager";
-import { IResourceProcessor } from "./IResourceProcessor";
+import { ResourceProcessor } from "./ResourceProcessor";
 import { AudioProcessor } from "./AudioProcessor";
 import { Audio } from "./Audio";
 import { TextProcessor } from "./TextProcessor";
+import { TextureProcessor } from "./TextureProcessor";
+import { Texture } from "./Texture";
 
 let resourceManager: ResourceManager | undefined;
 
@@ -11,10 +13,11 @@ function getResourceManager() {
     resourceManager = new ResourceManager();
     resourceManager.addResourceProcessor(new TextProcessor());
     resourceManager.addResourceProcessor(new AudioProcessor());
+    resourceManager.addResourceProcessor(new TextureProcessor());
   }
 
   return resourceManager;
 }
 
-export { getResourceManager, Audio };
-export type { IResourceProcessor as ResourceProcessor };
+export { getResourceManager, Audio, Texture };
+export type { ResourceProcessor as ResourceProcessor };

@@ -17,12 +17,18 @@ export function initGL(htmlCanvasID?: string): WebGL2RenderingContext {
   }
 
   gl =
-    canvas.getContext("webgl2") ||
-    (canvas.getContext("experimental-webgl2") as WebGL2RenderingContext);
+    canvas.getContext("webgl2", { alpha: false }) ||
+    (canvas.getContext("experimental-webgl2", {
+      alpha: false,
+    }) as WebGL2RenderingContext);
 
   if (gl === null) {
     throw new EngineError("GL", "WebGL not supported by the browser");
   }
+
+  gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+  gl.enable(gl.BLEND);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
   return gl;
 }

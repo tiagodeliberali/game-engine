@@ -1,4 +1,5 @@
 import {
+  TextureRenderable,
   Renderable,
   Camera,
   Color,
@@ -7,19 +8,21 @@ import {
   Keys,
   isKeyPressed,
   Audio,
+  Texture,
 } from "../engine";
 
 import { SecondScene } from "./SecondScene";
 
-const backgroundMusicPath = "/sounds/background_music.mp3";
 const footCuePath = "/sounds/footstep.wav";
 const stageCuePath = "/sounds/change_level.wav";
+const pokemonTexturePath = "/textures/character.png";
 
 export class InitialScene extends BasicScene {
   timestamp: number | undefined;
   backgroundMusic: Audio | undefined;
   footCue: Audio | undefined;
   stageCue: Audio | undefined;
+  pokemonTexture: Texture | undefined;
 
   constructor() {
     super(
@@ -41,17 +44,17 @@ export class InitialScene extends BasicScene {
   }
 
   public load() {
-    this.loadResource(backgroundMusicPath);
     this.loadResource(footCuePath);
     this.loadResource(stageCuePath);
+    this.loadResource(pokemonTexturePath);
   }
 
   public init() {
     this.timestamp = performance.now();
 
-    this.backgroundMusic = this.getResource(backgroundMusicPath) as Audio;
     this.footCue = this.getResource(footCuePath) as Audio;
     this.stageCue = this.getResource(stageCuePath) as Audio;
+    this.pokemonTexture = this.getResource(pokemonTexturePath) as Texture;
 
     this.renderables = this.renderables.concat(this.buildCorners());
   }
@@ -111,8 +114,7 @@ export class InitialScene extends BasicScene {
       rotationInDegree: 25,
     });
 
-    const mRedSq = new Renderable();
-    mRedSq.color.set({ red: 255, green: 0, blue: 0 });
+    const mRedSq = new TextureRenderable(this.pokemonTexture!);
     mRedSq.trsMatrix.setTransform({
       position: new Vec2d(20, 60),
       scale: new Vec2d(2, 2),
