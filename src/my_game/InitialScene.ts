@@ -20,16 +20,17 @@ export class InitialScene extends BasicScene {
   timestamp: number | undefined;
   footCue: Audio | undefined;
   stageCue: Audio | undefined;
-  pokemonTexture: Texture | undefined;
+  characterTexture: Texture | undefined;
 
   constructor() {
-    const color = Color.FromColorDef({
-      red: 74,
-      green: 237,
-      blue: 188,
-    });
-
-    super(new Camera(new Vec2d(20, 60), new Vec2d(30, 15)), color);
+    super(
+      new Camera(new Vec2d(20, 60), new Vec2d(30, 15)),
+      Color.FromColorDef({
+        red: 74,
+        green: 237,
+        blue: 188,
+      })
+    );
   }
 
   public load() {
@@ -43,90 +44,100 @@ export class InitialScene extends BasicScene {
 
     this.footCue = this.getResource(footCuePath) as Audio;
     this.stageCue = this.getResource(stageCuePath) as Audio;
-    this.pokemonTexture = this.getResource(pokemonTexturePath) as Texture;
+    this.characterTexture = this.getResource(pokemonTexturePath) as Texture;
 
-    this.renderables = this.renderables.concat(this.buildCorners());
+    this.renderables = this.buildCorners();
   }
 
   public update() {
-    if (this.renderables && this.renderables.length > 0) {
-      const transform = this.renderables[0].trsMatrix;
-      transform.addToRotationInDegree(10);
-      const scale = Math.min(
-        5 + (performance.now() - this.timestamp!) / 3000,
-        15
-      );
+    this.blueSquareBehavior();
+    this.characterBehavior();
+  }
 
-      transform.setScale(new Vec2d(scale, scale));
+  private characterBehavior() {
+    const speed = 0.2;
+    const transform = this.renderables[1].trsMatrix;
+
+    let isWalking = false;
+    if (isKeyPressed(Keys.Left)) {
+      transform.addToHorizontalPosition(-speed);
+      isWalking = true;
+    }
+    if (isKeyPressed(Keys.Right)) {
+      transform.addToHorizontalPosition(speed);
+      isWalking = true;
+    }
+    if (isKeyPressed(Keys.Up)) {
+      transform.addToVerticalPosition(speed);
+      isWalking = true;
+    }
+    if (isKeyPressed(Keys.Down)) {
+      transform.addToVerticalPosition(-speed);
+      isWalking = true;
     }
 
-    if (this.renderables && this.renderables.length > 1) {
-      const speed = 0.2;
-      const transform = this.renderables[1].trsMatrix;
+    if (isWalking) {
+      this.footCue!.playLoop(1);
+    } else {
+      this.footCue!.stop();
+    }
 
-      let isWalking = false;
-      if (isKeyPressed(Keys.Left)) {
-        transform.addToHorizontalPosition(-speed);
-        isWalking = true;
-      }
-      if (isKeyPressed(Keys.Right)) {
-        transform.addToHorizontalPosition(speed);
-        isWalking = true;
-      }
-      if (isKeyPressed(Keys.Up)) {
-        transform.addToVerticalPosition(speed);
-        isWalking = true;
-      }
-      if (isKeyPressed(Keys.Down)) {
-        transform.addToVerticalPosition(-speed);
-        isWalking = true;
-      }
-
-      if (isWalking) {
-        this.footCue!.playLoop(1);
-      } else {
-        this.footCue!.stop();
-      }
-
-      if (transform.getHorizontalPosition() > 35) {
-        this.stageCue?.playOnce(1);
-        this.goToScene(new SecondScene());
-      }
+    if (transform.getHorizontalPosition() > 35) {
+      this.stageCue?.playOnce(1);
+      this.goToScene(new SecondScene());
     }
   }
 
+  private blueSquareBehavior() {
+    const transform = this.renderables[0].trsMatrix;
+    transform.addToRotationInDegree(10);
+    const scale = Math.min(
+      5 + (performance.now() - this.timestamp!) / 3000,
+      15
+    );
+
+    transform.setScale(new Vec2d(scale, scale));
+  }
+
   private buildCorners() {
-    const mBlueSq = new Renderable();
-    mBlueSq.color.set({ red: 100, green: 0, blue: 255 });
-    mBlueSq.trsMatrix.setTransform({
+    const blueSquare = new Renderable();
+    blueSquare.color.set({ red: 100, green: 0, blue: 255 });
+    blueSquare.trsMatrix.setTransform({
       position: new Vec2d(20, 60),
       scale: new Vec2d(5, 5),
       rotationInDegree: 25,
     });
 
-    const mRedSq = new TextureRenderable(this.pokemonTexture!);
-    mRedSq.trsMatrix.setTransform({
+    const character = new TextureRenderable(this.characterTexture!);
+    character.trsMatrix.setTransform({
       position: new Vec2d(20, 60),
       scale: new Vec2d(2, 2),
       rotationInDegree: 0,
     });
 
-    const mTLSq = new Renderable();
-    mTLSq.color.set({ red: 0, green: 0, blue: 255 });
-    mTLSq.trsMatrix.setPosition(new Vec2d(10, 65));
+    const leftUpCorner = new Renderable();
+    leftUpCorner.color.set({ red: 0, green: 0, blue: 255 });
+    leftUpCorner.trsMatrix.setPosition(new Vec2d(10, 65));
 
-    const mTRSq = new Renderable();
-    mTRSq.color.set({ red: 100, green: 100, blue: 255 });
-    mTRSq.trsMatrix.setPosition(new Vec2d(30, 65));
+    const rightUpCorner = new Renderable();
+    rightUpCorner.color.set({ red: 100, green: 100, blue: 255 });
+    rightUpCorner.trsMatrix.setPosition(new Vec2d(30, 65));
 
-    const mBRSq = new Renderable();
-    mBRSq.color.set({ red: 100, green: 155, blue: 100 });
-    mBRSq.trsMatrix.setPosition(new Vec2d(30, 55));
+    const rightDownCorner = new Renderable();
+    rightDownCorner.color.set({ red: 100, green: 155, blue: 100 });
+    rightDownCorner.trsMatrix.setPosition(new Vec2d(30, 55));
 
-    const mBLSq = new Renderable();
-    mBLSq.color.set({ red: 255, green: 100, blue: 100 });
-    mBLSq.trsMatrix.setPosition(new Vec2d(10, 55));
+    const leftDownCorner = new Renderable();
+    leftDownCorner.color.set({ red: 255, green: 100, blue: 100 });
+    leftDownCorner.trsMatrix.setPosition(new Vec2d(10, 55));
 
-    return [mBlueSq, mRedSq, mTLSq, mTRSq, mBRSq, mBLSq];
+    return [
+      blueSquare,
+      character,
+      leftUpCorner,
+      rightUpCorner,
+      rightDownCorner,
+      leftDownCorner,
+    ];
   }
 }

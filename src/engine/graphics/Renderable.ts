@@ -17,10 +17,7 @@ export class Renderable {
     this.gl = getGL();
     this.color = Color.Black();
     this.shader = getConstColorShader(this.gl);
-
-    this.vertexBuffer = new VertexBuffer(this.gl);
-    this.vertexBuffer.initSquare();
-
+    this.vertexBuffer = VertexBuffer.GetCachedSquare(this.gl);
     this.trsMatrix = new Transform();
   }
 

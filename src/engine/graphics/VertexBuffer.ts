@@ -1,5 +1,7 @@
 import { EngineError } from "../EngineError";
 
+let cached: VertexBuffer;
+
 export class VertexBuffer {
   gl: WebGL2RenderingContext;
   vertexBuffer: WebGLBuffer;
@@ -22,6 +24,15 @@ export class VertexBuffer {
     this.gl = gl;
     this.vertexBuffer = buffer;
     this.textureCoordBuffer = textureBuffer;
+  }
+
+  static GetCachedSquare(gl: WebGL2RenderingContext) {
+    if (cached === undefined) {
+      cached = new VertexBuffer(gl);
+      cached.initSquare();
+    }
+
+    return cached;
   }
 
   public init(vertices: number[], textureCoordinates: number[]) {

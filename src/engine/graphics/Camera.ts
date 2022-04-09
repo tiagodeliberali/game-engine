@@ -21,13 +21,13 @@ export class Camera {
     return this.cameraMatrix;
   }
 
-  public setCenter(point: Vec2d) {
-    this.center = point;
+  public setCenter(center: Vec2d) {
+    this.center = center;
     this.configureCamera();
   }
 
-  public setSize(point: Vec2d) {
-    this.size = point;
+  public setSize(size: Vec2d) {
+    this.size = size;
     this.configureCamera();
   }
 
