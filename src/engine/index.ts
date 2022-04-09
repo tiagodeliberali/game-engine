@@ -1,6 +1,13 @@
 import { initGL, clearCanvas, getGL } from "./GL";
 import { Vec2d } from "./DataStructures";
-import { TextureRenderable, Renderable, Camera, Color } from "./graphics";
+import {
+  SpriteRenderable,
+  TextureRenderable,
+  Renderable,
+  Camera,
+  Color,
+  IRenderable,
+} from "./graphics";
 import { BasicScene } from "./scene";
 import { GameEngine } from "./GameEngine";
 import { isKeyPressed, isKeyClicked, Keys } from "./input";
@@ -12,6 +19,7 @@ export {
   clearCanvas,
   Renderable,
   TextureRenderable,
+  SpriteRenderable,
   Camera,
   Color,
   Vec2d,
@@ -23,3 +31,5 @@ export {
   Audio,
   Texture,
 };
+
+export type { IRenderable };

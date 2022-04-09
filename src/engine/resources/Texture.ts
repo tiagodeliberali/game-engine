@@ -1,3 +1,4 @@
+import { Box } from "../DataStructures";
 import { EngineError } from "../EngineError";
 
 export class Texture {
@@ -63,8 +64,16 @@ export class Texture {
       this.gl.LINEAR_MIPMAP_LINEAR
     );
     // For the texture to look "sharp" do the following:
-    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER,gl.NEAREST);
-    // gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER,gl.NEAREST);
+    this.gl.texParameteri(
+      this.gl.TEXTURE_2D,
+      this.gl.TEXTURE_MAG_FILTER,
+      this.gl.NEAREST
+    );
+    this.gl.texParameteri(
+      this.gl.TEXTURE_2D,
+      this.gl.TEXTURE_MIN_FILTER,
+      this.gl.NEAREST
+    );
   }
 
   deactivate() {
@@ -73,5 +82,22 @@ export class Texture {
 
   unload() {
     this.gl.deleteTexture(this.textureId);
+  }
+
+  getBox(
+    rows: number,
+    columns: number,
+    selectedRow: number,
+    selectedColumn: number
+  ): Box {
+    const boxWidth = this.width / columns;
+    const boxHeight = this.height / rows;
+
+    return new Box(
+      boxHeight * (1 + selectedRow),
+      boxHeight * selectedRow,
+      boxWidth * (1 + selectedColumn),
+      boxWidth * selectedColumn
+    );
   }
 }

@@ -3,7 +3,7 @@ import { AbstractShader } from "./AbstractShader";
 import { Color } from "./Color";
 import { VertexBuffer } from "./VertexBuffer";
 
-export class TextureShader extends AbstractShader {
+export class SpriteShader extends AbstractShader {
   textureCoordinateRef: number;
   samplerRef: WebGLUniformLocation;
 

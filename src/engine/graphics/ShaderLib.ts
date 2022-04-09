@@ -1,5 +1,6 @@
 import { SimpleShader } from "./SimpleShader";
 import { TextureShader } from "./TextureShader";
+import { SpriteShader } from "./SpriteShader";
 import { getResourceManager } from "../resources";
 
 const simpleVertexPath = "/shaders/simple_vs.glsl";
@@ -32,9 +33,9 @@ export function getConstColorShader(gl: WebGL2RenderingContext): SimpleShader {
   return constColorShader;
 }
 
-let textureShader: SimpleShader | undefined;
+let textureShader: TextureShader | undefined;
 
-export function getTextureShader(gl: WebGL2RenderingContext): SimpleShader {
+export function getTextureShader(gl: WebGL2RenderingContext): TextureShader {
   if (textureShader === undefined) {
     textureShader = new TextureShader(
       gl,
@@ -44,4 +45,18 @@ export function getTextureShader(gl: WebGL2RenderingContext): SimpleShader {
   }
 
   return textureShader;
+}
+
+let spriteShader: SpriteShader | undefined;
+
+export function getSpriteShader(gl: WebGL2RenderingContext): SpriteShader {
+  if (spriteShader === undefined) {
+    spriteShader = new SpriteShader(
+      gl,
+      resourceManager.get(textureVertexPath) as string,
+      resourceManager.get(textureFragmentPath) as string
+    );
+  }
+
+  return spriteShader;
 }

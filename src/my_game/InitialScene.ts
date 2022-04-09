@@ -9,6 +9,7 @@ import {
   isKeyPressed,
   Audio,
   Texture,
+  IRenderable,
 } from "../engine";
 import { SecondScene } from "./SecondScene";
 
@@ -56,7 +57,7 @@ export class InitialScene extends BasicScene {
 
   private characterBehavior() {
     const speed = 0.2;
-    const transform = this.renderables[1].trsMatrix;
+    const transform = this.renderables[1].getTransform();
 
     let isWalking = false;
     if (isKeyPressed(Keys.Left)) {
@@ -89,7 +90,7 @@ export class InitialScene extends BasicScene {
   }
 
   private blueSquareBehavior() {
-    const transform = this.renderables[0].trsMatrix;
+    const transform = this.renderables[0].getTransform();
     transform.addToRotationInDegree(10);
     const scale = Math.min(
       5 + (performance.now() - this.timestamp!) / 3000,
@@ -99,7 +100,7 @@ export class InitialScene extends BasicScene {
     transform.setScale(new Vec2d(scale, scale));
   }
 
-  private buildCorners() {
+  private buildCorners(): IRenderable[] {
     const blueSquare = new Renderable();
     blueSquare.color.set({ red: 100, green: 0, blue: 255 });
     blueSquare.trsMatrix.setTransform({

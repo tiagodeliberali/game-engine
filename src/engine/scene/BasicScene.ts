@@ -1,12 +1,12 @@
 import { clearCanvas } from "../GL";
-import { Camera, Color, Renderable, Viewport } from "../graphics";
+import { Camera, Color, IRenderable, Viewport } from "../graphics";
 import { AbstractScene } from "./AbstractScene";
 
 export class BasicScene extends AbstractScene {
   protected camera: Camera;
   protected viewport: Viewport;
   protected color: Color;
-  protected renderables: Renderable[] = [];
+  protected renderables: IRenderable[] = [];
 
   constructor(camera: Camera, canvasColor: Color) {
     super();

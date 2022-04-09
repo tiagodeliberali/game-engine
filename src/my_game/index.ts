@@ -1,3 +1,4 @@
 import { InitialScene } from "./InitialScene";
+import { SecondScene } from "./SecondScene";
 
-export { InitialScene };
+export { InitialScene, SecondScene };
