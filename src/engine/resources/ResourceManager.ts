@@ -18,7 +18,7 @@ export class ResourceManager {
       .forEach((extension) => this.processors.set(extension, processor));
   }
 
-  public get(path: string): unknown {
+  public get<T>(path: string): T {
     const entry =
       this.globalResourceMap.get(path) || this.sceneResourceMap.get(path);
 
@@ -37,7 +37,7 @@ export class ResourceManager {
     }
 
     entry.incRef();
-    return entry.content;
+    return entry.content as T;
   }
 
   public loadGlobal(path: string, extension?: string) {

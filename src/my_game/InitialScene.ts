@@ -43,9 +43,9 @@ export class InitialScene extends BasicScene {
   public init() {
     this.timestamp = performance.now();
 
-    this.footCue = this.getResource(footCuePath) as Audio;
-    this.stageCue = this.getResource(stageCuePath) as Audio;
-    this.characterTexture = this.getResource(pokemonTexturePath) as Texture;
+    this.footCue = this.getResource<Audio>(footCuePath);
+    this.stageCue = this.getResource<Audio>(stageCuePath);
+    this.characterTexture = this.getResource<Texture>(pokemonTexturePath);
 
     this.renderables = this.buildCorners();
   }

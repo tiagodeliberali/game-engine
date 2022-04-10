@@ -19,7 +19,7 @@ export class SecondScene extends BasicScene {
 
   constructor() {
     super(
-      new Camera(new Vec2d(0, 0), new Vec2d(1, 1)),
+      new Camera(new Vec2d(0, 0), new Vec2d(2, 1)),
       Color.FromColorDef({
         red: 20,
         green: 100,
@@ -28,8 +28,8 @@ export class SecondScene extends BasicScene {
     );
 
     this.viewport = new Viewport(
-      new Vec2d(280, 40),
-      new Vec2d(400, 400),
+      new Vec2d(40, 40),
+      new Vec2d(800, 400),
       Color.LightGray()
     );
   }
@@ -40,11 +40,11 @@ export class SecondScene extends BasicScene {
   }
 
   public init() {
-    this.phoenixTexture = this.getResource(phoenixPath) as Texture;
+    this.phoenixTexture = this.getResource<Texture>(phoenixPath);
 
     this.renderables = this.buildEnderman();
 
-    this.backgroundMusic = this.getResource(backgroundMusicPath) as Audio;
+    this.backgroundMusic = this.getResource<Audio>(backgroundMusicPath);
     this.backgroundMusic.playLoop(1);
   }
 

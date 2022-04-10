@@ -25,8 +25,8 @@ export class ShaderLib {
     if (constColorShader === undefined) {
       constColorShader = new SimpleShader(
         gl,
-        resourceManager.get(simpleVertexPath) as string,
-        resourceManager.get(simpleFragmentPath) as string
+        resourceManager.get<string>(simpleVertexPath),
+        resourceManager.get<string>(simpleFragmentPath)
       );
     }
 
@@ -37,8 +37,8 @@ export class ShaderLib {
     if (textureShader === undefined) {
       textureShader = new TextureShader(
         gl,
-        resourceManager.get(textureVertexPath) as string,
-        resourceManager.get(textureFragmentPath) as string
+        resourceManager.get<string>(textureVertexPath),
+        resourceManager.get<string>(textureFragmentPath)
       );
     }
 
@@ -49,8 +49,8 @@ export class ShaderLib {
     if (spriteShader === undefined) {
       spriteShader = new SpriteShader(
         gl,
-        resourceManager.get(textureVertexPath) as string,
-        resourceManager.get(textureFragmentPath) as string
+        resourceManager.get<string>(textureVertexPath),
+        resourceManager.get<string>(textureFragmentPath)
       );
     }
 

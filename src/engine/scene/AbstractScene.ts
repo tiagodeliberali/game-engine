@@ -21,8 +21,8 @@ export abstract class AbstractScene {
     getResourceManager().loadScene(path, extension);
   }
 
-  getResource(path: string) {
-    return getResourceManager().get(path);
+  getResource<T>(path: string) {
+    return getResourceManager().get<T>(path);
   }
 
   load() {
