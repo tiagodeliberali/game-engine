@@ -1,4 +1,4 @@
-import { loadShaderLib } from "./graphics";
+import { ShaderLib } from "./graphics";
 import { initKeyboard, updateKeyboard } from "./input";
 import { initLoop, stopLoop } from "./Loop";
 import { getResourceManager } from "./resources";
@@ -15,7 +15,7 @@ export class GameEngine {
   }
 
   public async startGame() {
-    loadShaderLib();
+    ShaderLib.loadShaderLib();
     initKeyboard();
     await this.startScene();
   }

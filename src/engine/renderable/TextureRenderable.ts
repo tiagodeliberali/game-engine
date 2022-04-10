@@ -1,30 +1,27 @@
-import { Color } from "../graphics/Color";
-import { getTextureShader } from "../graphics/ShaderLib";
-import { Camera } from "../graphics/Camera";
+import {
+  ShaderLib,
+  TextureShader,
+  VertexBuffer,
+  Camera,
+  Color,
+} from "../graphics";
 import { Texture } from "../resources";
-import { IRenderable } from "./IRenderable";
-import { TextureShader } from "../graphics/TextureShader";
 import { getGL } from "../GL";
-import { VertexBuffer } from "../graphics/VertexBuffer";
-import { Transform } from "../graphics/Transform";
+import { AbstractRenderable } from "./AbstractRenderable";
 
-export class TextureRenderable implements IRenderable {
-  gl: WebGL2RenderingContext;
-  shader: TextureShader;
-  vertexBuffer: VertexBuffer;
+export class TextureRenderable extends AbstractRenderable<TextureShader> {
   textureVertexBuffer: VertexBuffer;
-  color: Color;
-  trsMatrix: Transform;
   texture: Texture;
 
   constructor(texture: Texture) {
-    this.gl = getGL();
-    this.vertexBuffer = VertexBuffer.UnitSquareCenteredOnZero(this.gl);
-    this.textureVertexBuffer = VertexBuffer.UnitSquareLeftBottonOnZero(this.gl);
-    this.trsMatrix = new Transform();
+    const gl = getGL();
+    const vertexBuffer = VertexBuffer.UnitSquareCenteredOnZero(gl);
+    const shader = ShaderLib.getTextureShader(gl);
+
+    super(gl, shader, vertexBuffer);
 
     this.color = Color.Transparent();
-    this.shader = getTextureShader(this.gl);
+    this.textureVertexBuffer = VertexBuffer.UnitSquareLeftBottonOnZero(this.gl);
     this.texture = texture;
   }
 
@@ -38,13 +35,5 @@ export class TextureRenderable implements IRenderable {
       camera.getCameraMatrix()
     );
     this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
-  }
-
-  public getTransform() {
-    return this.trsMatrix;
-  }
-
-  public unload() {
-    //
   }
 }

@@ -1,5 +1,4 @@
-import { MapEntry } from "./MapEntry";
-import { ResourceProcessor } from "./ResourceProcessor";
+import { MapEntry, ResourceProcessor } from ".";
 
 export class TextProcessor extends ResourceProcessor {
   extensions() {

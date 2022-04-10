@@ -1,6 +1,21 @@
 import { Color } from "./Color";
-import { loadShaderLib } from "./ShaderLib";
+import { ShaderLib } from "./ShaderLib";
 import { Camera } from "./Camera";
 import { Viewport } from "./Viewport";
+import { Transform } from "./Transform";
+import { VertexBuffer } from "./VertexBuffer";
+import { SimpleShader } from "./SimpleShader";
+import { TextureShader } from "./TextureShader";
+import { SpriteShader } from "./SpriteShader";
 
-export { Color, loadShaderLib, Camera, Viewport };
+export {
+  Color,
+  ShaderLib,
+  Camera,
+  Viewport,
+  Transform,
+  VertexBuffer,
+  SimpleShader,
+  TextureShader,
+  SpriteShader,
+};

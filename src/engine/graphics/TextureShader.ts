@@ -1,7 +1,6 @@
 import { mat4 } from "gl-matrix";
+import { Color, VertexBuffer } from ".";
 import { AbstractShader } from "./AbstractShader";
-import { Color } from "./Color";
-import { VertexBuffer } from "./VertexBuffer";
 
 export class TextureShader extends AbstractShader {
   textureCoordinateRef: number;

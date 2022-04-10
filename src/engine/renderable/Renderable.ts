@@ -1,25 +1,14 @@
-import { SimpleShader } from "../graphics/SimpleShader";
-import { getConstColorShader } from "../graphics/ShaderLib";
+import { SimpleShader, VertexBuffer, Camera, ShaderLib } from "../graphics";
 import { getGL } from "../GL";
-import { VertexBuffer } from "../graphics/VertexBuffer";
-import { Color } from "../graphics/Color";
-import { Transform } from "../graphics/Transform";
-import { Camera } from "../graphics/Camera";
-import { IRenderable } from "./IRenderable";
+import { AbstractRenderable } from "./AbstractRenderable";
 
-export class Renderable implements IRenderable {
-  gl: WebGL2RenderingContext;
-  shader: SimpleShader;
-  vertexBuffer: VertexBuffer;
-  color: Color;
-  trsMatrix: Transform;
-
+export class Renderable extends AbstractRenderable<SimpleShader> {
   constructor() {
-    this.gl = getGL();
-    this.color = Color.Black();
-    this.shader = getConstColorShader(this.gl);
-    this.vertexBuffer = VertexBuffer.UnitSquareCenteredOnZero(this.gl);
-    this.trsMatrix = new Transform();
+    const gl = getGL();
+    const vertexBuffer = VertexBuffer.UnitSquareCenteredOnZero(gl);
+    const shader = ShaderLib.getConstColorShader(gl);
+
+    super(gl, shader, vertexBuffer);
   }
 
   public draw(camera: Camera) {
@@ -30,13 +19,5 @@ export class Renderable implements IRenderable {
       camera.getCameraMatrix()
     );
     this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
-  }
-
-  public getTransform() {
-    return this.trsMatrix;
-  }
-
-  public unload() {
-    //
   }
 }

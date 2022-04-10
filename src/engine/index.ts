@@ -1,6 +1,6 @@
 import { initGL, clearCanvas, getGL } from "./GL";
 import { Vec2d } from "./DataStructures";
-import { Camera, Color } from "./graphics";
+import { Camera, Color, Viewport } from "./graphics";
 import {
   SpriteRenderable,
   TextureRenderable,
@@ -11,6 +11,7 @@ import { BasicScene } from "./scene";
 import { GameEngine } from "./GameEngine";
 import { isKeyPressed, isKeyClicked, Keys } from "./input";
 import { Audio, Texture } from "./resources";
+import { EngineError } from "./EngineError";
 
 export {
   getGL,
@@ -29,6 +30,8 @@ export {
   BasicScene,
   Audio,
   Texture,
+  Viewport,
+  EngineError,
 };
 
 export type { IRenderable };

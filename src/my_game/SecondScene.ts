@@ -8,7 +8,7 @@ import {
   Texture,
   SpriteRenderable,
 } from "../engine";
-import { Viewport } from "../engine/graphics";
+import { Viewport } from "../engine";
 
 const backgroundMusicPath = "/sounds/background_music.mp3";
 const phoenixPath = "/textures/phoenix_fly.png";

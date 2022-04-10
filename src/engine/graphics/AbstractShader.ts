@@ -1,7 +1,6 @@
 import { EngineError } from "../EngineError";
-import { VertexBuffer } from "./VertexBuffer";
 import { mat4 } from "gl-matrix";
-import { Color } from "./Color";
+import { Color, VertexBuffer } from ".";
 
 export abstract class AbstractShader {
   gl: WebGL2RenderingContext;

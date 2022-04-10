@@ -1,7 +1,5 @@
-import { MapEntry } from "./MapEntry";
-import { ResourceProcessor } from "./ResourceProcessor";
-import { Texture } from "./Texture";
 import { getGL } from "../GL";
+import { MapEntry, ResourceProcessor, Texture } from ".";
 
 export class TextureProcessor extends ResourceProcessor {
   extensions() {

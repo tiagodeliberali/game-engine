@@ -1,29 +1,27 @@
-import { Color } from "../graphics/Color";
-import { getSpriteShader } from "../graphics/ShaderLib";
-import { Camera } from "../graphics/Camera";
+import {
+  ShaderLib,
+  Camera,
+  TextureShader,
+  VertexBuffer,
+  Color,
+} from "../graphics";
 import { Texture } from "../resources";
-import { IRenderable } from "./IRenderable";
-import { TextureShader } from "../graphics/TextureShader";
 import { getGL } from "../GL";
-import { VertexBuffer } from "../graphics/VertexBuffer";
-import { Transform } from "../graphics/Transform";
 import { Box } from "../DataStructures";
+import { AbstractRenderable } from "./AbstractRenderable";
 
-export class SpriteRenderable implements IRenderable {
-  gl: WebGL2RenderingContext;
-  shader: TextureShader;
-  vertexBuffer: VertexBuffer;
+export class SpriteRenderable extends AbstractRenderable<TextureShader> {
   textureVertexBuffer: VertexBuffer;
-  color: Color;
-  trsMatrix: Transform;
   texture: Texture;
 
   constructor(texture: Texture, spritePosition: Box) {
-    this.gl = getGL();
-    this.vertexBuffer = VertexBuffer.UnitSquareCenteredOnZero(this.gl);
-    this.trsMatrix = new Transform();
+    const gl = getGL();
+    const shader = ShaderLib.getSpriteShader(gl);
+    const vertexBuffer = VertexBuffer.UnitSquareCenteredOnZero(gl);
+
+    super(gl, shader, vertexBuffer);
+
     this.color = Color.Transparent();
-    this.shader = getSpriteShader(this.gl);
     this.texture = texture;
 
     if (!spritePosition.isNormalized()) {
@@ -48,13 +46,5 @@ export class SpriteRenderable implements IRenderable {
       camera.getCameraMatrix()
     );
     this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
-  }
-
-  public getTransform() {
-    return this.trsMatrix;
-  }
-
-  public unload() {
-    //
   }
 }

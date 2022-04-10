@@ -1,5 +1,5 @@
 import { EngineError } from "../EngineError";
-import { MapEntry } from "./MapEntry";
+import { MapEntry } from ".";
 
 export abstract class ResourceProcessor {
   extensions(): string[] {

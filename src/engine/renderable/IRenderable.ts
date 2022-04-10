@@ -1,5 +1,4 @@
-import { Camera } from "../graphics/Camera";
-import { Transform } from "../graphics/Transform";
+import { Camera, Transform } from "../graphics";
 
 export interface IRenderable {
   draw: (camera: Camera) => void;

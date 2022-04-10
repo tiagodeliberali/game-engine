@@ -1,7 +1,7 @@
 import { clearCanvas } from "../GL";
 import { Camera, Color, Viewport } from "../graphics";
 import { IRenderable } from "../renderable";
-import { AbstractScene } from "./AbstractScene";
+import { AbstractScene } from ".";
 
 export class BasicScene extends AbstractScene {
   protected camera: Camera;

@@ -1,6 +1,4 @@
-import { MapEntry } from "./MapEntry";
-import { ResourceProcessor } from "./ResourceProcessor";
-import { Audio } from "./Audio";
+import { MapEntry, ResourceProcessor, Audio } from ".";
 
 export class AudioProcessor extends ResourceProcessor {
   extensions() {

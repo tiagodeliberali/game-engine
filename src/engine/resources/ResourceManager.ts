@@ -1,6 +1,5 @@
 import { EngineError } from "../EngineError";
-import { MapEntry } from "./MapEntry";
-import { ResourceProcessor } from "./ResourceProcessor";
+import { MapEntry, ResourceProcessor } from ".";
 
 export class ResourceManager {
   processors: Map<string, ResourceProcessor> = new Map();
