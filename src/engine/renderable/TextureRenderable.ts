@@ -1,15 +1,14 @@
-import { Color } from "./Color";
-import { getSpriteShader } from "./ShaderLib";
-import { Camera } from "./Camera";
+import { Color } from "../graphics/Color";
+import { getTextureShader } from "../graphics/ShaderLib";
+import { Camera } from "../graphics/Camera";
 import { Texture } from "../resources";
 import { IRenderable } from "./IRenderable";
-import { TextureShader } from "./TextureShader";
+import { TextureShader } from "../graphics/TextureShader";
 import { getGL } from "../GL";
-import { VertexBuffer } from "./VertexBuffer";
-import { Transform } from "./Transform";
-import { Box } from "../DataStructures";
+import { VertexBuffer } from "../graphics/VertexBuffer";
+import { Transform } from "../graphics/Transform";
 
-export class SpriteRenderable implements IRenderable {
+export class TextureRenderable implements IRenderable {
   gl: WebGL2RenderingContext;
   shader: TextureShader;
   vertexBuffer: VertexBuffer;
@@ -18,24 +17,15 @@ export class SpriteRenderable implements IRenderable {
   trsMatrix: Transform;
   texture: Texture;
 
-  constructor(texture: Texture, spritePosition: Box) {
+  constructor(texture: Texture) {
     this.gl = getGL();
     this.vertexBuffer = VertexBuffer.UnitSquareCenteredOnZero(this.gl);
+    this.textureVertexBuffer = VertexBuffer.UnitSquareLeftBottonOnZero(this.gl);
     this.trsMatrix = new Transform();
+
     this.color = Color.Transparent();
-    this.shader = getSpriteShader(this.gl);
+    this.shader = getTextureShader(this.gl);
     this.texture = texture;
-
-    if (!spritePosition.isNormalized()) {
-      spritePosition.normalize(texture.width, texture.height);
-    }
-
-    this.textureVertexBuffer = VertexBuffer.DynamicUnitSquareLeftBottonOnZero(
-      this.gl
-    );
-    this.textureVertexBuffer.setTextureCoordinate(
-      spritePosition.getElementUVCoordinateArray()
-    );
   }
 
   public draw(camera: Camera) {

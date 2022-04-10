@@ -1,10 +1,10 @@
-import { SimpleShader } from "./SimpleShader";
-import { getConstColorShader } from "./ShaderLib";
+import { SimpleShader } from "../graphics/SimpleShader";
+import { getConstColorShader } from "../graphics/ShaderLib";
 import { getGL } from "../GL";
-import { VertexBuffer } from "./VertexBuffer";
-import { Color } from "./Color";
-import { Transform } from "./Transform";
-import { Camera } from "./Camera";
+import { VertexBuffer } from "../graphics/VertexBuffer";
+import { Color } from "../graphics/Color";
+import { Transform } from "../graphics/Transform";
+import { Camera } from "../graphics/Camera";
 import { IRenderable } from "./IRenderable";
 
 export class Renderable implements IRenderable {
