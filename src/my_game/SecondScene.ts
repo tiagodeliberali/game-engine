@@ -53,10 +53,13 @@ export class SecondScene extends BasicScene {
   public update() {
     const phoenix = this.renderables[6] as SpriteAnimateRenderable;
     if (isKeyPressed(Keys.Left)) {
-      phoenix.start(5);
+      phoenix.runInLoop(5);
+    }
+    if (isKeyPressed(Keys.Up)) {
+      phoenix.runOnce(5);
     }
     if (isKeyPressed(Keys.Right)) {
-      phoenix.stop();
+      phoenix.stopLooping();
     }
   }
 
