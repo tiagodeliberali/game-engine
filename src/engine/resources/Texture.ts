@@ -84,7 +84,7 @@ export class Texture {
     this.gl.deleteTexture(this.textureId);
   }
 
-  getBox(
+  getSpritePositionAsArray(
     rows: number,
     columns: number,
     selectedRow: number,
@@ -93,11 +93,47 @@ export class Texture {
     const boxWidth = this.width / columns;
     const boxHeight = this.height / rows;
 
+    // invert rows to make it more easy to reason about
+    const invertedRow = rows - selectedRow - 1;
+
     return new Box(
-      boxHeight * (1 + selectedRow),
-      boxHeight * selectedRow,
+      boxHeight * (1 + invertedRow),
+      boxHeight * invertedRow,
       boxWidth * (1 + selectedColumn),
       boxWidth * selectedColumn
+    );
+  }
+
+  getSpritePositionLinear(
+    rows: number,
+    columns: number,
+    position: number
+  ): Box {
+    if (position > rows * columns) {
+      throw new EngineError(
+        Texture.name,
+        `Max position value is ${
+          rows * columns - 1
+        } but it was supplied ${position}.`
+      );
+    }
+
+    let currentPosition = position;
+    let selectedRow = 0;
+    let selectedColumn = 0;
+
+    while (currentPosition >= columns) {
+      currentPosition -= columns;
+      selectedRow++;
+    }
+
+    selectedColumn = currentPosition;
+
+    return this.getSpritePositionAsArray(
+      rows,
+      columns,
+      selectedRow,
+      selectedColumn
     );
   }
 }

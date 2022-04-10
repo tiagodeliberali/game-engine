@@ -26,4 +26,5 @@ To make it easier to reason about names, I am adding the definitions bellow and 
 - Init: Executed once in a context, after all resources loaded.
 - Start: Load and Init.
 - Update: Run every loop cycle and should not draw. Can run more than once in a loop cycle.
+- Activate: Add things to WebGL before drawing.
 - Draw: Run every loop cycle.

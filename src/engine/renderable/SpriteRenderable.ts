@@ -24,13 +24,18 @@ export class SpriteRenderable extends AbstractRenderable<TextureShader> {
     this.color = Color.Transparent();
     this.texture = texture;
 
-    if (!spritePosition.isNormalized()) {
-      spritePosition.normalize(texture.width, texture.height);
-    }
-
     this.textureVertexBuffer = VertexBuffer.DynamicUnitSquareLeftBottonOnZero(
       this.gl
     );
+
+    this.setSpritePosition(spritePosition);
+  }
+
+  public setSpritePosition(spritePosition: Box) {
+    if (!spritePosition.isNormalized()) {
+      spritePosition.normalize(this.texture.width, this.texture.height);
+    }
+
     this.textureVertexBuffer.setTextureCoordinate(
       spritePosition.getElementUVCoordinateArray()
     );

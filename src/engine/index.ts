@@ -2,6 +2,7 @@ import { initGL, clearCanvas, getGL } from "./GL";
 import { Vec2d } from "./DataStructures";
 import { Camera, Color, Viewport } from "./graphics";
 import {
+  SpriteAnimateRenderable,
   SpriteRenderable,
   TextureRenderable,
   Renderable,
@@ -32,6 +33,7 @@ export {
   Texture,
   Viewport,
   EngineError,
+  SpriteAnimateRenderable,
 };
 
 export type { IRenderable };
