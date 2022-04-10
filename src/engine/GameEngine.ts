@@ -1,6 +1,7 @@
 import { ShaderLib } from "./graphics";
 import { initKeyboard, updateKeyboard } from "./input";
 import { initLoop, stopLoop } from "./Loop";
+import { FontRenderable } from "./renderable";
 import { getResourceManager } from "./resources";
 import { AbstractScene } from "./scene";
 
@@ -17,6 +18,7 @@ export class GameEngine {
   public async startGame() {
     ShaderLib.loadShaderLib();
     initKeyboard();
+    FontRenderable.load();
     await this.startScene();
   }
 

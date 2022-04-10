@@ -30,6 +30,10 @@ export class Transform {
     this.scale = scale;
   }
 
+  getHorizontalScale(): number {
+    return this.scale.x;
+  }
+
   public setRotationInRad(rotationInRadians: number) {
     this.rotation = rotationInRadians;
     while (this.rotation > 2 * Math.PI) {
@@ -60,6 +64,10 @@ export class Transform {
 
   public getHorizontalPosition() {
     return this.position.x;
+  }
+
+  setHorizontalPosition(position: number) {
+    this.position.x = position;
   }
 
   public getRotationInDegree(): number {

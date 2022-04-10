@@ -5,6 +5,7 @@ import {
   SpriteAnimateRenderable,
   SpriteRenderable,
   TextureRenderable,
+  FontRenderable,
   Renderable,
   IRenderable,
 } from "./renderable";
@@ -21,6 +22,7 @@ export {
   Renderable,
   TextureRenderable,
   SpriteRenderable,
+  FontRenderable,
   Camera,
   Color,
   Vec2d,

@@ -27,6 +27,7 @@ module.exports = {
         { from: "./src/shaders", to: "./shaders" },
         { from: "./src/my_game/sounds", to: "./sounds" },
         { from: "./src/my_game/textures", to: "./textures" },
+        { from: "./src/textures", to: "./textures" },
       ],
     }),
   ],

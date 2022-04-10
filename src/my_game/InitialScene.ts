@@ -10,6 +10,7 @@ import {
   Audio,
   Texture,
   IRenderable,
+  FontRenderable,
 } from "../engine";
 import { SecondScene } from "./SecondScene";
 
@@ -101,6 +102,14 @@ export class InitialScene extends BasicScene {
   }
 
   private buildCorners(): IRenderable[] {
+    const text = FontRenderable.getDefaultFont("Ola Alice!");
+    text.color.set({ red: 0, green: 200, blue: 0 });
+    text.trsMatrix.setTransform({
+      position: new Vec2d(10, 62),
+      scale: new Vec2d(0.5, 1),
+      rotationInDegree: 0,
+    });
+
     const blueSquare = new Renderable();
     blueSquare.color.set({ red: 100, green: 0, blue: 255 });
     blueSquare.trsMatrix.setTransform({
@@ -139,6 +148,7 @@ export class InitialScene extends BasicScene {
       rightUpCorner,
       rightDownCorner,
       leftDownCorner,
+      text,
     ];
   }
 }
