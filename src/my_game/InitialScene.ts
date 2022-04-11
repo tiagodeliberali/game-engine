@@ -79,13 +79,13 @@ export class InitialScene extends BasicScene {
     }
 
     if (isWalking) {
-      this.footCue!.playLoop(1);
+      this.footCue!.playLoop();
     } else {
       this.footCue!.stop();
     }
 
     if (transform.getHorizontalPosition() > 35) {
-      this.stageCue?.playOnce(1);
+      this.stageCue?.playOnce();
       this.goToScene(new SecondScene());
     }
   }

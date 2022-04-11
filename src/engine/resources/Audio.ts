@@ -44,18 +44,21 @@ export class Audio {
   }
 
   // stops the current run to play again
-  playOnce(volume: number) {
+  playOnce(volume?: number) {
     if (this.sourceGain === undefined) {
       throw new EngineError(Audio.name, "Audio not initialized");
     }
 
     const source = this.getSource();
     source.start(0);
-    this.setSourceVolume(volume);
+
+    if (volume !== undefined) {
+      this.setSourceVolume(volume);
+    }
   }
 
   // do nothing if it's already playing
-  playLoop(volume: number) {
+  playLoop(volume?: number) {
     if (this.sourceGain === undefined) {
       throw new EngineError(Audio.name, "Audio not initialized");
     }
@@ -67,7 +70,10 @@ export class Audio {
     this.latestSource = this.getSource();
     this.latestSource.loop = true;
     this.latestSource.start(0);
-    this.setSourceVolume(volume);
+
+    if (volume !== undefined) {
+      this.setSourceVolume(volume);
+    }
   }
 
   stop() {

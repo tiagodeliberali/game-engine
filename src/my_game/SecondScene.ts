@@ -48,7 +48,7 @@ export class SecondScene extends BasicScene {
     this.renderables = this.buildEnderman();
 
     this.backgroundMusic = this.getResource<Audio>(backgroundMusicPath);
-    this.backgroundMusic.playLoop(1);
+    this.backgroundMusic.playLoop();
   }
 
   public update() {
