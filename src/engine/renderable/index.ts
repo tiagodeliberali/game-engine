@@ -1,16 +1,14 @@
 import { Renderable } from "./Renderable";
 import { TextureRenderable } from "./TextureRenderable";
-import { SpriteRenderable } from "./SpriteRenderable";
 import { IRenderable } from "./IRenderable";
-import { SpriteAnimateRenderable } from "./SpriteAnimateRenderable";
+import { SpriteRenderable } from "./SpriteRenderable";
 import { FontRenderable } from "./FontRenderable";
-import { RenderableAnimator, AnimationType } from "./RenderableAnimator";
+import { RenderableAnimator, AnimationType } from "./animator";
 
 export {
   Renderable,
   TextureRenderable,
   SpriteRenderable,
-  SpriteAnimateRenderable,
   FontRenderable,
   RenderableAnimator,
   AnimationType,

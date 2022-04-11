@@ -8,9 +8,10 @@ import {
   Texture,
   isKeyPressed,
   Keys,
-  SpriteAnimateRenderable,
+  SpriteRenderable,
 } from "../engine";
 import { Viewport } from "../engine";
+import { AnimationType } from "../engine/renderable";
 
 const backgroundMusicPath = "/sounds/background_music.mp3";
 const phoenixPath = "/textures/phoenix_fly.png";
@@ -51,14 +52,29 @@ export class SecondScene extends BasicScene {
   }
 
   public update() {
-    const phoenix = this.renderables[6] as SpriteAnimateRenderable;
+    const phoenix = this.renderables[6] as SpriteRenderable;
     if (isKeyPressed(Keys.Left)) {
+      phoenix.setAnimator({
+        initialPosition: 0,
+        lastPosition: 5,
+        speed: 5,
+        type: AnimationType.BackwardToBegining,
+      });
+      phoenix.runInLoop();
+    }
+    if (isKeyPressed(Keys.Right)) {
+      phoenix.setAnimator({
+        initialPosition: 0,
+        lastPosition: 5,
+        speed: 5,
+        type: AnimationType.ForwardToBegining,
+      });
       phoenix.runInLoop();
     }
     if (isKeyPressed(Keys.Up)) {
       phoenix.runOnce();
     }
-    if (isKeyPressed(Keys.Right)) {
+    if (isKeyPressed(Keys.Down)) {
       phoenix.stopLooping();
     }
   }
@@ -131,7 +147,7 @@ export class SecondScene extends BasicScene {
       blue: 0,
     });
 
-    const phoenix = new SpriteAnimateRenderable(this.phoenixTexture!, 2, 3);
+    const phoenix = new SpriteRenderable(this.phoenixTexture!, 2, 3, 0);
     phoenix.color.set({
       red: 200,
       green: 200,
