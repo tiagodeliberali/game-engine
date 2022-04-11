@@ -8,6 +8,7 @@ import {
 import { Texture } from "../resources";
 import { getGL } from "../GL";
 import { Box } from "../DataStructures";
+import { RenderableAnimator, AnimationType } from ".";
 import { AbstractRenderable } from "./AbstractRenderable";
 
 export class SpriteAnimateRenderable extends AbstractRenderable<TextureShader> {
@@ -15,11 +16,7 @@ export class SpriteAnimateRenderable extends AbstractRenderable<TextureShader> {
   texture: Texture;
   rows: number;
   columns: number;
-  isPlaying: boolean;
-  isLooping: boolean;
-  speed: number;
-  currentPosition: number;
-  currenfFrame: number;
+  animator: RenderableAnimator;
 
   constructor(texture: Texture, rows: number, columns: number) {
     const gl = getGL();
@@ -30,45 +27,41 @@ export class SpriteAnimateRenderable extends AbstractRenderable<TextureShader> {
 
     this.color = Color.Transparent();
 
+    this.textureVertexBuffer = VertexBuffer.DynamicUnitSquareLeftBottonOnZero(
+      this.gl
+    );
+
     // sprite sheet
     this.texture = texture;
     this.rows = rows;
     this.columns = columns;
 
     // animation state
-    this.isPlaying = false;
-    this.isLooping = false;
-    this.speed = 1;
-    this.currentPosition = 0;
-    this.currenfFrame = 0;
-
-    this.textureVertexBuffer = VertexBuffer.DynamicUnitSquareLeftBottonOnZero(
-      this.gl
-    );
-
-    this.setSpritePosition(
-      this.texture.getSpritePositionLinear(
-        this.rows,
-        this.columns,
-        this.currentPosition
-      )
+    const setSprite = (position: number) => {
+      this.setSpritePosition(
+        this.texture.getSpritePositionLinear(this.rows, this.columns, position)
+      );
+    };
+    this.animator = new RenderableAnimator(
+      AnimationType.backwardToBeginingAnimator({
+        initialPosition: 0,
+        lastPosition: this.rows * this.columns - 1,
+        speed: 5,
+      }),
+      setSprite
     );
   }
 
-  public runInLoop(numberOfFrames: number) {
-    this.isPlaying = true;
-    this.isLooping = true;
-    this.speed = numberOfFrames;
+  public runInLoop() {
+    this.animator.runInLoop();
   }
 
-  public runOnce(numberOfFrames: number) {
-    this.isPlaying = true;
-    this.isLooping = false;
-    this.speed = numberOfFrames;
+  public runOnce() {
+    this.animator.runOnce();
   }
 
   public stopLooping() {
-    this.isLooping = false;
+    this.animator.stopLooping();
   }
 
   private setSpritePosition(spritePosition: Box) {
@@ -91,43 +84,6 @@ export class SpriteAnimateRenderable extends AbstractRenderable<TextureShader> {
       camera.getCameraMatrix()
     );
     this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
-    this.animate();
-  }
-
-  animate() {
-    if (!this.isPlaying) {
-      return;
-    }
-
-    this.setCurrentPosition();
-    this.setSpritePosition(
-      this.texture.getSpritePositionLinear(
-        this.rows,
-        this.columns,
-        this.currentPosition
-      )
-    );
-  }
-
-  setCurrentPosition() {
-    if (!this.shouldUpdatePosition()) {
-      return;
-    }
-
-    this.currentPosition++;
-
-    if (this.currentPosition >= this.rows * this.columns) {
-      this.isPlaying = this.isLooping;
-      this.currentPosition = 0;
-    }
-  }
-
-  shouldUpdatePosition(): boolean {
-    this.currenfFrame++;
-    if (this.currenfFrame % this.speed === 0) {
-      this.currenfFrame = 0;
-      return true;
-    }
-    return false;
+    this.animator.animate();
   }
 }
