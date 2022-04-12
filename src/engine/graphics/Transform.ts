@@ -1,7 +1,7 @@
 import { mat4, vec3 } from "gl-matrix";
 import { Vec2d } from "../DataStructures";
 
-type TransformDef = {
+export type TransformDef = {
   position: Vec2d;
   rotationInDegree: number;
   scale: Vec2d;

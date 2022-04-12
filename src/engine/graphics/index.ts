@@ -2,7 +2,7 @@ import { Color } from "./Color";
 import { ShaderLib } from "./ShaderLib";
 import { Camera } from "./Camera";
 import { Viewport } from "./Viewport";
-import { Transform } from "./Transform";
+import { Transform, TransformDef } from "./Transform";
 import { VertexBuffer } from "./VertexBuffer";
 import { SimpleShader } from "./SimpleShader";
 import { TextureShader } from "./TextureShader";
@@ -19,3 +19,5 @@ export {
   TextureShader,
   SpriteShader,
 };
+
+export type { TransformDef };

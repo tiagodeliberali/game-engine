@@ -9,9 +9,10 @@ import {
   isKeyPressed,
   Keys,
   SpriteRenderable,
+  AnimationType,
 } from "../engine";
 import { Viewport } from "../engine";
-import { AnimationType } from "../engine/renderable";
+import { Character } from "./assets/Character";
 
 const backgroundMusicPath = "/sounds/background_music.mp3";
 const phoenixPath = "/textures/phoenix_fly.png";
@@ -35,14 +36,24 @@ export class SecondScene extends BasicScene {
       new Vec2d(800, 400),
       Color.LightGray()
     );
+
+    this.gameObjects.push(
+      new Character({
+        position: new Vec2d(0, 0),
+        scale: new Vec2d(0.2, 0.2),
+        rotationInDegree: 0,
+      })
+    );
   }
 
   public load() {
+    super.load();
     this.loadResource(backgroundMusicPath);
     this.loadResource(phoenixPath);
   }
 
   public init() {
+    super.init();
     this.phoenixTexture = this.getResource<Texture>(phoenixPath);
 
     this.renderables = this.buildEnderman();
@@ -52,6 +63,7 @@ export class SecondScene extends BasicScene {
   }
 
   public update() {
+    super.update();
     const phoenix = this.renderables[6] as SpriteRenderable;
     if (isKeyPressed(Keys.Left)) {
       phoenix.setAnimator({

@@ -1,28 +1,21 @@
 import {
-  TextureRenderable,
   Renderable,
   Camera,
   Color,
   Vec2d,
   BasicScene,
-  Keys,
-  isKeyPressed,
   Audio,
-  Texture,
   IRenderable,
   FontRenderable,
 } from "../engine";
+import { Character } from "./assets/Character";
 import { SecondScene } from "./SecondScene";
 
-const footCuePath = "/sounds/footstep.wav";
 const stageCuePath = "/sounds/change_level.wav";
-const pokemonTexturePath = "/textures/character.png";
 
 export class InitialScene extends BasicScene {
   timestamp: number | undefined;
-  footCue: Audio | undefined;
   stageCue: Audio | undefined;
-  characterTexture: Texture | undefined;
 
   constructor() {
     super(
@@ -33,58 +26,37 @@ export class InitialScene extends BasicScene {
         blue: 188,
       })
     );
+
+    this.gameObjects.push(
+      new Character({
+        position: new Vec2d(20, 60),
+        scale: new Vec2d(2, 2),
+        rotationInDegree: 0,
+      })
+    );
   }
 
   public load() {
-    this.loadResource(footCuePath);
+    super.load();
     this.loadResource(stageCuePath);
-    this.loadResource(pokemonTexturePath);
   }
 
   public init() {
+    super.init();
     this.timestamp = performance.now();
-
-    this.footCue = this.getResource<Audio>(footCuePath);
     this.stageCue = this.getResource<Audio>(stageCuePath);
-    this.characterTexture = this.getResource<Texture>(pokemonTexturePath);
 
     this.renderables = this.buildCorners();
   }
 
   public update() {
+    super.update();
     this.blueSquareBehavior();
-    this.characterBehavior();
-  }
 
-  private characterBehavior() {
-    const speed = 0.2;
-    const transform = this.renderables[1].getTransform();
-
-    let isWalking = false;
-    if (isKeyPressed(Keys.Left)) {
-      transform.addToHorizontalPosition(-speed);
-      isWalking = true;
-    }
-    if (isKeyPressed(Keys.Right)) {
-      transform.addToHorizontalPosition(speed);
-      isWalking = true;
-    }
-    if (isKeyPressed(Keys.Up)) {
-      transform.addToVerticalPosition(speed);
-      isWalking = true;
-    }
-    if (isKeyPressed(Keys.Down)) {
-      transform.addToVerticalPosition(-speed);
-      isWalking = true;
-    }
-
-    if (isWalking) {
-      this.footCue!.playLoop();
-    } else {
-      this.footCue!.stop();
-    }
-
-    if (transform.getHorizontalPosition() > 35) {
+    if (
+      this.gameObjects[0].renderable!.getTransform().getHorizontalPosition() >
+      35
+    ) {
       this.stageCue?.playOnce();
       this.goToScene(new SecondScene());
     }
@@ -118,13 +90,6 @@ export class InitialScene extends BasicScene {
       rotationInDegree: 25,
     });
 
-    const character = new TextureRenderable(this.characterTexture!);
-    character.trsMatrix.setTransform({
-      position: new Vec2d(20, 60),
-      scale: new Vec2d(2, 2),
-      rotationInDegree: 0,
-    });
-
     const leftUpCorner = new Renderable();
     leftUpCorner.color.set({ red: 0, green: 0, blue: 255 });
     leftUpCorner.trsMatrix.setPosition(new Vec2d(10, 65));
@@ -143,7 +108,6 @@ export class InitialScene extends BasicScene {
 
     return [
       blueSquare,
-      character,
       leftUpCorner,
       rightUpCorner,
       rightDownCorner,

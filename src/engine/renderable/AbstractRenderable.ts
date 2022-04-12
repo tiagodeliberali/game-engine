@@ -1,4 +1,10 @@
-import { Camera, Color, Transform, VertexBuffer } from "../graphics";
+import {
+  Camera,
+  Color,
+  Transform,
+  TransformDef,
+  VertexBuffer,
+} from "../graphics";
 import { IRenderable } from ".";
 import { AbstractShader } from "../graphics/AbstractShader";
 
@@ -27,6 +33,10 @@ export abstract class AbstractRenderable<T extends AbstractShader>
 
   public getTransform() {
     return this.trsMatrix;
+  }
+
+  public setTransform(transform: TransformDef) {
+    return this.trsMatrix.setTransform(transform);
   }
 
   public unload() {
