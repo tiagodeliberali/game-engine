@@ -14,7 +14,7 @@ import { GameEngine } from "./GameEngine";
 import { isKeyPressed, isKeyClicked, Keys } from "./input";
 import { Audio, Texture } from "./resources";
 import { EngineError } from "./EngineError";
-import { GameObject } from "./GameObject";
+import { GameObject } from "./behaviors";
 
 export {
   getGL,

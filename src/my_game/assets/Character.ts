@@ -30,13 +30,15 @@ export class Character extends GameObject {
     this.footCue = this.getResource<Audio>(footCuePath);
     this.characterTexture = this.getResource<Texture>(pokemonTexturePath);
 
-    this.renderable = new TextureRenderable(this.characterTexture!);
-    this.renderable.getTransform().setTransform(this.transform);
+    const renderable = new TextureRenderable(this.characterTexture!);
+    renderable.getTransform().setTransform(this.transform);
+
+    this.setRenderable(renderable);
   }
 
   update() {
     const speed = 0.08 * this.transform.scale.x;
-    const transform = this.renderable!.getTransform();
+    const transform = this.getRenderable<TextureRenderable>().getTransform();
 
     let isWalking = false;
     if (isKeyPressed(Keys.Left)) {

@@ -1,49 +1,41 @@
 import { clearCanvas } from "../GL";
 import { Camera, Color, Viewport } from "../graphics";
-import { IRenderable } from "../renderable";
 import { AbstractScene } from ".";
-import { GameObject } from "../GameObject";
+import { GameObjectSet } from "../behaviors";
 
 export class BasicScene extends AbstractScene {
   protected camera: Camera;
   protected viewport: Viewport;
   protected color: Color;
-  protected renderables: IRenderable[] = [];
-  protected gameObjects: GameObject[] = [];
+  protected gameObjects: GameObjectSet;
 
   constructor(camera: Camera, canvasColor: Color) {
     super();
     this.camera = camera;
     this.viewport = Viewport.Default(canvasColor);
     this.color = canvasColor;
+    this.gameObjects = new GameObjectSet();
   }
 
   public load() {
-    this.gameObjects.forEach((gameObject) => gameObject.load());
+    this.gameObjects.load();
   }
 
   public init() {
-    this.gameObjects.forEach((gameObject) => gameObject.init());
+    this.gameObjects.init();
   }
 
   public update() {
-    this.gameObjects.forEach((gameObject) => gameObject.update());
+    this.gameObjects.update();
   }
 
   public draw() {
     clearCanvas(this.color);
     this.viewport.draw();
-    this.renderables.forEach((renderable) => renderable.draw(this.camera!));
-    this.gameObjects.forEach((gameObject) => gameObject.draw(this.camera));
+    this.gameObjects.draw(this.camera);
   }
 
   unload() {
-    this.renderables.forEach((renderable) => {
-      renderable.unload();
-    });
-
-    this.gameObjects.forEach((gameObject) => {
-      gameObject.unload();
-    });
+    this.gameObjects.unload();
   }
 }

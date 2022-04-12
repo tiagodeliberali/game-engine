@@ -10,6 +10,7 @@ import {
   Keys,
   SpriteRenderable,
   AnimationType,
+  GameObject,
 } from "../engine";
 import { Viewport } from "../engine";
 import { Character } from "./assets/Character";
@@ -19,7 +20,6 @@ const phoenixPath = "/textures/phoenix_fly.png";
 
 export class SecondScene extends BasicScene {
   backgroundMusic: Audio | undefined;
-  phoenixTexture: Texture | undefined;
 
   constructor() {
     super(
@@ -54,9 +54,8 @@ export class SecondScene extends BasicScene {
 
   public init() {
     super.init();
-    this.phoenixTexture = this.getResource<Texture>(phoenixPath);
 
-    this.renderables = this.buildEnderman();
+    this.buildEnderman();
 
     this.backgroundMusic = this.getResource<Audio>(backgroundMusicPath);
     this.backgroundMusic.playLoop();
@@ -64,7 +63,10 @@ export class SecondScene extends BasicScene {
 
   public update() {
     super.update();
-    const phoenix = this.renderables[6] as SpriteRenderable;
+    const phoenix = this.gameObjects
+      .get<GameObject>(6)
+      .getRenderable<SpriteRenderable>();
+
     if (isKeyPressed(Keys.Left)) {
       phoenix.setAnimator({
         initialPosition: 0,
@@ -92,12 +94,15 @@ export class SecondScene extends BasicScene {
   }
 
   private buildEnderman() {
+    const character = this.gameObjects.set.pop();
+
     const cabeca = new Renderable();
     cabeca.color.set({
       red: 0,
       green: 0,
       blue: 0,
     });
+    this.gameObjects.push(GameObject.FromRenderable(cabeca));
 
     const olho1 = new Renderable();
     olho1.trsMatrix.setTransform({
@@ -110,6 +115,7 @@ export class SecondScene extends BasicScene {
       green: 88,
       blue: 237,
     });
+    this.gameObjects.push(GameObject.FromRenderable(olho1));
 
     const olho2 = new Renderable();
     olho2.trsMatrix.setTransform({
@@ -122,6 +128,7 @@ export class SecondScene extends BasicScene {
       green: 88,
       blue: 237,
     });
+    this.gameObjects.push(GameObject.FromRenderable(olho2));
 
     const boca = new Renderable();
     boca.trsMatrix.setTransform({
@@ -134,6 +141,7 @@ export class SecondScene extends BasicScene {
       green: 237,
       blue: 188,
     });
+    this.gameObjects.push(GameObject.FromRenderable(boca));
 
     const bocaLado1 = new Renderable();
     bocaLado1.trsMatrix.setTransform({
@@ -146,6 +154,7 @@ export class SecondScene extends BasicScene {
       green: 0,
       blue: 0,
     });
+    this.gameObjects.push(GameObject.FromRenderable(bocaLado1));
 
     const bocaLado2 = new Renderable();
     bocaLado2.trsMatrix.setTransform({
@@ -158,8 +167,14 @@ export class SecondScene extends BasicScene {
       green: 0,
       blue: 0,
     });
+    this.gameObjects.push(GameObject.FromRenderable(bocaLado2));
 
-    const phoenix = new SpriteRenderable(this.phoenixTexture!, 2, 3, 0);
+    const phoenix = new SpriteRenderable(
+      this.getResource<Texture>(phoenixPath),
+      2,
+      3,
+      0
+    );
     phoenix.color.set({
       red: 200,
       green: 200,
@@ -170,7 +185,8 @@ export class SecondScene extends BasicScene {
       scale: new Vec2d(0.3, 0.3),
       rotationInDegree: 0,
     });
+    this.gameObjects.push(GameObject.FromRenderable(phoenix));
 
-    return [cabeca, olho1, olho2, boca, bocaLado1, bocaLado2, phoenix];
+    this.gameObjects.push(character!);
   }
 }
