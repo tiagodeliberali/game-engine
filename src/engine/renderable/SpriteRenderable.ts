@@ -41,7 +41,6 @@ export class SpriteRenderable extends AbstractRenderable<TextureShader> {
     this.texturePath = texturePath;
     this.rows = rows;
     this.columns = columns;
-
     this.position = position;
   }
 
@@ -55,13 +54,17 @@ export class SpriteRenderable extends AbstractRenderable<TextureShader> {
     this.setSprite(this.position);
   }
 
-  public setAnimator(settings: AnimationSettings) {
+  update() {
+    //
+  }
+
+  setAnimator(settings: AnimationSettings) {
     this.animator = new RenderableAnimator(settings, (position) =>
       this.setSprite(position)
     );
   }
 
-  public runInLoop() {
+  runInLoop() {
     if (!this.animator) {
       throw new EngineError(SpriteRenderable.name, "Animator not initialized");
     }
@@ -69,7 +72,7 @@ export class SpriteRenderable extends AbstractRenderable<TextureShader> {
     this.animator.runInLoop();
   }
 
-  public runOnce() {
+  runOnce() {
     if (!this.animator) {
       throw new EngineError(SpriteRenderable.name, "Animator not initialized");
     }
@@ -77,7 +80,7 @@ export class SpriteRenderable extends AbstractRenderable<TextureShader> {
     this.animator.runOnce();
   }
 
-  public stopLooping() {
+  stopLooping() {
     if (!this.animator) {
       throw new EngineError(SpriteRenderable.name, "Animator not initialized");
     }
@@ -101,7 +104,7 @@ export class SpriteRenderable extends AbstractRenderable<TextureShader> {
     );
   }
 
-  public draw(camera: Camera) {
+  draw(camera: Camera) {
     this.texture!.activate();
     this.shader!.activate(
       this.vertexBuffer,

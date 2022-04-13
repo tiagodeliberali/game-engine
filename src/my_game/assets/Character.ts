@@ -5,38 +5,29 @@ import {
   Keys,
   TextureRenderable,
   TransformDef,
+  ResourceComponent,
+  Behavior,
 } from "../../engine";
 
 const footCuePath = "/sounds/footstep.wav";
 const pokemonTexturePath = "/textures/character.png";
 
-export class Character extends GameObject {
-  footCue: Audio | undefined;
-  transform: TransformDef;
+export function buildCharacter(transformDef: TransformDef): GameObject {
+  const character = new GameObject();
 
-  constructor(transform: TransformDef) {
-    super();
-    this.transform = transform;
+  // add the sprite!
+  const renderable = new TextureRenderable(pokemonTexturePath);
+  renderable.getTransform().setTransform(transformDef);
+  character.add(renderable);
 
-    const renderable = new TextureRenderable(pokemonTexturePath);
-    renderable.getTransform().setTransform(this.transform);
+  // add sound
+  const footCue = new ResourceComponent(footCuePath);
+  character.add(footCue);
 
-    this.setRenderable(renderable);
-  }
-
-  load() {
-    super.load();
-    this.loadResource(footCuePath);
-  }
-
-  init() {
-    super.init();
-    this.footCue = this.getResource<Audio>(footCuePath);
-  }
-
-  update() {
-    const speed = 0.08 * this.transform.scale.x;
-    const transform = this.getRenderable<TextureRenderable>().getTransform();
+  // add behavior
+  const updateAction = () => {
+    const transform = renderable.getTransform();
+    const speed = 0.08 * transform.getHorizontalScale();
 
     let isWalking = false;
     if (isKeyPressed(Keys.Left)) {
@@ -57,9 +48,12 @@ export class Character extends GameObject {
     }
 
     if (isWalking) {
-      this.footCue!.playLoop();
+      footCue.get<Audio>().playLoop();
     } else {
-      this.footCue!.stop();
+      footCue.get<Audio>().stop();
     }
-  }
+  };
+  character.add(new Behavior(updateAction));
+
+  return character;
 }

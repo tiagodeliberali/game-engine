@@ -45,6 +45,10 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
     this.texture = getResourceManager().get<Texture>(defaultFontPath);
   }
 
+  update() {
+    //
+  }
+
   public static getDefaultFont(initialText: string) {
     return new FontRenderable(8, 12, initialText);
   }

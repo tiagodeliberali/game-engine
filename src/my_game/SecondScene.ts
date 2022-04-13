@@ -9,11 +9,10 @@ import {
   Keys,
   SpriteRenderable,
   AnimationType,
-  GameObject,
   isKeyClicked,
 } from "../engine";
 import { Viewport } from "../engine";
-import { Character } from "./assets/Character";
+import { buildCharacter } from "./assets/Character";
 
 const backgroundMusicPath = "/sounds/background_music.mp3";
 const phoenixPath = "/textures/phoenix_fly.png";
@@ -40,8 +39,8 @@ export class SecondScene extends BasicScene {
 
     this.buildEnderman();
 
-    this.gameObjects.push(
-      new Character({
+    this.gameObjects.add(
+      buildCharacter({
         position: new Vec2d(0, 0),
         scale: new Vec2d(0.2, 0.2),
         rotationInDegree: 0,
@@ -97,7 +96,7 @@ export class SecondScene extends BasicScene {
       green: 0,
       blue: 0,
     });
-    this.gameObjects.push(GameObject.FromRenderable(cabeca));
+    this.pushComponent(cabeca);
 
     const olho1 = new Renderable();
     olho1.trsMatrix.setTransform({
@@ -110,7 +109,7 @@ export class SecondScene extends BasicScene {
       green: 88,
       blue: 237,
     });
-    this.gameObjects.push(GameObject.FromRenderable(olho1));
+    this.pushComponent(olho1);
 
     const olho2 = new Renderable();
     olho2.trsMatrix.setTransform({
@@ -123,7 +122,7 @@ export class SecondScene extends BasicScene {
       green: 88,
       blue: 237,
     });
-    this.gameObjects.push(GameObject.FromRenderable(olho2));
+    this.pushComponent(olho2);
 
     const boca = new Renderable();
     boca.trsMatrix.setTransform({
@@ -136,7 +135,7 @@ export class SecondScene extends BasicScene {
       green: 237,
       blue: 188,
     });
-    this.gameObjects.push(GameObject.FromRenderable(boca));
+    this.pushComponent(boca);
 
     const bocaLado1 = new Renderable();
     bocaLado1.trsMatrix.setTransform({
@@ -149,7 +148,7 @@ export class SecondScene extends BasicScene {
       green: 0,
       blue: 0,
     });
-    this.gameObjects.push(GameObject.FromRenderable(bocaLado1));
+    this.pushComponent(bocaLado1);
 
     const bocaLado2 = new Renderable();
     bocaLado2.trsMatrix.setTransform({
@@ -162,7 +161,7 @@ export class SecondScene extends BasicScene {
       green: 0,
       blue: 0,
     });
-    this.gameObjects.push(GameObject.FromRenderable(bocaLado2));
+    this.pushComponent(bocaLado2);
 
     this.phoenix = new SpriteRenderable(phoenixPath, 2, 3, 0);
     this.phoenix.color.set({
@@ -175,6 +174,6 @@ export class SecondScene extends BasicScene {
       scale: new Vec2d(0.3, 0.3),
       rotationInDegree: 0,
     });
-    this.gameObjects.push(GameObject.FromRenderable(this.phoenix));
+    this.pushComponent(this.phoenix);
   }
 }

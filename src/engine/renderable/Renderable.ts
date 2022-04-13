@@ -17,6 +17,10 @@ export class Renderable extends AbstractRenderable<SimpleShader> {
     this.shader = ShaderLib.getConstColorShader(this.gl);
   }
 
+  update() {
+    //
+  }
+
   public draw(camera: Camera) {
     this.shader!.activate(
       this.vertexBuffer,

@@ -24,6 +24,7 @@ export abstract class AbstractRenderable<T extends AbstractShader>
     this.vertexBuffer = vertexBuffer;
   }
 
+  abstract update(): void;
   abstract load(): void;
   abstract init(): void;
 

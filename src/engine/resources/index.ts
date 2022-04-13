@@ -6,6 +6,7 @@ import { TextProcessor } from "./TextProcessor";
 import { TextureProcessor } from "./TextureProcessor";
 import { Texture } from "./Texture";
 import { MapEntry } from "./MapEntry";
+import { ResourceComponent } from "./ResourceComponent";
 
 let resourceManager: ResourceManager | undefined;
 
@@ -20,4 +21,12 @@ function getResourceManager() {
   return resourceManager;
 }
 
-export { getResourceManager, Audio, Texture, MapEntry, ResourceProcessor };
+export {
+  getResourceManager,
+  Audio,
+  Texture,
+  MapEntry,
+  ResourceProcessor,
+  ResourceManager,
+  ResourceComponent,
+};

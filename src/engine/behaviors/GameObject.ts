@@ -1,10 +1,9 @@
 import { Camera } from "..";
-import { IRenderable } from "../renderable";
 import { getResourceManager } from "../resources";
-import { IGameObject } from ".";
+import { IComponent } from ".";
 
-export class GameObject implements IGameObject {
-  private renderable?: IRenderable;
+export class GameObject implements IComponent {
+  private components: IComponent[] = [];
 
   loadResource(path: string, extension?: string) {
     getResourceManager().loadScene(path, extension);
@@ -15,36 +14,37 @@ export class GameObject implements IGameObject {
   }
 
   load() {
-    this.renderable && this.renderable.load();
+    this.components.forEach((item) => item.load());
   }
 
   init() {
-    this.renderable && this.renderable.init();
+    this.components.forEach((item) => item.init());
   }
 
   update() {
-    // virtual method
+    this.components.forEach((item) => item.update());
   }
 
   draw(camera: Camera) {
-    this.renderable && this.renderable.draw(camera);
+    this.components.forEach((item) => item.draw(camera));
   }
 
   unload() {
-    this.renderable && this.renderable.unload();
+    this.components.forEach((item) => item.unload());
   }
 
-  getRenderable<T extends IRenderable>(): T {
-    return this.renderable as T;
+  add(component: IComponent) {
+    this.components.push(component);
   }
 
-  setRenderable(renderable: IRenderable) {
-    this.renderable = renderable;
+  getFirst<T extends IComponent>(): T | undefined {
+    const result = this.components.filter((x) => (x as T) !== undefined);
+    return result.length > 0 ? (result[0] as T) : undefined;
   }
 
-  static FromRenderable(renderable: IRenderable): IGameObject {
+  static FromComponent(renderable: IComponent): IComponent {
     const gameObject = new GameObject();
-    gameObject.renderable = renderable;
+    gameObject.add(renderable);
 
     return gameObject;
   }

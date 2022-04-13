@@ -12,9 +12,10 @@ import {
 import { BasicScene } from "./scene";
 import { GameEngine } from "./GameEngine";
 import { isKeyPressed, isKeyClicked, Keys } from "./input";
-import { Audio, Texture } from "./resources";
+import { Audio, Texture, ResourceComponent } from "./resources";
 import { EngineError } from "./EngineError";
-import { GameObject } from "./behaviors";
+import { GameObject, Behavior } from "./behaviors";
+import { IComponent } from "./behaviors/IComponent";
 
 export {
   getGL,
@@ -38,6 +39,8 @@ export {
   SpriteRenderable,
   AnimationType,
   GameObject,
+  ResourceComponent,
+  Behavior,
 };
 
-export type { IRenderable, TransformDef };
+export type { IRenderable, TransformDef, IComponent };

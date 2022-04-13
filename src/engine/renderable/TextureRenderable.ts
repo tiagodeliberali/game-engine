@@ -34,6 +34,10 @@ export class TextureRenderable extends AbstractRenderable<TextureShader> {
     this.texture = getResourceManager().get<Texture>(this.texturePath);
   }
 
+  update() {
+    //
+  }
+
   public draw(camera: Camera) {
     this.texture!.activate();
     this.shader!.activate(

@@ -1,6 +1,6 @@
-import { Camera } from "../graphics";
+import { Camera } from "..";
 
-export interface IGameObject {
+export interface IComponent {
   load: () => void;
   init: () => void;
   update: () => void;

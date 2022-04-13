@@ -1,6 +1,6 @@
-import { IGameObject } from "./IGameObject";
 import { GameObject } from "./GameObject";
-import { GameObjectSet } from "./GameObjectSet";
+import { IComponent } from "./IComponent";
+import { Behavior } from "./Behavior";
 
-export { GameObject, GameObjectSet };
-export type { IGameObject };
+export { GameObject, Behavior };
+export type { IComponent };
