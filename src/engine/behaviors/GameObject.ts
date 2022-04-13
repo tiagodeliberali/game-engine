@@ -15,11 +15,11 @@ export class GameObject implements IGameObject {
   }
 
   load() {
-    // virtual method
+    this.renderable && this.renderable.load();
   }
 
   init() {
-    // virtual method
+    this.renderable && this.renderable.init();
   }
 
   update() {
@@ -31,7 +31,7 @@ export class GameObject implements IGameObject {
   }
 
   unload() {
-    // virtual method
+    this.renderable && this.renderable.unload();
   }
 
   getRenderable<T extends IRenderable>(): T {

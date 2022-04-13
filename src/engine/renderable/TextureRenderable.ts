@@ -5,29 +5,38 @@ import {
   Camera,
   Color,
 } from "../graphics";
-import { Texture } from "../resources";
+import { getResourceManager, Texture } from "../resources";
 import { getGL } from "../GL";
 import { AbstractRenderable } from "./AbstractRenderable";
 
 export class TextureRenderable extends AbstractRenderable<TextureShader> {
   textureVertexBuffer: VertexBuffer;
-  texture: Texture;
+  texture: Texture | undefined;
+  texturePath: string;
 
-  constructor(texture: Texture) {
+  constructor(texturePath: string) {
     const gl = getGL();
     const vertexBuffer = VertexBuffer.UnitSquareCenteredOnZero(gl);
-    const shader = ShaderLib.getTextureShader(gl);
 
-    super(gl, shader, vertexBuffer);
+    super(gl, vertexBuffer);
 
     this.color = Color.Transparent();
     this.textureVertexBuffer = VertexBuffer.UnitSquareLeftBottonOnZero(this.gl);
-    this.texture = texture;
+    this.texturePath = texturePath;
+  }
+
+  load() {
+    getResourceManager().loadScene(this.texturePath);
+  }
+
+  init() {
+    this.shader = ShaderLib.getTextureShader(this.gl);
+    this.texture = getResourceManager().get<Texture>(this.texturePath);
   }
 
   public draw(camera: Camera) {
-    this.texture.activate();
-    this.shader.activate(
+    this.texture!.activate();
+    this.shader!.activate(
       this.vertexBuffer,
       this.textureVertexBuffer,
       this.color,

@@ -5,12 +5,12 @@ import {
   Vec2d,
   BasicScene,
   Audio,
-  Texture,
   isKeyPressed,
   Keys,
   SpriteRenderable,
   AnimationType,
   GameObject,
+  isKeyClicked,
 } from "../engine";
 import { Viewport } from "../engine";
 import { Character } from "./assets/Character";
@@ -20,6 +20,7 @@ const phoenixPath = "/textures/phoenix_fly.png";
 
 export class SecondScene extends BasicScene {
   backgroundMusic: Audio | undefined;
+  phoenix: SpriteRenderable | undefined;
 
   constructor() {
     super(
@@ -37,6 +38,8 @@ export class SecondScene extends BasicScene {
       Color.LightGray()
     );
 
+    this.buildEnderman();
+
     this.gameObjects.push(
       new Character({
         position: new Vec2d(0, 0),
@@ -49,13 +52,10 @@ export class SecondScene extends BasicScene {
   public load() {
     super.load();
     this.loadResource(backgroundMusicPath);
-    this.loadResource(phoenixPath);
   }
 
   public init() {
     super.init();
-
-    this.buildEnderman();
 
     this.backgroundMusic = this.getResource<Audio>(backgroundMusicPath);
     this.backgroundMusic.playLoop();
@@ -63,39 +63,34 @@ export class SecondScene extends BasicScene {
 
   public update() {
     super.update();
-    const phoenix = this.gameObjects
-      .get<GameObject>(6)
-      .getRenderable<SpriteRenderable>();
 
-    if (isKeyPressed(Keys.Left)) {
-      phoenix.setAnimator({
+    if (isKeyClicked(Keys.Left)) {
+      this.phoenix!.setAnimator({
         initialPosition: 0,
         lastPosition: 5,
         speed: 5,
         type: AnimationType.BackwardToBegining,
       });
-      phoenix.runInLoop();
+      this.phoenix!.runInLoop();
     }
-    if (isKeyPressed(Keys.Right)) {
-      phoenix.setAnimator({
+    if (isKeyClicked(Keys.Right)) {
+      this.phoenix!.setAnimator({
         initialPosition: 0,
         lastPosition: 5,
         speed: 5,
         type: AnimationType.ForwardToBegining,
       });
-      phoenix.runInLoop();
+      this.phoenix!.runInLoop();
     }
     if (isKeyPressed(Keys.Up)) {
-      phoenix.runOnce();
+      this.phoenix!.runOnce();
     }
     if (isKeyPressed(Keys.Down)) {
-      phoenix.stopLooping();
+      this.phoenix!.stopLooping();
     }
   }
 
   private buildEnderman() {
-    const character = this.gameObjects.set.pop();
-
     const cabeca = new Renderable();
     cabeca.color.set({
       red: 0,
@@ -169,24 +164,17 @@ export class SecondScene extends BasicScene {
     });
     this.gameObjects.push(GameObject.FromRenderable(bocaLado2));
 
-    const phoenix = new SpriteRenderable(
-      this.getResource<Texture>(phoenixPath),
-      2,
-      3,
-      0
-    );
-    phoenix.color.set({
+    this.phoenix = new SpriteRenderable(phoenixPath, 2, 3, 0);
+    this.phoenix.color.set({
       red: 200,
       green: 200,
       blue: 200,
     });
-    phoenix.trsMatrix.setTransform({
+    this.phoenix.trsMatrix.setTransform({
       position: new Vec2d(0, 0),
       scale: new Vec2d(0.3, 0.3),
       rotationInDegree: 0,
     });
-    this.gameObjects.push(GameObject.FromRenderable(phoenix));
-
-    this.gameObjects.push(character!);
+    this.gameObjects.push(GameObject.FromRenderable(this.phoenix));
   }
 }

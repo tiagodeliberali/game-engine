@@ -1,7 +1,6 @@
 import {
   GameObject,
   Audio,
-  Texture,
   isKeyPressed,
   Keys,
   TextureRenderable,
@@ -13,27 +12,26 @@ const pokemonTexturePath = "/textures/character.png";
 
 export class Character extends GameObject {
   footCue: Audio | undefined;
-  characterTexture: Texture | undefined;
   transform: TransformDef;
 
   constructor(transform: TransformDef) {
     super();
     this.transform = transform;
-  }
 
-  load() {
-    this.loadResource(footCuePath);
-    this.loadResource(pokemonTexturePath);
-  }
-
-  init() {
-    this.footCue = this.getResource<Audio>(footCuePath);
-    this.characterTexture = this.getResource<Texture>(pokemonTexturePath);
-
-    const renderable = new TextureRenderable(this.characterTexture!);
+    const renderable = new TextureRenderable(pokemonTexturePath);
     renderable.getTransform().setTransform(this.transform);
 
     this.setRenderable(renderable);
+  }
+
+  load() {
+    super.load();
+    this.loadResource(footCuePath);
+  }
+
+  init() {
+    super.init();
+    this.footCue = this.getResource<Audio>(footCuePath);
   }
 
   update() {

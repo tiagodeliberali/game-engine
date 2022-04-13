@@ -6,13 +6,19 @@ export class Renderable extends AbstractRenderable<SimpleShader> {
   constructor() {
     const gl = getGL();
     const vertexBuffer = VertexBuffer.UnitSquareCenteredOnZero(gl);
-    const shader = ShaderLib.getConstColorShader(gl);
+    super(gl, vertexBuffer);
+  }
 
-    super(gl, shader, vertexBuffer);
+  load() {
+    //
+  }
+
+  init() {
+    this.shader = ShaderLib.getConstColorShader(this.gl);
   }
 
   public draw(camera: Camera) {
-    this.shader.activate(
+    this.shader!.activate(
       this.vertexBuffer,
       this.color,
       this.trsMatrix.getTrsMatrix(),

@@ -12,22 +12,20 @@ export abstract class AbstractRenderable<T extends AbstractShader>
   implements IRenderable
 {
   gl: WebGL2RenderingContext;
-  shader: T;
+  shader: T | undefined;
   vertexBuffer: VertexBuffer;
   color: Color;
   trsMatrix: Transform;
 
-  constructor(
-    gl: WebGL2RenderingContext,
-    shader: T,
-    vertexBuffer: VertexBuffer
-  ) {
+  constructor(gl: WebGL2RenderingContext, vertexBuffer: VertexBuffer) {
     this.gl = gl;
     this.color = Color.Black();
     this.trsMatrix = new Transform();
-    this.shader = shader;
     this.vertexBuffer = vertexBuffer;
   }
+
+  abstract load(): void;
+  abstract init(): void;
 
   abstract draw(_camera: Camera): void;
 

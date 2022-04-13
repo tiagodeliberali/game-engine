@@ -15,25 +15,18 @@ export const defaultFontPath = "/textures/default_font.png";
 
 export class FontRenderable extends AbstractRenderable<TextureShader> {
   textureVertexBuffer: VertexBuffer;
-  texture: Texture;
+  texture: Texture | undefined;
   rows: number;
   columns: number;
   text: string;
 
-  private constructor(
-    texture: Texture,
-    rows: number,
-    columns: number,
-    text: string
-  ) {
+  private constructor(rows: number, columns: number, text: string) {
     const gl = getGL();
-    const shader = ShaderLib.getSpriteShader(gl);
     const vertexBuffer = VertexBuffer.UnitSquareCenteredOnZero(gl);
 
-    super(gl, shader, vertexBuffer);
+    super(gl, vertexBuffer);
 
     this.color = Color.Transparent();
-    this.texture = texture;
     this.rows = rows;
     this.columns = columns;
     this.text = text;
@@ -43,15 +36,17 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
     );
   }
 
-  public static load() {
-    const resourceManager = getResourceManager();
-    resourceManager.loadGlobal(defaultFontPath);
+  load() {
+    getResourceManager().loadGlobal(defaultFontPath);
+  }
+
+  init() {
+    this.shader = ShaderLib.getSpriteShader(this.gl);
+    this.texture = getResourceManager().get<Texture>(defaultFontPath);
   }
 
   public static getDefaultFont(initialText: string) {
-    const resourceManager = getResourceManager();
-    const texture = resourceManager.get<Texture>(defaultFontPath);
-    return new FontRenderable(texture, 8, 12, initialText);
+    return new FontRenderable(8, 12, initialText);
   }
 
   public setText(text: string) {
@@ -60,7 +55,7 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
 
   public setSpritePosition(spritePosition: Box) {
     if (!spritePosition.isNormalized()) {
-      spritePosition.normalize(this.texture.width, this.texture.height);
+      spritePosition.normalize(this.texture!.width, this.texture!.height);
     }
 
     this.textureVertexBuffer.setTextureCoordinate(
@@ -69,7 +64,7 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
   }
 
   public draw(camera: Camera) {
-    this.texture.activate();
+    this.texture!.activate();
     const initialTrsPosition = this.trsMatrix.getHorizontalPosition();
 
     this.text.split("").forEach((character) => {
@@ -79,7 +74,7 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
         this.texture!.getSpritePositionLinear(this.rows, this.columns, position)
       );
 
-      this.shader.activate(
+      this.shader!.activate(
         this.vertexBuffer,
         this.textureVertexBuffer,
         this.color,

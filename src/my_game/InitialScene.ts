@@ -17,6 +17,8 @@ const stageCuePath = "/sounds/change_level.wav";
 export class InitialScene extends BasicScene {
   timestamp: number | undefined;
   stageCue: Audio | undefined;
+  blueSquare: Renderable | undefined;
+  character: Character;
 
   constructor() {
     super(
@@ -28,13 +30,14 @@ export class InitialScene extends BasicScene {
       })
     );
 
-    this.gameObjects.push(
-      new Character({
-        position: new Vec2d(20, 60),
-        scale: new Vec2d(2, 2),
-        rotationInDegree: 0,
-      })
-    );
+    this.buildCorners();
+
+    this.character = new Character({
+      position: new Vec2d(20, 60),
+      scale: new Vec2d(2, 2),
+      rotationInDegree: 0,
+    });
+    this.gameObjects.push(this.character);
   }
 
   public load() {
@@ -46,17 +49,6 @@ export class InitialScene extends BasicScene {
     super.init();
     this.timestamp = performance.now();
     this.stageCue = this.getResource<Audio>(stageCuePath);
-
-    this.buildCorners();
-
-    const text = FontRenderable.getDefaultFont("Ola Alice!");
-    text.color.set({ red: 0, green: 200, blue: 0 });
-    text.trsMatrix.setTransform({
-      position: new Vec2d(10, 62),
-      scale: new Vec2d(0.5, 1),
-      rotationInDegree: 0,
-    });
-    this.gameObjects.push(GameObject.FromRenderable(text));
   }
 
   public update() {
@@ -64,8 +56,7 @@ export class InitialScene extends BasicScene {
     this.blueSquareBehavior();
 
     if (
-      this.gameObjects
-        .get<GameObject>(5)
+      this.character
         .getRenderable<SpriteRenderable>()
         .getTransform()
         .getHorizontalPosition() > 35
@@ -76,10 +67,7 @@ export class InitialScene extends BasicScene {
   }
 
   private blueSquareBehavior() {
-    const transform = this.gameObjects
-      .get<GameObject>(0)
-      .getRenderable<Renderable>()
-      .getTransform();
+    const transform = this.blueSquare!.getTransform();
 
     transform.addToRotationInDegree(10);
     const scale = Math.min(
@@ -91,16 +79,14 @@ export class InitialScene extends BasicScene {
   }
 
   private buildCorners() {
-    const character = this.gameObjects.set.pop();
-
-    const blueSquare = new Renderable();
-    blueSquare.color.set({ red: 100, green: 0, blue: 255 });
-    blueSquare.trsMatrix.setTransform({
+    this.blueSquare = new Renderable();
+    this.blueSquare.color.set({ red: 100, green: 0, blue: 255 });
+    this.blueSquare.trsMatrix.setTransform({
       position: new Vec2d(20, 60),
       scale: new Vec2d(5, 5),
       rotationInDegree: 25,
     });
-    this.gameObjects.push(GameObject.FromRenderable(blueSquare));
+    this.gameObjects.push(GameObject.FromRenderable(this.blueSquare));
 
     const leftUpCorner = new Renderable();
     leftUpCorner.color.set({ red: 0, green: 0, blue: 255 });
@@ -122,6 +108,13 @@ export class InitialScene extends BasicScene {
     leftDownCorner.trsMatrix.setPosition(new Vec2d(10, 55));
     this.gameObjects.push(GameObject.FromRenderable(leftDownCorner));
 
-    this.gameObjects.push(character!);
+    const text = FontRenderable.getDefaultFont("Ola Alice!");
+    text.color.set({ red: 0, green: 200, blue: 0 });
+    text.trsMatrix.setTransform({
+      position: new Vec2d(10, 62),
+      scale: new Vec2d(0.5, 1),
+      rotationInDegree: 0,
+    });
+    this.gameObjects.push(GameObject.FromRenderable(text));
   }
 }

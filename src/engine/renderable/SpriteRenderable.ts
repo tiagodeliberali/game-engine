@@ -5,7 +5,7 @@ import {
   VertexBuffer,
   Color,
 } from "../graphics";
-import { Texture } from "../resources";
+import { getResourceManager, Texture } from "../resources";
 import { getGL } from "../GL";
 import { Box } from "../DataStructures";
 import { RenderableAnimator } from ".";
@@ -15,33 +15,44 @@ import { AnimationSettings } from "./animator";
 
 export class SpriteRenderable extends AbstractRenderable<TextureShader> {
   textureVertexBuffer: VertexBuffer;
-  texture: Texture;
+  texture: Texture | undefined;
+  texturePath: string;
   rows: number;
   columns: number;
   animator: RenderableAnimator | undefined;
+  position: number;
 
   constructor(
-    texture: Texture,
+    texturePath: string,
     rows: number,
     columns: number,
     position: number
   ) {
     const gl = getGL();
-    const shader = ShaderLib.getSpriteShader(gl);
     const vertexBuffer = VertexBuffer.UnitSquareCenteredOnZero(gl);
 
-    super(gl, shader, vertexBuffer);
+    super(gl, vertexBuffer);
     this.color = Color.Transparent();
 
     // sprite sheet
     this.textureVertexBuffer = VertexBuffer.DynamicUnitSquareLeftBottonOnZero(
       this.gl
     );
-    this.texture = texture;
+    this.texturePath = texturePath;
     this.rows = rows;
     this.columns = columns;
 
-    this.setSprite(position);
+    this.position = position;
+  }
+
+  load() {
+    getResourceManager().loadScene(this.texturePath);
+  }
+
+  init() {
+    this.shader = ShaderLib.getSpriteShader(this.gl);
+    this.texture = getResourceManager().get<Texture>(this.texturePath);
+    this.setSprite(this.position);
   }
 
   public setAnimator(settings: AnimationSettings) {
@@ -76,13 +87,13 @@ export class SpriteRenderable extends AbstractRenderable<TextureShader> {
 
   setSprite(position: number) {
     this.setSpritePosition(
-      this.texture.getSpritePositionLinear(this.rows, this.columns, position)
+      this.texture!.getSpritePositionLinear(this.rows, this.columns, position)
     );
   }
 
   private setSpritePosition(spritePosition: Box) {
     if (!spritePosition.isNormalized()) {
-      spritePosition.normalize(this.texture.width, this.texture.height);
+      spritePosition.normalize(this.texture!.width, this.texture!.height);
     }
 
     this.textureVertexBuffer.setTextureCoordinate(
@@ -91,8 +102,8 @@ export class SpriteRenderable extends AbstractRenderable<TextureShader> {
   }
 
   public draw(camera: Camera) {
-    this.texture.activate();
-    this.shader.activate(
+    this.texture!.activate();
+    this.shader!.activate(
       this.vertexBuffer,
       this.textureVertexBuffer,
       this.color,
