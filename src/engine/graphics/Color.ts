@@ -44,6 +44,14 @@ export class Color {
     });
   }
 
+  public static White() {
+    return Color.FromColorDef({
+      red: 255,
+      green: 255,
+      blue: 255,
+    });
+  }
+
   public set(colorDef: ColorDef) {
     this.red = colorDef.red;
     this.green = colorDef.green;

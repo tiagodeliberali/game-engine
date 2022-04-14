@@ -1,126 +1,97 @@
 import {
   Renderable,
-  Camera,
-  Color,
   Vec2d,
-  BasicScene,
   Audio,
-  FontRenderable,
-  SpriteRenderable,
-  GameObject,
+  SimplifiedScene,
+  Behavior,
+  ResourceComponent,
+  TextureRenderable,
 } from "../engine";
+import { Transform } from "../engine/graphics";
 import { buildCharacter } from "./assets/Character";
 import { SecondScene } from "./SecondScene";
 
 const stageCuePath = "/sounds/change_level.wav";
 
-export class InitialScene extends BasicScene {
-  timestamp: number | undefined;
-  stageCue: Audio | undefined;
-  blueSquare: Renderable | undefined;
-  character: GameObject;
+const timestamp = performance.now();
 
-  constructor() {
-    super(
-      new Camera(new Vec2d(20, 60), new Vec2d(30, 15)),
-      Color.FromColorDef({
-        red: 74,
-        green: 237,
-        blue: 188,
-      })
-    );
+const blueSquareBehavior = (transform: Transform) => {
+  transform.addToRotationInDegree(10);
+  const scale = Math.min(15 + (performance.now() - timestamp!) / 300, 50);
 
-    this.buildCorners();
+  transform.setScale(new Vec2d(scale, scale));
+};
 
-    this.character = buildCharacter({
-      position: new Vec2d(20, 60),
-      scale: new Vec2d(2, 2),
-      rotationInDegree: 0,
-    });
-    this.gameObjects.add(this.character);
-  }
+export function buildInitialScene() {
+  const scene = new SimplifiedScene(100, 50);
 
-  public load() {
-    super.load();
+  const blueSquare = new Renderable();
+  blueSquare.color.set({ red: 100, green: 0, blue: 255 });
+  blueSquare.setTransform({
+    position: new Vec2d(50, 25),
+    scale: new Vec2d(15, 15),
+    rotationInDegree: 25,
+  });
+  scene.pushComponent(blueSquare);
+  scene.pushComponent(
+    new Behavior(() => {
+      blueSquareBehavior(blueSquare.getTransform());
+    })
+  );
 
-    this.loadResource(stageCuePath);
-  }
+  const stageCue = new ResourceComponent(stageCuePath);
+  scene.pushComponent(stageCue);
 
-  public init() {
-    super.init();
+  const character = buildCharacter({
+    position: new Vec2d(50, 25),
+    scale: new Vec2d(6, 6),
+    rotationInDegree: 0,
+  });
+  scene.pushComponent(character);
+  scene.pushComponent(
+    new Behavior(() => {
+      if (
+        character
+          .getFirst<TextureRenderable>()!
+          .getTransform()
+          .getHorizontalPosition() > 100
+      ) {
+        stageCue.get<Audio>().playOnce();
+        scene.goToScene(new SecondScene());
+      }
+    })
+  );
 
-    this.timestamp = performance.now();
-    this.stageCue = this.getResource<Audio>(stageCuePath);
-  }
+  return scene;
 
-  public update() {
-    super.update();
+  // private buildCorners() {
+  //   const leftUpCorner = new Renderable();
+  //   leftUpCorner.color.set({ red: 0, green: 0, blue: 255 });
+  //   leftUpCorner.trsMatrix.setPosition(new Vec2d(10, 65));
+  //   this.pushComponent(leftUpCorner);
 
-    this.blueSquareBehavior();
-    this.characterBehavior();
-  }
+  //   const rightUpCorner = new Renderable();
+  //   rightUpCorner.color.set({ red: 100, green: 100, blue: 255 });
+  //   rightUpCorner.trsMatrix.setPosition(new Vec2d(30, 65));
+  //   this.pushComponent(rightUpCorner);
 
-  private characterBehavior() {
-    if (
-      this.character
-        .getFirst<SpriteRenderable>()!
-        .getTransform()
-        .getHorizontalPosition() > 35
-    ) {
-      this.stageCue?.playOnce();
-      this.goToScene(new SecondScene());
-    }
-  }
+  //   const rightDownCorner = new Renderable();
+  //   rightDownCorner.color.set({ red: 100, green: 155, blue: 100 });
+  //   rightDownCorner.trsMatrix.setPosition(new Vec2d(30, 55));
+  //   this.pushComponent(rightDownCorner);
 
-  private blueSquareBehavior() {
-    const transform = this.blueSquare!.getTransform();
+  //   const leftDownCorner = new Renderable();
+  //   leftDownCorner.color.set({ red: 255, green: 100, blue: 100 });
+  //   leftDownCorner.trsMatrix.setPosition(new Vec2d(10, 55));
+  //   this.pushComponent(leftDownCorner);
 
-    transform.addToRotationInDegree(10);
-    const scale = Math.min(
-      5 + (performance.now() - this.timestamp!) / 3000,
-      15
-    );
-
-    transform.setScale(new Vec2d(scale, scale));
-  }
-
-  private buildCorners() {
-    this.blueSquare = new Renderable();
-    this.blueSquare.color.set({ red: 100, green: 0, blue: 255 });
-    this.blueSquare.trsMatrix.setTransform({
-      position: new Vec2d(20, 60),
-      scale: new Vec2d(5, 5),
-      rotationInDegree: 25,
-    });
-    this.pushComponent(this.blueSquare);
-
-    const leftUpCorner = new Renderable();
-    leftUpCorner.color.set({ red: 0, green: 0, blue: 255 });
-    leftUpCorner.trsMatrix.setPosition(new Vec2d(10, 65));
-    this.pushComponent(leftUpCorner);
-
-    const rightUpCorner = new Renderable();
-    rightUpCorner.color.set({ red: 100, green: 100, blue: 255 });
-    rightUpCorner.trsMatrix.setPosition(new Vec2d(30, 65));
-    this.pushComponent(rightUpCorner);
-
-    const rightDownCorner = new Renderable();
-    rightDownCorner.color.set({ red: 100, green: 155, blue: 100 });
-    rightDownCorner.trsMatrix.setPosition(new Vec2d(30, 55));
-    this.pushComponent(rightDownCorner);
-
-    const leftDownCorner = new Renderable();
-    leftDownCorner.color.set({ red: 255, green: 100, blue: 100 });
-    leftDownCorner.trsMatrix.setPosition(new Vec2d(10, 55));
-    this.pushComponent(leftDownCorner);
-
-    const text = FontRenderable.getDefaultFont("Ola Alice!");
-    text.color.set({ red: 0, green: 200, blue: 0 });
-    text.trsMatrix.setTransform({
-      position: new Vec2d(10, 62),
-      scale: new Vec2d(0.5, 1),
-      rotationInDegree: 0,
-    });
-    this.pushComponent(text);
-  }
+  //   const text = FontRenderable.getDefaultFont("Ola Alice!");
+  //   text.color.set({ red: 0, green: 200, blue: 0 });
+  //   text.trsMatrix.setTransform({
+  //     position: new Vec2d(10, 62),
+  //     scale: new Vec2d(0.5, 1),
+  //     rotationInDegree: 0,
+  //   });
+  //   this.pushComponent(text);
+  // }
 }

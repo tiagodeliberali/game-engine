@@ -19,7 +19,7 @@ export abstract class AbstractRenderable<T extends AbstractShader>
 
   constructor(gl: WebGL2RenderingContext, vertexBuffer: VertexBuffer) {
     this.gl = gl;
-    this.color = Color.Black();
+    this.color = Color.White();
     this.trsMatrix = new Transform();
     this.vertexBuffer = vertexBuffer;
   }

@@ -1,7 +1,5 @@
 import { GameEngine } from "./engine";
-import { InitialScene } from "./my_game";
+import { buildInitialScene } from "./my_game";
 
-const initialScene = new InitialScene();
-
-const engine = new GameEngine(initialScene);
+const engine = new GameEngine(buildInitialScene());
 engine.startGame();

@@ -1,20 +1,23 @@
 import { clearCanvas } from "../GL";
 import { Camera, Color, Viewport } from "../graphics";
 import { AbstractScene } from ".";
-import { GameObject } from "..";
+import { GameObject, Vec2d } from "..";
 import { IComponent } from "../behaviors";
 
-export class BasicScene extends AbstractScene {
-  protected camera: Camera;
-  protected viewport: Viewport;
-  protected color: Color;
-  protected gameObjects: GameObject;
+export class SimplifiedScene extends AbstractScene {
+  private camera: Camera;
+  private viewport: Viewport;
+  private gameObjects: GameObject;
+  private color: Color;
 
-  constructor(camera: Camera, canvasColor: Color) {
+  constructor(width: number, height: number) {
     super();
-    this.camera = camera;
-    this.viewport = Viewport.Default(canvasColor);
-    this.color = canvasColor;
+    this.camera = new Camera(
+      new Vec2d(width / 2, height / 2),
+      new Vec2d(width, height)
+    );
+    this.color = Color.Black();
+    this.viewport = Viewport.Default(this.color);
     this.gameObjects = new GameObject();
   }
 

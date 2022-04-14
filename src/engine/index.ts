@@ -9,12 +9,12 @@ import {
   IRenderable,
   AnimationType,
 } from "./renderable";
-import { BasicScene } from "./scene";
+import { BasicScene, SimplifiedScene } from "./scene";
 import { GameEngine } from "./GameEngine";
 import { isKeyPressed, isKeyClicked, Keys } from "./input";
 import { Audio, Texture, ResourceComponent } from "./resources";
 import { EngineError } from "./EngineError";
-import { GameObject, Behavior } from "./behaviors";
+import { GameObject, Behavior, walk2d } from "./behaviors";
 import { IComponent } from "./behaviors/IComponent";
 
 export {
@@ -41,6 +41,8 @@ export {
   GameObject,
   ResourceComponent,
   Behavior,
+  walk2d,
+  SimplifiedScene,
 };
 
 export type { IRenderable, TransformDef, IComponent };
