@@ -17,8 +17,8 @@ const timestamp = performance.now();
 
 const blueSquareBehavior = (transform: Transform) => {
   transform.addToRotationInDegree(10);
-  const scale = Math.min(15 + (performance.now() - timestamp!) / 300, 50);
 
+  const scale = Math.min(15 + (performance.now() - timestamp!) / 300, 50);
   transform.setScale(new Vec2d(scale, scale));
 };
 
