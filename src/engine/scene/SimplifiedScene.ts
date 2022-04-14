@@ -21,7 +21,7 @@ export class SimplifiedScene extends AbstractScene {
     this.gameObjects = new GameObject();
   }
 
-  pushComponent(component: IComponent) {
+  add(component: IComponent) {
     this.gameObjects.add(GameObject.FromComponent(component));
   }
 

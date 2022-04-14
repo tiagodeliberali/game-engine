@@ -32,23 +32,23 @@ export function buildInitialScene() {
     scale: new Vec2d(15, 15),
     rotationInDegree: 25,
   });
-  scene.pushComponent(blueSquare);
-  scene.pushComponent(
+  scene.add(blueSquare);
+  scene.add(
     new Behavior(() => {
       blueSquareBehavior(blueSquare.getTransform());
     })
   );
 
   const stageCue = new ResourceComponent(stageCuePath);
-  scene.pushComponent(stageCue);
+  scene.add(stageCue);
 
   const character = buildCharacter({
     position: new Vec2d(50, 25),
     scale: new Vec2d(6, 6),
     rotationInDegree: 0,
   });
-  scene.pushComponent(character);
-  scene.pushComponent(
+  scene.add(character);
+  scene.add(
     new Behavior(() => {
       if (
         character
