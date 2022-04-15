@@ -72,7 +72,7 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
 
   public draw(camera: Camera) {
     this.texture!.activate();
-    const initialTrsPosition = this.trsMatrix.getHorizontalPosition();
+    const initialTrsPosition = this.trsMatrix.getPosition().x;
 
     this.text.split("").forEach((character) => {
       const charCode = character.charCodeAt(0);
@@ -93,6 +93,8 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
       this.addToPosition(new Vec2d(this.trsMatrix.getHorizontalScale(), 0));
     });
 
-    this.setTransform({ position: new Vec2d(initialTrsPosition, 0) });
+    this.setTransform({
+      position: new Vec2d(initialTrsPosition, this.trsMatrix.getPosition().y),
+    });
   }
 }

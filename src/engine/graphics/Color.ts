@@ -56,6 +56,7 @@ export class Color {
     this.red = colorDef.red;
     this.green = colorDef.green;
     this.blue = colorDef.blue;
+    this.alpha = colorDef.alpha === undefined ? this.alpha : colorDef.alpha;
   }
 
   public getRedNormalized() {

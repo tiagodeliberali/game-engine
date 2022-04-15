@@ -38,10 +38,6 @@ export class Transform {
     return this.position;
   }
 
-  getHorizontalPosition() {
-    return this.position.x;
-  }
-
   addToPosition(vector: Vec2d) {
     return new Transform(
       this.position.add(vector),

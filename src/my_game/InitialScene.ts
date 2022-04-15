@@ -7,8 +7,10 @@ import {
   ResourceComponent,
   TextureRenderable,
   ITransformable,
+  FontRenderable,
+  rotate,
+  BoundingBox,
 } from "../engine";
-import { rotate } from "../engine/behaviors/Walking";
 import { buildCharacter } from "./assets/Character";
 import { SecondScene } from "./SecondScene";
 
@@ -52,10 +54,8 @@ export function buildInitialScene() {
   scene.add(
     new Behavior(() => {
       if (
-        character
-          .getFirst<TextureRenderable>()!
-          .getTransform()
-          .getHorizontalPosition() > 100
+        character.getFirst<TextureRenderable>()!.getTransform().getPosition()
+          .x > 100
       ) {
         stageCue.get<Audio>().playOnce();
         scene.goToScene(new SecondScene());
@@ -72,6 +72,26 @@ export function buildInitialScene() {
   });
   scene.add(redSquare);
   scene.add(rotate(redSquare, character, 0.5));
+
+  const text = FontRenderable.getDefaultFont("Ola Alice!");
+  text.color.set({ red: 100, green: 200, blue: 100, alpha: 1 });
+  text.setTransform({
+    position: new Vec2d(20, 40),
+    scale: new Vec2d(3, 3),
+    rotationInDegree: 0,
+  });
+  scene.add(text);
+
+  const redSquareBoundingBox = new BoundingBox(redSquare, 5, 5, {});
+
+  scene.add(redSquareBoundingBox);
+
+  const characterBoundingBox = new BoundingBox(character, 1, 1, {
+    onCollideStarted: () => text.setText("Collided!!!"),
+    onCollideEnded: () => text.setText("Collision ended..."),
+  });
+  characterBoundingBox.add(redSquareBoundingBox);
+  scene.add(characterBoundingBox);
 
   return scene;
 
@@ -96,13 +116,5 @@ export function buildInitialScene() {
   //   leftDownCorner.trsMatrix.setPosition(new Vec2d(10, 55));
   //   this.pushComponent(leftDownCorner);
 
-  //   const text = FontRenderable.getDefaultFont("Ola Alice!");
-  //   text.color.set({ red: 0, green: 200, blue: 0 });
-  //   text.trsMatrix.setTransform({
-  //     position: new Vec2d(10, 62),
-  //     scale: new Vec2d(0.5, 1),
-  //     rotationInDegree: 0,
-  //   });
-  //   this.pushComponent(text);
   // }
 }
