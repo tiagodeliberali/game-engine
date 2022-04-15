@@ -1,18 +1,31 @@
 export class Vec2d {
-  x: number;
-  y: number;
+  readonly x: number;
+  readonly y: number;
 
   constructor(x: number, y: number) {
     this.x = x;
     this.y = y;
   }
+
+  rotate(target: Vec2d, radianAngle: number): Vec2d {
+    const x =
+      target.x * Math.cos(radianAngle) - target.y * Math.sin(radianAngle);
+    const y =
+      target.x * Math.sin(radianAngle) + target.y * Math.cos(radianAngle);
+
+    return new Vec2d(x, y);
+  }
+
+  add(vector: Vec2d): Vec2d {
+    return new Vec2d(this.x + vector.x, this.y + vector.y);
+  }
 }
 
 export class Box {
-  top: number;
-  bottom: number;
-  left: number;
-  right: number;
+  readonly top: number;
+  readonly bottom: number;
+  readonly left: number;
+  readonly right: number;
 
   constructor(top: number, bottom: number, right: number, left: number) {
     this.top = top;
@@ -22,10 +35,12 @@ export class Box {
   }
 
   normalize(width: number, height: number) {
-    this.top = this.top / height;
-    this.bottom = this.bottom / height;
-    this.left = this.left / width;
-    this.right = this.right / width;
+    return new Box(
+      this.top / height,
+      this.bottom / height,
+      this.right / width,
+      this.left / width
+    );
   }
 
   isNormalized() {

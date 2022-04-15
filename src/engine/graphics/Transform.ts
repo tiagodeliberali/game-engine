@@ -55,19 +55,19 @@ export class Transform {
   }
 
   public addToHorizontalPosition(value: number) {
-    this.position.x += value;
+    this.position = this.position.add(new Vec2d(value, 0));
   }
 
   public addToVerticalPosition(value: number) {
-    this.position.y += value;
+    this.position = this.position.add(new Vec2d(0, value));
   }
 
   public getHorizontalPosition() {
     return this.position.x;
   }
 
-  setHorizontalPosition(position: number) {
-    this.position.x = position;
+  setHorizontalPosition(value: number) {
+    this.position = new Vec2d(value, this.position.y);
   }
 
   public getRotationInDegree(): number {

@@ -96,7 +96,10 @@ export class SpriteRenderable extends AbstractRenderable<TextureShader> {
 
   private setSpritePosition(spritePosition: Box) {
     if (!spritePosition.isNormalized()) {
-      spritePosition.normalize(this.texture!.width, this.texture!.height);
+      spritePosition = spritePosition.normalize(
+        this.texture!.width,
+        this.texture!.height
+      );
     }
 
     this.textureVertexBuffer.setTextureCoordinate(
