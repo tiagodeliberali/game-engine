@@ -1,4 +1,23 @@
-import { vec2 } from "gl-matrix";
+import { vec2, vec3 } from "gl-matrix";
+
+export const simplifyRotationInRads = (rotation: number) => {
+  while (rotation > 2 * Math.PI) {
+    rotation -= 2 * Math.PI;
+  }
+
+  return rotation;
+};
+
+export const simplifyRotationInDegree = (rotation: number) => {
+  while (rotation > 360) {
+    rotation -= 360;
+  }
+
+  return rotation;
+};
+
+export const convertDegreeToRads = (rotation: number) =>
+  simplifyRotationInRads((rotation * Math.PI) / 180.0);
 
 export class Vec2d {
   readonly x: number;
@@ -9,13 +28,14 @@ export class Vec2d {
     this.y = y;
   }
 
-  rotate(target: Vec2d, radianAngle: number): Vec2d {
-    const x =
-      target.x * Math.cos(radianAngle) - target.y * Math.sin(radianAngle);
-    const y =
-      target.x * Math.sin(radianAngle) + target.y * Math.cos(radianAngle);
-
+  rotate(radianAngle: number): Vec2d {
+    const x = this.x * Math.cos(radianAngle) - this.y * Math.sin(radianAngle);
+    const y = this.x * Math.sin(radianAngle) + this.y * Math.cos(radianAngle);
     return new Vec2d(x, y);
+  }
+
+  rotateInDegree(degreeAngle: number) {
+    return this.rotate(convertDegreeToRads(degreeAngle));
   }
 
   add(vector: Vec2d): Vec2d {
@@ -34,6 +54,19 @@ export class Vec2d {
     const result = [0, 0] as vec2;
     vec2.scale(result, this.toVec2(), 1 / this.length());
     return Vec2d.fromVec2(result);
+  }
+
+  dot(vector: Vec2d): number {
+    return vec2.dot(this.toVec2(), vector.toVec2());
+  }
+
+  cross(vector: Vec2d) {
+    const currentVec2 = vec3.fromValues(this.x, this.y, 0);
+    const vectorVec2 = vec3.fromValues(vector.x, vector.y, 0);
+    const result: vec3 = [0, 0, 0];
+    vec3.cross(result, currentVec2, vectorVec2);
+
+    return result[2];
   }
 
   private toVec2(): vec2 {

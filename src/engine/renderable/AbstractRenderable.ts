@@ -17,6 +17,7 @@ export abstract class AbstractRenderable<T extends AbstractShader>
   vertexBuffer: VertexBuffer;
   color: Color;
   trsMatrix: Transform;
+  currentDirection: Vec2d = new Vec2d(1, 0);
 
   constructor(gl: WebGL2RenderingContext, vertexBuffer: VertexBuffer) {
     this.gl = gl;
@@ -33,6 +34,10 @@ export abstract class AbstractRenderable<T extends AbstractShader>
 
   public getTransform() {
     return this.trsMatrix;
+  }
+
+  getCurrentDirection() {
+    return this.currentDirection;
   }
 
   public setTransform(transform: TransformDef) {
@@ -52,6 +57,9 @@ export abstract class AbstractRenderable<T extends AbstractShader>
     };
 
     this.trsMatrix = Transform.Build(newTransformDef);
+    this.currentDirection = this.currentDirection.rotateInDegree(
+      newTransformDef.rotationInDegree! - this.trsMatrix.getRotationInDegree()
+    );
   }
 
   addToPosition(vector: Vec2d) {
@@ -60,6 +68,11 @@ export abstract class AbstractRenderable<T extends AbstractShader>
 
   addToRotationInDegree(value: number) {
     this.trsMatrix = this.trsMatrix.addToRotationInDegree(value);
+    this.currentDirection = this.currentDirection.rotateInDegree(value);
+  }
+
+  factorToScale(vector: Vec2d) {
+    this.trsMatrix = this.trsMatrix.factorToScale(vector);
   }
 
   public unload() {

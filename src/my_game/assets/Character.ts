@@ -10,12 +10,11 @@ import {
 const footCuePath = "/sounds/footstep.wav";
 const pokemonTexturePath = "/textures/character.png";
 
-export function buildCharacter(transformDef: TransformDef): GameObject {
+export function buildCharacter(characterTransform: TransformDef): GameObject {
   const character = new GameObject();
 
   // add the sprite!
   const renderable = new TextureRenderable(pokemonTexturePath);
-  renderable.setTransform(transformDef);
   character.add(renderable);
 
   // add sound
@@ -24,7 +23,7 @@ export function buildCharacter(transformDef: TransformDef): GameObject {
 
   // add a behavior
   character.add(
-    walk2d(renderable, 0.08, (isWalking) => {
+    walk2d(character, 0.08, (isWalking) => {
       if (isWalking) {
         footCue.get<Audio>().playLoop();
       } else {
@@ -32,6 +31,8 @@ export function buildCharacter(transformDef: TransformDef): GameObject {
       }
     })
   );
+
+  character.setTransform(characterTransform);
 
   return character;
 }

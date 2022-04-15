@@ -8,6 +8,7 @@ import {
   TextureRenderable,
   ITransformable,
 } from "../engine";
+import { rotate } from "../engine/behaviors/Walking";
 import { buildCharacter } from "./assets/Character";
 import { SecondScene } from "./SecondScene";
 
@@ -61,6 +62,16 @@ export function buildInitialScene() {
       }
     })
   );
+
+  const redSquare = new Renderable();
+  redSquare.color.set({ red: 255, green: 0, blue: 0 });
+  redSquare.setTransform({
+    position: new Vec2d(10, 10),
+    scale: new Vec2d(7, 7),
+    rotationInDegree: 0,
+  });
+  scene.add(redSquare);
+  scene.add(rotate(redSquare, character, 0.5));
 
   return scene;
 

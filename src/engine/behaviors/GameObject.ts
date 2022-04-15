@@ -4,8 +4,9 @@ import { IComponent } from ".";
 import { ITransformable, TransformDef } from "../graphics";
 
 export class GameObject implements IComponent, ITransformable {
-  private readonly transform: Transform;
+  private transform: Transform;
   private components: IComponent[] = [];
+  private currentDirection: Vec2d = new Vec2d(1, 0);
 
   constructor() {
     this.transform = Transform.BuldDefault();
@@ -15,33 +16,86 @@ export class GameObject implements IComponent, ITransformable {
     return this.transform;
   }
 
-  setTransform(transform: TransformDef) {
-    if (transform.position !== undefined) {
-      const positionChange = transform.position.sub(
-        this.transform.getPosition()
-      );
-    }
+  getCurrentDirection() {
+    return this.currentDirection;
+  }
 
-    if (transform.rotationInDegree !== undefined) {
-      const angleChange =
-        transform.rotationInDegree - this.transform.getRotationInDegree();
-    }
+  setTransform(transform: TransformDef) {
+    const newTransformDef: TransformDef = {
+      position:
+        transform.position === undefined
+          ? this.transform.getPosition()
+          : transform.position,
+      rotationInDegree:
+        transform.rotationInDegree === undefined
+          ? this.transform.getRotationInDegree()
+          : transform.rotationInDegree,
+      scale:
+        transform.scale === undefined
+          ? this.transform.getScale()
+          : transform.scale,
+    };
+
+    this.components.forEach((x) => {
+      const transformable = x as unknown as ITransformable;
+      if (transformable.addToPosition) {
+        if (transform.position !== undefined) {
+          transformable.addToPosition(
+            transform.position.sub(this.transform.getPosition())
+          );
+        }
+
+        if (transform.rotationInDegree !== undefined) {
+          const angleChange =
+            transform.rotationInDegree - this.transform.getRotationInDegree();
+          transformable.addToRotationInDegree(angleChange);
+          this.currentDirection =
+            this.currentDirection.rotateInDegree(angleChange);
+        }
+
+        if (transform.scale !== undefined) {
+          transformable.factorToScale(
+            new Vec2d(
+              transform.scale.x / this.transform.getScale().x,
+              transform.scale.y / this.transform.getScale().y
+            )
+          );
+        }
+      }
+    });
+
+    this.transform = Transform.Build(newTransformDef);
   }
 
   addToPosition(vector: Vec2d) {
     this.components.forEach((x) => {
-      if ((x as unknown as ITransformable) !== undefined) {
-        (x as unknown as ITransformable).addToPosition(vector);
+      const transformable = x as unknown as ITransformable;
+      if (transformable.addToPosition) {
+        transformable.addToPosition(vector);
       }
     });
+    this.transform = this.transform.addToPosition(vector);
   }
 
   addToRotationInDegree(value: number) {
     this.components.forEach((x) => {
-      if ((x as unknown as ITransformable) !== undefined) {
-        (x as unknown as ITransformable).addToRotationInDegree(value);
+      const transformable = x as unknown as ITransformable;
+      if (transformable.addToRotationInDegree) {
+        transformable.addToRotationInDegree(value);
       }
     });
+    this.currentDirection = this.currentDirection.rotateInDegree(value);
+    this.transform = this.transform.addToRotationInDegree(value);
+  }
+
+  factorToScale(vector: Vec2d) {
+    this.components.forEach((x) => {
+      const transformable = x as unknown as ITransformable;
+      if (transformable.factorToScale) {
+        transformable.factorToScale(vector);
+      }
+    });
+    this.transform = this.transform.factorToScale(vector);
   }
 
   loadResource(path: string, extension?: string) {
