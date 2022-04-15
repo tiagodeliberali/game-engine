@@ -1,7 +1,4 @@
 import { IComponent } from "..";
-import { Transform, TransformDef } from "../graphics";
+import { ITransformable } from "../graphics";
 
-export interface IRenderable extends IComponent {
-  getTransform: () => Transform;
-  setTransform: (transform: TransformDef) => void;
-}
+export interface IRenderable extends IComponent, ITransformable {}

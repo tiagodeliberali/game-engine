@@ -1,6 +1,13 @@
 import { initGL, clearCanvas, getGL } from "./GL";
 import { Vec2d } from "./DataStructures";
-import { Camera, Color, TransformDef, Viewport, Transform } from "./graphics";
+import {
+  Camera,
+  Color,
+  TransformDef,
+  Viewport,
+  Transform,
+  ITransformable,
+} from "./graphics";
 import {
   SpriteRenderable,
   TextureRenderable,
@@ -46,4 +53,4 @@ export {
   Transform,
 };
 
-export type { IRenderable, TransformDef, IComponent };
+export type { IRenderable, TransformDef, IComponent, ITransformable };

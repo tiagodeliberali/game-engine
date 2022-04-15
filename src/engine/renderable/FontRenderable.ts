@@ -7,7 +7,7 @@ import {
 } from "../graphics";
 import { Texture } from "../resources";
 import { getGL } from "../GL";
-import { Box } from "../DataStructures";
+import { Box, Vec2d } from "../DataStructures";
 import { getResourceManager } from "../resources";
 import { AbstractRenderable } from "./AbstractRenderable";
 
@@ -90,11 +90,9 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
       );
       this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
 
-      this.trsMatrix.addToHorizontalPosition(
-        this.trsMatrix.getHorizontalScale()
-      );
+      this.addToPosition(new Vec2d(this.trsMatrix.getHorizontalScale(), 0));
     });
 
-    this.trsMatrix.setHorizontalPosition(initialTrsPosition);
+    this.setTransform({ position: new Vec2d(initialTrsPosition, 0) });
   }
 }

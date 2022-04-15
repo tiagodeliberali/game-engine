@@ -7,6 +7,7 @@ import {
 } from "../graphics";
 import { IRenderable } from ".";
 import { AbstractShader } from "../graphics/AbstractShader";
+import { Vec2d } from "..";
 
 export abstract class AbstractRenderable<T extends AbstractShader>
   implements IRenderable
@@ -20,7 +21,7 @@ export abstract class AbstractRenderable<T extends AbstractShader>
   constructor(gl: WebGL2RenderingContext, vertexBuffer: VertexBuffer) {
     this.gl = gl;
     this.color = Color.White();
-    this.trsMatrix = new Transform();
+    this.trsMatrix = Transform.BuldDefault();
     this.vertexBuffer = vertexBuffer;
   }
 
@@ -35,7 +36,30 @@ export abstract class AbstractRenderable<T extends AbstractShader>
   }
 
   public setTransform(transform: TransformDef) {
-    return this.trsMatrix.setTransform(transform);
+    const newTransformDef: TransformDef = {
+      position:
+        transform.position === undefined
+          ? this.trsMatrix.getPosition()
+          : transform.position,
+      rotationInDegree:
+        transform.rotationInDegree === undefined
+          ? this.trsMatrix.getRotationInDegree()
+          : transform.rotationInDegree,
+      scale:
+        transform.scale === undefined
+          ? this.trsMatrix.getScale()
+          : transform.scale,
+    };
+
+    this.trsMatrix = Transform.Build(newTransformDef);
+  }
+
+  addToPosition(vector: Vec2d) {
+    this.trsMatrix = this.trsMatrix.addToPosition(vector);
+  }
+
+  addToRotationInDegree(value: number) {
+    this.trsMatrix = this.trsMatrix.addToRotationInDegree(value);
   }
 
   public unload() {

@@ -6,8 +6,8 @@ import {
   Behavior,
   ResourceComponent,
   TextureRenderable,
+  ITransformable,
 } from "../engine";
-import { Transform } from "../engine/graphics";
 import { buildCharacter } from "./assets/Character";
 import { SecondScene } from "./SecondScene";
 
@@ -15,11 +15,11 @@ const stageCuePath = "/sounds/change_level.wav";
 
 const timestamp = performance.now();
 
-const blueSquareBehavior = (transform: Transform) => {
+const blueSquareBehavior = (transform: ITransformable) => {
   transform.addToRotationInDegree(10);
 
   const scale = Math.min(15 + (performance.now() - timestamp!) / 300, 50);
-  transform.setScale(new Vec2d(scale, scale));
+  transform.setTransform({ scale: new Vec2d(scale, scale) });
 };
 
 export function buildInitialScene() {
@@ -35,7 +35,7 @@ export function buildInitialScene() {
   scene.add(blueSquare);
   scene.add(
     new Behavior(() => {
-      blueSquareBehavior(blueSquare.getTransform());
+      blueSquareBehavior(blueSquare);
     })
   );
 

@@ -1,9 +1,48 @@
-import { Camera } from "..";
+import { Camera, Transform, Vec2d } from "..";
 import { getResourceManager } from "../resources";
 import { IComponent } from ".";
+import { ITransformable, TransformDef } from "../graphics";
 
-export class GameObject implements IComponent {
+export class GameObject implements IComponent, ITransformable {
+  private readonly transform: Transform;
   private components: IComponent[] = [];
+
+  constructor() {
+    this.transform = Transform.BuldDefault();
+  }
+
+  getTransform() {
+    return this.transform;
+  }
+
+  setTransform(transform: TransformDef) {
+    if (transform.position !== undefined) {
+      const positionChange = transform.position.sub(
+        this.transform.getPosition()
+      );
+    }
+
+    if (transform.rotationInDegree !== undefined) {
+      const angleChange =
+        transform.rotationInDegree - this.transform.getRotationInDegree();
+    }
+  }
+
+  addToPosition(vector: Vec2d) {
+    this.components.forEach((x) => {
+      if ((x as unknown as ITransformable) !== undefined) {
+        (x as unknown as ITransformable).addToPosition(vector);
+      }
+    });
+  }
+
+  addToRotationInDegree(value: number) {
+    this.components.forEach((x) => {
+      if ((x as unknown as ITransformable) !== undefined) {
+        (x as unknown as ITransformable).addToRotationInDegree(value);
+      }
+    });
+  }
 
   loadResource(path: string, extension?: string) {
     getResourceManager().loadScene(path, extension);

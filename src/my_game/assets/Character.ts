@@ -24,7 +24,7 @@ export function buildCharacter(transformDef: TransformDef): GameObject {
 
   // add a behavior
   character.add(
-    walk2d(renderable.getTransform(), 0.08, (isWalking) => {
+    walk2d(renderable, 0.08, (isWalking) => {
       if (isWalking) {
         footCue.get<Audio>().playLoop();
       } else {

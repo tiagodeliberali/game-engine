@@ -1,3 +1,5 @@
+import { vec2 } from "gl-matrix";
+
 export class Vec2d {
   readonly x: number;
   readonly y: number;
@@ -18,6 +20,28 @@ export class Vec2d {
 
   add(vector: Vec2d): Vec2d {
     return new Vec2d(this.x + vector.x, this.y + vector.y);
+  }
+
+  sub(vector: Vec2d) {
+    return new Vec2d(this.x - vector.x, this.y - vector.y);
+  }
+
+  length() {
+    return vec2.length(this.toVec2());
+  }
+
+  normalize() {
+    const result = [0, 0] as vec2;
+    vec2.scale(result, this.toVec2(), 1 / this.length());
+    return Vec2d.fromVec2(result);
+  }
+
+  private toVec2(): vec2 {
+    return [this.x, this.y];
+  }
+
+  private static fromVec2(vector: vec2) {
+    return new Vec2d(vector[0], vector[1]);
   }
 }
 

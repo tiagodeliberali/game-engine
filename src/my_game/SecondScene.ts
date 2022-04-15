@@ -99,7 +99,7 @@ export class SecondScene extends BasicScene {
     this.pushComponent(cabeca);
 
     const olho1 = new Renderable();
-    olho1.trsMatrix.setTransform({
+    olho1.setTransform({
       position: new Vec2d(-0.25, 0.25),
       rotationInDegree: 0,
       scale: new Vec2d(0.3, 0.1),
@@ -112,7 +112,7 @@ export class SecondScene extends BasicScene {
     this.pushComponent(olho1);
 
     const olho2 = new Renderable();
-    olho2.trsMatrix.setTransform({
+    olho2.setTransform({
       position: new Vec2d(0.25, 0.25),
       rotationInDegree: 0,
       scale: new Vec2d(0.3, 0.1),
@@ -125,7 +125,7 @@ export class SecondScene extends BasicScene {
     this.pushComponent(olho2);
 
     const boca = new Renderable();
-    boca.trsMatrix.setTransform({
+    boca.setTransform({
       position: new Vec2d(0, -0.2),
       rotationInDegree: 0,
       scale: new Vec2d(1.0, 0.3),
@@ -138,7 +138,7 @@ export class SecondScene extends BasicScene {
     this.pushComponent(boca);
 
     const bocaLado1 = new Renderable();
-    bocaLado1.trsMatrix.setTransform({
+    bocaLado1.setTransform({
       position: new Vec2d(-0.2, -0.2),
       rotationInDegree: 0,
       scale: new Vec2d(0.1, 0.3),
@@ -151,7 +151,7 @@ export class SecondScene extends BasicScene {
     this.pushComponent(bocaLado1);
 
     const bocaLado2 = new Renderable();
-    bocaLado2.trsMatrix.setTransform({
+    bocaLado2.setTransform({
       position: new Vec2d(0.2, -0.2),
       rotationInDegree: 0,
       scale: new Vec2d(0.1, 0.3),
@@ -169,7 +169,7 @@ export class SecondScene extends BasicScene {
       green: 200,
       blue: 200,
     });
-    this.phoenix.trsMatrix.setTransform({
+    this.phoenix.setTransform({
       position: new Vec2d(0, 0),
       scale: new Vec2d(0.3, 0.3),
       rotationInDegree: 0,
