@@ -1,6 +1,6 @@
 import { initGL, clearCanvas, getGL } from "./GL";
 import { Vec2d } from "./DataStructures";
-import { Camera, Color, TransformDef, Viewport } from "./graphics";
+import { Camera, Color, TransformDef, Viewport, Transform } from "./graphics";
 import {
   SpriteRenderable,
   TextureRenderable,
@@ -43,6 +43,7 @@ export {
   Behavior,
   walk2d,
   SimplifiedScene,
+  Transform,
 };
 
 export type { IRenderable, TransformDef, IComponent };

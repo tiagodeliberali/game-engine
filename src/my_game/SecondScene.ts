@@ -10,8 +10,8 @@ import {
   SpriteRenderable,
   AnimationType,
   isKeyClicked,
+  Viewport,
 } from "../engine";
-import { Viewport } from "../engine";
 import { buildCharacter } from "./assets/Character";
 
 const backgroundMusicPath = "/sounds/background_music.mp3";
