@@ -14,7 +14,7 @@ export class GameEngine {
     this.currentScene.registerGameEngine(this);
   }
 
-  public async startGame() {
+  async startGame() {
     ShaderLib.loadShaderLib();
     initKeyboard();
     await this.startScene();
@@ -41,7 +41,7 @@ export class GameEngine {
     this.currentScene!.update();
   }
 
-  public async changeScene(scene: AbstractScene) {
+  async changeScene(scene: AbstractScene) {
     stopLoop();
     resourceManager.unloadScene();
     this.currentScene.unload();

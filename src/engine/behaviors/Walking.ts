@@ -33,6 +33,17 @@ export function walk2d(
   });
 }
 
+export function moveTowardsCurrentDirection(
+  transform: ITransformable,
+  speed: number
+) {
+  return new Behavior(() => {
+    const scaledSpeed = speed * transform.getTransform().getHorizontalScale();
+    const velocityVector = transform.getCurrentDirection().scale(scaledSpeed);
+    transform.addToPosition(velocityVector);
+  });
+}
+
 export function rotate(
   origin: ITransformable,
   target: ITransformable,

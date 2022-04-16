@@ -21,8 +21,16 @@ import { GameEngine } from "./GameEngine";
 import { isKeyPressed, isKeyClicked, Keys } from "./input";
 import { Audio, Texture, ResourceComponent } from "./resources";
 import { EngineError } from "./EngineError";
-import { GameObject, Behavior, walk2d, rotate, BoundingBox } from "./behaviors";
-import { IComponent } from "./behaviors/IComponent";
+import {
+  GameObject,
+  Behavior,
+  walk2d,
+  rotate,
+  moveTowardsCurrentDirection,
+  BoundingBox,
+  ColisionStatus,
+} from "./behaviors";
+import { IComponent } from "./behaviors";
 
 export {
   getGL,
@@ -52,7 +60,9 @@ export {
   SimplifiedScene,
   Transform,
   rotate,
+  moveTowardsCurrentDirection,
   BoundingBox,
+  ColisionStatus,
 };
 
 export type { IRenderable, TransformDef, IComponent, ITransformable };

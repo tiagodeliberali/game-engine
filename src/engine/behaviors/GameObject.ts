@@ -7,9 +7,13 @@ export class GameObject implements IComponent, ITransformable {
   private transform: Transform;
   private components: IComponent[] = [];
   private currentDirection: Vec2d = new Vec2d(1, 0);
+  paused: boolean;
+  visible: boolean;
 
   constructor() {
     this.transform = Transform.BuldDefault();
+    this.paused = false;
+    this.visible = true;
   }
 
   getTransform() {
@@ -45,12 +49,11 @@ export class GameObject implements IComponent, ITransformable {
           );
         }
 
+        // todo: it is wrong for IRenderables outside gameobject origin - missing position part
         if (transform.rotationInDegree !== undefined) {
-          const angleChange =
-            transform.rotationInDegree - this.transform.getRotationInDegree();
-          transformable.addToRotationInDegree(angleChange);
-          this.currentDirection =
-            this.currentDirection.rotateInDegree(angleChange);
+          transformable.addToRotationInDegree(
+            transform.rotationInDegree - this.transform.getRotationInDegree()
+          );
         }
 
         if (transform.scale !== undefined) {
@@ -64,6 +67,9 @@ export class GameObject implements IComponent, ITransformable {
       }
     });
 
+    this.currentDirection = this.currentDirection.rotateInDegree(
+      newTransformDef.rotationInDegree! - this.transform.getRotationInDegree()
+    );
     this.transform = Transform.Build(newTransformDef);
   }
 
@@ -106,6 +112,10 @@ export class GameObject implements IComponent, ITransformable {
     return getResourceManager().get<T>(path);
   }
 
+  pause() {
+    this.paused = true;
+  }
+
   load() {
     this.components.forEach((item) => item.load());
   }
@@ -115,11 +125,11 @@ export class GameObject implements IComponent, ITransformable {
   }
 
   update() {
-    this.components.forEach((item) => item.update());
+    !this.paused && this.components.forEach((item) => item.update());
   }
 
   draw(camera: Camera) {
-    this.components.forEach((item) => item.draw(camera));
+    this.visible && this.components.forEach((item) => item.draw(camera));
   }
 
   unload() {

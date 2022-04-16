@@ -2,7 +2,7 @@ import { Vec2d } from "../DataStructures";
 import { ITransformable } from "../graphics";
 import { IComponent } from "./IComponent";
 
-enum ColisionType {
+export enum ColisionStatus {
   collideLeft = 1,
   collideRight = 2,
   collideTop = 4,
@@ -12,9 +12,13 @@ enum ColisionType {
 }
 
 export type ColisionActions = {
-  onCollideStarted?: (other: ITransformable) => void;
-  onColliding?: (other: ITransformable) => void;
-  onCollideEnded?: (other: ITransformable) => void;
+  onCollideStarted?: (
+    other: ITransformable,
+    tag: string,
+    status: ColisionStatus
+  ) => void;
+  onColliding?: (other: ITransformable, tag: string) => void;
+  onCollideEnded?: (other: ITransformable, tag: string) => void;
 };
 
 export class BoundingBox implements IComponent {
@@ -22,16 +26,19 @@ export class BoundingBox implements IComponent {
   height: number;
   targets: BoundingBox[] = [];
   owner: ITransformable;
-  actions: ColisionActions;
+  actions?: ColisionActions;
   colisionList: ITransformable[] = [];
+  tag: string;
 
   constructor(
     owner: ITransformable,
+    tag: string,
     width: number,
     height: number,
-    actions: ColisionActions
+    actions?: ColisionActions
   ) {
     this.owner = owner;
+    this.tag = tag;
     this.actions = actions;
     this.width = width;
     this.height = height;
@@ -75,28 +82,28 @@ export class BoundingBox implements IComponent {
     );
   }
 
-  boundCollideStatus(otherBound: BoundingBox): ColisionType {
-    let status = ColisionType.outside;
+  boundCollideStatus(otherBound: BoundingBox): ColisionStatus {
+    let status = ColisionStatus.outside;
 
     if (this.intersectsBound(otherBound)) {
       if (otherBound.minX() < this.minX()) {
-        status |= ColisionType.collideLeft;
+        status |= ColisionStatus.collideLeft;
       }
 
       if (otherBound.maxX() > this.maxX()) {
-        status |= ColisionType.collideRight;
+        status |= ColisionStatus.collideRight;
       }
 
       if (otherBound.minY() < this.minY()) {
-        status |= ColisionType.collideBottom;
+        status |= ColisionStatus.collideBottom;
       }
 
       if (otherBound.maxY() > this.maxY()) {
-        status |= ColisionType.collideTop;
+        status |= ColisionStatus.collideTop;
       }
 
-      if (status === ColisionType.outside) {
-        status = ColisionType.inside;
+      if (status === ColisionStatus.outside) {
+        status = ColisionStatus.inside;
       }
     }
     return status;
@@ -115,16 +122,25 @@ export class BoundingBox implements IComponent {
   }
 
   update() {
+    if (this.actions === undefined) {
+      return;
+    }
+
     this.targets.forEach((target) => {
       if (target.intersectsBound(this)) {
         if (!this.colisionList.includes(target.owner)) {
           this.colisionList.push(target.owner);
 
-          this.actions.onCollideStarted &&
-            this.actions.onCollideStarted(target.owner);
+          this.actions!.onCollideStarted &&
+            this.actions!.onCollideStarted(
+              target.owner,
+              target.tag,
+              this.boundCollideStatus(target)
+            );
         }
 
-        this.actions.onColliding && this.actions.onColliding(target.owner);
+        this.actions!.onColliding &&
+          this.actions!.onColliding(target.owner, target.tag);
       } else {
         if (this.colisionList.includes(target.owner)) {
           const index = this.colisionList.indexOf(target.owner, 0);
@@ -132,8 +148,8 @@ export class BoundingBox implements IComponent {
             this.colisionList.splice(index, 1);
           }
 
-          this.actions.onCollideEnded &&
-            this.actions.onCollideEnded(target.owner);
+          this.actions!.onCollideEnded &&
+            this.actions!.onCollideEnded(target.owner, target.tag);
         }
       }
     });

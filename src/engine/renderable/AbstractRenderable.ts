@@ -56,10 +56,10 @@ export abstract class AbstractRenderable<T extends AbstractShader>
           : transform.scale,
     };
 
-    this.trsMatrix = Transform.Build(newTransformDef);
     this.currentDirection = this.currentDirection.rotateInDegree(
       newTransformDef.rotationInDegree! - this.trsMatrix.getRotationInDegree()
     );
+    this.trsMatrix = Transform.Build(newTransformDef);
   }
 
   addToPosition(vector: Vec2d) {

@@ -1,5 +1,7 @@
 import { GameEngine } from "./engine";
-import { buildInitialScene } from "./my_game";
+import { pong } from "./my_game";
 
-const engine = new GameEngine(buildInitialScene());
-engine.startGame();
+pong([0, 0]).then((x) => {
+  const engine = new GameEngine(x);
+  engine.startGame();
+});

@@ -10,9 +10,10 @@ import {
   FontRenderable,
   rotate,
   BoundingBox,
+  GameObject,
 } from "../engine";
 import { buildCharacter } from "./assets/Character";
-import { SecondScene } from "./SecondScene";
+import { pong } from ".";
 
 const stageCuePath = "/sounds/change_level.wav";
 
@@ -25,9 +26,7 @@ const blueSquareBehavior = (transform: ITransformable) => {
   transform.setTransform({ scale: new Vec2d(scale, scale) });
 };
 
-export function buildInitialScene() {
-  const scene = new SimplifiedScene(100, 50);
-
+const createBlueSquare = () => {
   const blueSquare = new Renderable();
   blueSquare.color.set({ red: 100, green: 0, blue: 255 });
   blueSquare.setTransform({
@@ -35,33 +34,43 @@ export function buildInitialScene() {
     scale: new Vec2d(15, 15),
     rotationInDegree: 25,
   });
-  scene.add(blueSquare);
-  scene.add(
+
+  const gameObject = new GameObject();
+  gameObject.add(blueSquare);
+  gameObject.add(
     new Behavior(() => {
       blueSquareBehavior(blueSquare);
     })
   );
 
-  const stageCue = new ResourceComponent(stageCuePath);
-  scene.add(stageCue);
+  return gameObject;
+};
+
+export function buildInitialScene() {
+  const scene = new SimplifiedScene(100, 50);
+
+  scene.add(createBlueSquare());
 
   const character = buildCharacter({
     position: new Vec2d(50, 25),
     scale: new Vec2d(6, 6),
     rotationInDegree: 0,
   });
-  scene.add(character);
-  scene.add(
+
+  const stageCue = new ResourceComponent(stageCuePath);
+  character.add(stageCue);
+  character.add(
     new Behavior(() => {
       if (
         character.getFirst<TextureRenderable>()!.getTransform().getPosition()
           .x > 100
       ) {
         stageCue.get<Audio>().playOnce();
-        scene.goToScene(new SecondScene());
+        scene.goToScene(pong([0, 0]));
       }
     })
   );
+  scene.add(character);
 
   const redSquare = new Renderable();
   redSquare.color.set({ red: 255, green: 0, blue: 0 });
@@ -82,11 +91,11 @@ export function buildInitialScene() {
   });
   scene.add(text);
 
-  const redSquareBoundingBox = new BoundingBox(redSquare, 5, 5, {});
+  const redSquareBoundingBox = new BoundingBox(redSquare, "", 5, 5, {});
 
   scene.add(redSquareBoundingBox);
 
-  const characterBoundingBox = new BoundingBox(character, 1, 1, {
+  const characterBoundingBox = new BoundingBox(character, "", 1, 1, {
     onCollideStarted: () => text.setText("Collided!!!"),
     onCollideEnded: () => text.setText("Collision ended..."),
   });
@@ -94,27 +103,4 @@ export function buildInitialScene() {
   scene.add(characterBoundingBox);
 
   return scene;
-
-  // private buildCorners() {
-  //   const leftUpCorner = new Renderable();
-  //   leftUpCorner.color.set({ red: 0, green: 0, blue: 255 });
-  //   leftUpCorner.trsMatrix.setPosition(new Vec2d(10, 65));
-  //   this.pushComponent(leftUpCorner);
-
-  //   const rightUpCorner = new Renderable();
-  //   rightUpCorner.color.set({ red: 100, green: 100, blue: 255 });
-  //   rightUpCorner.trsMatrix.setPosition(new Vec2d(30, 65));
-  //   this.pushComponent(rightUpCorner);
-
-  //   const rightDownCorner = new Renderable();
-  //   rightDownCorner.color.set({ red: 100, green: 155, blue: 100 });
-  //   rightDownCorner.trsMatrix.setPosition(new Vec2d(30, 55));
-  //   this.pushComponent(rightDownCorner);
-
-  //   const leftDownCorner = new Renderable();
-  //   leftDownCorner.color.set({ red: 255, green: 100, blue: 100 });
-  //   leftDownCorner.trsMatrix.setPosition(new Vec2d(10, 55));
-  //   this.pushComponent(leftDownCorner);
-
-  // }
 }

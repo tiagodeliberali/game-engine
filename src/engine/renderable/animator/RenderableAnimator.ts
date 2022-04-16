@@ -39,8 +39,6 @@ export class RenderableAnimator {
     this.isPlaying = false;
     this.isLooping = false;
     this.setSprite = setSprite;
-
-    this.setSprite(this.currentPosition);
   }
 
   stopLooping() {

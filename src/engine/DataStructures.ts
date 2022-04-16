@@ -28,6 +28,10 @@ export class Vec2d {
     this.y = y;
   }
 
+  static from(x: number, y: number): Vec2d {
+    return new Vec2d(x, y);
+  }
+
   rotate(radianAngle: number): Vec2d {
     const x = this.x * Math.cos(radianAngle) - this.y * Math.sin(radianAngle);
     const y = this.x * Math.sin(radianAngle) + this.y * Math.cos(radianAngle);
@@ -54,6 +58,10 @@ export class Vec2d {
     const result = [0, 0] as vec2;
     vec2.scale(result, this.toVec2(), 1 / this.length());
     return Vec2d.fromVec2(result);
+  }
+
+  scale(value: number) {
+    return new Vec2d(this.x * value, this.y * value);
   }
 
   dot(vector: Vec2d): number {
