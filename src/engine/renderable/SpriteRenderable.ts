@@ -55,7 +55,7 @@ export class SpriteRenderable extends AbstractRenderable<TextureShader> {
   }
 
   update() {
-    //
+    this.animator && this.animator.animate();
   }
 
   setAnimator(settings: AnimationSettings) {
@@ -117,7 +117,5 @@ export class SpriteRenderable extends AbstractRenderable<TextureShader> {
       camera.getCameraMatrix()
     );
     this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
-
-    this.animator && this.animator.animate();
   }
 }

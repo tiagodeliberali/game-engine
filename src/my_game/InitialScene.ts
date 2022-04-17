@@ -66,7 +66,7 @@ export function buildInitialScene() {
           .x > 100
       ) {
         stageCue.get<Audio>().playOnce();
-        scene.goToScene(pong([0, 0]));
+        scene.goToScene(pong());
       }
     })
   );

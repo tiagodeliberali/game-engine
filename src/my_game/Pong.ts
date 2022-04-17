@@ -5,6 +5,7 @@ import {
   ColisionStatus,
   FontRenderable,
   GameObject,
+  isKeyClicked,
   isKeyPressed,
   Keys,
   moveTowardsCurrentDirection,
@@ -16,6 +17,7 @@ import {
 } from "../engine";
 
 const boundingBoxList: BoundingBox[] = [];
+const score = [0, 0];
 
 const addBoundingBox = (box: BoundingBox): BoundingBox => {
   boundingBoxList.push(box);
@@ -101,9 +103,7 @@ const createPaddle = (
   return gameObject;
 };
 
-const createBall = async (
-  startGame: (player1: number, player2: number) => void
-) => {
+const createBall = () => {
   const text = new GameObject();
   const goalText = FontRenderable.getDefaultFont("Ponto!");
   goalText.color.set({ red: 100, green: 200, blue: 100, alpha: 1 });
@@ -113,6 +113,15 @@ const createBall = async (
   });
   text.visible = false;
   text.add(goalText);
+  const resultText = FontRenderable.getDefaultFont(
+    `score: ${score[0]} - ${score[1]}`
+  );
+  resultText.color.set({ red: 100, green: 200, blue: 100, alpha: 1 });
+  resultText.setTransform({
+    position: Vec2d.from(40, 48),
+    scale: Vec2d.from(2, 2),
+  });
+  text.add(resultText);
 
   const gameObject = new GameObject();
 
@@ -122,7 +131,7 @@ const createBall = async (
   ball.setTransform({
     position: Vec2d.from(50, 25),
     scale: Vec2d.from(5, 5),
-    rotationInDegree: Math.random() * 360,
+    rotationInDegree: 30 - Math.random() * 60,
   });
   ball.setAnimator({
     initialPosition: 0,
@@ -134,16 +143,28 @@ const createBall = async (
   gameObject.add(ball);
   gameObject.add(moveTowardsCurrentDirection(ball, 0.1));
 
+  const computeScore = (player: number) => {
+    text.visible = true;
+    gameObject.paused = true;
+    score[player] += 1;
+    resultText.setText(`score: ${score[1]} - ${score[0]}`);
+    setTimeout(() => {
+      text.visible = false;
+      gameObject.paused = false;
+      ball.setTransform({
+        position: Vec2d.from(50, 25),
+        scale: Vec2d.from(5, 5),
+        rotationInDegree: 30 - Math.random() * 60,
+      });
+    }, 2000);
+  };
+
   const box = new BoundingBox(ball, "ball", 2, 2, {
-    onCollideStarted: async (target, tag, status) => {
+    onCollideStarted: (target, tag, status) => {
       if (tag === "point1") {
-        text.visible = true;
-        gameObject.pause();
-        await startGame(1, 0);
+        computeScore(0);
       } else if (tag === "point2") {
-        text.visible = true;
-        gameObject.pause();
-        await startGame(0, 1);
+        computeScore(1);
       } else if (
         !(status & ColisionStatus.collideLeft) ||
         !(status & ColisionStatus.collideRight)
@@ -169,30 +190,24 @@ const createBall = async (
   return gameObject;
 };
 
-export async function pong(score: number[]) {
+export function pong() {
   const scene = new SimplifiedScene(100, 50);
 
-  const resultText = FontRenderable.getDefaultFont(
-    `score: ${score[0]} - ${score[1]}`
-  );
-  resultText.color.set({ red: 100, green: 200, blue: 100, alpha: 1 });
-  resultText.setTransform({
-    position: Vec2d.from(40, 48),
-    scale: Vec2d.from(2, 2),
-  });
-  //scene.add(resultText);
+  const gameComponents = new GameObject();
 
-  scene.add(buildLimits());
+  gameComponents.add(buildLimits());
+  gameComponents.add(createPaddle(icePaddlePath, 15, 270, Keys.W, Keys.S));
+  gameComponents.add(createPaddle(slimePaddlePath, 85, 90, Keys.Up, Keys.Down));
+  gameComponents.add(createBall());
 
-  scene.add(createPaddle(icePaddlePath, 15, 270, Keys.W, Keys.S));
-  scene.add(createPaddle(slimePaddlePath, 85, 90, Keys.Up, Keys.Down));
+  scene.add(gameComponents);
+
   scene.add(
-    await createBall(
-      async (player1: number, player2: number) =>
-        await scene.goToScene(
-          await pong([score[0] + player1, score[1] + player2])
-        )
-    )
+    new Behavior(() => {
+      if (isKeyClicked(Keys.Space)) {
+        gameComponents.paused = !gameComponents.paused;
+      }
+    })
   );
 
   return scene;
