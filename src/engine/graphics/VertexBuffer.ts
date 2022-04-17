@@ -51,7 +51,7 @@ export class VertexBuffer {
     return dynamicUnitSquareLeftBottonOnZero;
   }
 
-  public initStaticBuffer(vertices: number[]) {
+  initStaticBuffer(vertices: number[]) {
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexBuffer);
     this.gl.bufferData(
       this.gl.ARRAY_BUFFER,
@@ -60,7 +60,7 @@ export class VertexBuffer {
     );
   }
 
-  public initDynamicBuffer(vertices: number[]) {
+  initDynamicBuffer(vertices: number[]) {
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexBuffer);
     this.gl.bufferData(
       this.gl.ARRAY_BUFFER,
@@ -69,7 +69,7 @@ export class VertexBuffer {
     );
   }
 
-  public setTextureCoordinate(vertices: number[]) {
+  setTextureCoordinate(vertices: number[]) {
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexBuffer);
     this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array(vertices));
   }

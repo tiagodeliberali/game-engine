@@ -17,16 +17,16 @@ export class Camera {
     this.configureCamera();
   }
 
-  public getCameraMatrix() {
+  getCameraMatrix() {
     return this.cameraMatrix;
   }
 
-  public setCenter(center: Vec2d) {
+  setCenter(center: Vec2d) {
     this.center = center;
     this.configureCamera();
   }
 
-  public setSize(size: Vec2d) {
+  setSize(size: Vec2d) {
     this.size = size;
     this.configureCamera();
   }

@@ -38,7 +38,7 @@ export class TextureRenderable extends AbstractRenderable<TextureShader> {
     //
   }
 
-  public draw(camera: Camera) {
+  draw(camera: Camera) {
     this.texture!.activate();
     this.shader!.activate(
       this.vertexBuffer,

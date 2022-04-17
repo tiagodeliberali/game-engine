@@ -48,19 +48,19 @@ export class SecondScene extends BasicScene {
     );
   }
 
-  public load() {
+  load() {
     super.load();
     this.loadResource(backgroundMusicPath);
   }
 
-  public init() {
+  init() {
     super.init();
 
     this.backgroundMusic = this.getResource<Audio>(backgroundMusicPath);
     this.backgroundMusic.playLoop();
   }
 
-  public update() {
+  update() {
     super.update();
 
     if (isKeyClicked(Keys.Left)) {

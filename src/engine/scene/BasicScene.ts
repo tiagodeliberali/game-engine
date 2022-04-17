@@ -22,19 +22,19 @@ export class BasicScene extends AbstractScene {
     this.gameObjects.add(GameObject.FromComponent(component));
   }
 
-  public load() {
+  load() {
     this.gameObjects.load();
   }
 
-  public init() {
+  init() {
     this.gameObjects.init();
   }
 
-  public update() {
+  update() {
     this.gameObjects.update();
   }
 
-  public draw() {
+  draw() {
     clearCanvas(this.color);
     this.viewport.draw();
     this.gameObjects.draw(this.camera);

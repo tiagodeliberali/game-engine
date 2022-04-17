@@ -7,18 +7,18 @@ export class ResourceManager {
   sceneResourceMap: Map<string, MapEntry> = new Map();
   outstandingPromises: Promise<Map<string, MapEntry>>[] = [];
 
-  public async waitOnLoading() {
+  async waitOnLoading() {
     await Promise.all(this.outstandingPromises);
     this.outstandingPromises = [];
   }
 
-  public addResourceProcessor(processor: ResourceProcessor) {
+  addResourceProcessor(processor: ResourceProcessor) {
     processor
       .extensions()
       .forEach((extension) => this.processors.set(extension, processor));
   }
 
-  public get<T>(path: string): T {
+  get<T>(path: string): T {
     const entry =
       this.globalResourceMap.get(path) || this.sceneResourceMap.get(path);
 
@@ -40,11 +40,11 @@ export class ResourceManager {
     return entry.content as T;
   }
 
-  public loadGlobal(path: string, extension?: string) {
+  loadGlobal(path: string, extension?: string) {
     this.load(path, true, extension);
   }
 
-  public loadScene(path: string, extension?: string) {
+  loadScene(path: string, extension?: string) {
     this.load(path, false, extension);
   }
 
@@ -64,7 +64,7 @@ export class ResourceManager {
     this.loadParse(path, processor, isGlobal);
   }
 
-  public loadParse(
+  loadParse(
     path: string,
     processor: ResourceProcessor,
     isGlobal: boolean
@@ -90,18 +90,18 @@ export class ResourceManager {
     }
   }
 
-  public unloadScene() {
+  unloadScene() {
     this.sceneResourceMap.forEach((entry) => entry.unload && entry.unload());
     this.sceneResourceMap.clear();
   }
 
-  public unloadAll() {
+  unloadAll() {
     this.unloadScene();
     this.globalResourceMap.forEach((entry) => entry.unload && entry.unload());
     this.globalResourceMap.clear();
   }
 
-  public unload(path: string): boolean {
+  unload(path: string): boolean {
     const entry =
       this.globalResourceMap.get(path) || this.sceneResourceMap.get(path);
 

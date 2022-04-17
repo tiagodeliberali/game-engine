@@ -13,7 +13,7 @@ export class Color {
     this.alpha = 1;
   }
 
-  public static FromColorDef(colorDef: ColorDef) {
+  static FromColorDef(colorDef: ColorDef) {
     const color = new Color();
     color.red = colorDef.red;
     color.green = colorDef.green;
@@ -32,11 +32,11 @@ export class Color {
     });
   }
 
-  public static Black() {
+  static Black() {
     return new Color();
   }
 
-  public static LightGray() {
+  static LightGray() {
     return Color.FromColorDef({
       red: 230,
       green: 230,
@@ -44,7 +44,7 @@ export class Color {
     });
   }
 
-  public static White() {
+  static White() {
     return Color.FromColorDef({
       red: 255,
       green: 255,
@@ -52,26 +52,26 @@ export class Color {
     });
   }
 
-  public set(colorDef: ColorDef) {
+  set(colorDef: ColorDef) {
     this.red = colorDef.red;
     this.green = colorDef.green;
     this.blue = colorDef.blue;
     this.alpha = colorDef.alpha === undefined ? this.alpha : colorDef.alpha;
   }
 
-  public getRedNormalized() {
+  getRedNormalized() {
     return this.red / 255;
   }
 
-  public getGreenNormalized() {
+  getGreenNormalized() {
     return this.green / 255;
   }
 
-  public getBlueNormalized() {
+  getBlueNormalized() {
     return this.blue / 255;
   }
 
-  public getNormalizedArray() {
+  getNormalizedArray() {
     return [
       this.getRedNormalized(),
       this.getGreenNormalized(),

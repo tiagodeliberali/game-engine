@@ -49,15 +49,15 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
     //
   }
 
-  public static getDefaultFont(initialText: string) {
+  static getDefaultFont(initialText: string) {
     return new FontRenderable(8, 12, initialText);
   }
 
-  public setText(text: string) {
+  setText(text: string) {
     this.text = text;
   }
 
-  public setSpritePosition(spritePosition: Box) {
+  setSpritePosition(spritePosition: Box) {
     if (!spritePosition.isNormalized()) {
       spritePosition = spritePosition.normalize(
         this.texture!.width,
@@ -70,7 +70,7 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
     );
   }
 
-  public draw(camera: Camera) {
+  draw(camera: Camera) {
     this.texture!.activate();
     const initialTrsPosition = this.trsMatrix.getPosition().x;
 

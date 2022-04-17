@@ -21,7 +21,7 @@ export class Renderable extends AbstractRenderable<SimpleShader> {
     //
   }
 
-  public draw(camera: Camera) {
+  draw(camera: Camera) {
     this.shader!.activate(
       this.vertexBuffer,
       this.color,

@@ -15,12 +15,12 @@ export class Viewport {
     this.background = background;
   }
 
-  public static Default(color: Color) {
+  static Default(color: Color) {
     const canvasSize = getCanvasSize();
     return new Viewport(new Vec2d(0, 0), canvasSize, color);
   }
 
-  public draw() {
+  draw() {
     this.gl.viewport(
       this.bottomLeftCorner.x,
       this.bottomLeftCorner.y,

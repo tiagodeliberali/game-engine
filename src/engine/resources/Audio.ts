@@ -17,7 +17,7 @@ export class Audio {
     this.sourceGain.gain.value = 1.0;
   }
 
-  public static async BuildAudioAsync(data: ArrayBuffer): Promise<Audio> {
+  static async BuildAudioAsync(data: ArrayBuffer): Promise<Audio> {
     const audio = new Audio();
     await audio.init(data);
     return audio;

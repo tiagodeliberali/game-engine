@@ -32,7 +32,7 @@ export abstract class AbstractRenderable<T extends AbstractShader>
 
   abstract draw(_camera: Camera): void;
 
-  public getTransform() {
+  getTransform() {
     return this.trsMatrix;
   }
 
@@ -40,7 +40,7 @@ export abstract class AbstractRenderable<T extends AbstractShader>
     return this.currentDirection;
   }
 
-  public setTransform(transform: TransformDef) {
+  setTransform(transform: TransformDef) {
     const newTransformDef: TransformDef = {
       position:
         transform.position === undefined
@@ -75,7 +75,7 @@ export abstract class AbstractRenderable<T extends AbstractShader>
     this.trsMatrix = this.trsMatrix.factorToScale(vector);
   }
 
-  public unload() {
+  unload() {
     // virtual method
   }
 }

@@ -11,7 +11,7 @@ export class SimpleShader extends AbstractShader {
     super(gl, vertexShaderSource, fragmentShaderSource);
   }
 
-  public activate(
+  activate(
     vertexBuffer: VertexBuffer,
     pixelColor: Color,
     trsMatrix: mat4,

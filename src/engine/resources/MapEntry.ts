@@ -12,11 +12,11 @@ export class MapEntry {
     this.refCount = 1;
   }
 
-  public static EmptyEntry() {
+  static EmptyEntry() {
     return new MapEntry(null);
   }
 
-  public static Entry(content: unknown, unload?: () => void) {
+  static Entry(content: unknown, unload?: () => void) {
     if (content === null || content === undefined) {
       throw new EngineError(
         MapEntry.name,
