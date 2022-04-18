@@ -98,36 +98,45 @@ const createPaddle = (
   return gameObject;
 };
 
+const actionMessageText = "Ponto!";
+
 const createBall = () => {
-  const text = new GameObject();
-  text.visible = false;
+  const textGameObject = new GameObject();
+  textGameObject.visible = false;
 
-  text.add(
-    FontRenderable.getDefaultFont("Ponto!")
-      .setColor({ red: 100, green: 200, blue: 100, alpha: 1 })
-      .setTransform({
-        position: Vec2d.from(40, 25),
-        scale: Vec2d.from(5, 5),
-      })
-  );
-
-  const resultText = FontRenderable.getDefaultFont(
-    `score: ${score[0]} - ${score[1]}`
-  )
+  const actionText = FontRenderable.getDefaultFont(actionMessageText)
     .setColor({ red: 100, green: 200, blue: 100, alpha: 1 })
     .setTransform({
-      position: Vec2d.from(40, 48),
+      position: Vec2d.from(40, 25),
+      scale: Vec2d.from(5, 5),
+    });
+  textGameObject.add(actionText);
+
+  const scoreText = FontRenderable.getDefaultFont(`${score[0]} - ${score[1]}`)
+    .setColor({ red: 100, green: 200, blue: 100, alpha: 1 })
+    .setTransform({
+      position: Vec2d.from(48, 48),
       scale: Vec2d.from(2, 2),
     });
-  text.add(resultText);
+  textGameObject.add(scoreText);
 
   const gameObject = new GameObject();
-  gameObject.add(text);
+  gameObject.add(textGameObject);
+
+  const getRandomAngle = () => {
+    let angle = 30 - Math.random() * 60;
+
+    if (Math.random() > 0.5) {
+      angle = 180 + angle;
+    }
+
+    return angle;
+  };
 
   const ball = SpriteRenderable.build(ballPath, 4, 6, 0).setTransform({
     position: Vec2d.from(50, 25),
     scale: Vec2d.from(5, 5),
-    rotationInDegree: 30 - Math.random() * 60,
+    rotationInDegree: getRandomAngle(),
   });
 
   ball.setAnimator({
@@ -141,19 +150,43 @@ const createBall = () => {
   gameObject.add(ball);
   gameObject.add(moveTowardsCurrentDirection(ball, 0.1));
 
+  const startAgain = () => {
+    textGameObject.visible = false;
+    gameObject.paused = false;
+    ball.setTransform({
+      position: Vec2d.from(50, 25),
+      scale: Vec2d.from(5, 5),
+      rotationInDegree: getRandomAngle(),
+    });
+  };
+
+  const finishGame = (winner: number) => {
+    actionText
+      .setTransform({ position: Vec2d.from(21, 25) })
+      .setText(`Player ${winner + 1} won!`);
+    setTimeout(() => {
+      score[0] = 0;
+      score[1] = 0;
+      startAgain();
+    }, 5000);
+  };
+
   const computeScore = (player: number) => {
-    text.visible = true;
+    textGameObject.visible = true;
     gameObject.paused = true;
     score[player] += 1;
-    resultText.setText(`score: ${score[1]} - ${score[0]}`);
+    scoreText.setText(`${score[1]} - ${score[0]}`);
+    actionText
+      .setTransform({ position: Vec2d.from(40, 25) })
+      .setText(actionMessageText);
     setTimeout(() => {
-      text.visible = false;
-      gameObject.paused = false;
-      ball.setTransform({
-        position: Vec2d.from(50, 25),
-        scale: Vec2d.from(5, 5),
-        rotationInDegree: 30 - Math.random() * 60,
-      });
+      if (score[0] > 2) {
+        finishGame(1);
+      } else if (score[1] > 2) {
+        finishGame(0);
+      } else {
+        startAgain();
+      }
     }, 2000);
   };
 
