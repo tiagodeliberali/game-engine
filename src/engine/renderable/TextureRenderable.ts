@@ -25,6 +25,10 @@ export class TextureRenderable extends AbstractRenderable<TextureShader> {
     this.texturePath = texturePath;
   }
 
+  static build(texturePath: string) {
+    return new TextureRenderable(texturePath);
+  }
+
   load() {
     getResourceManager().loadScene(this.texturePath);
   }

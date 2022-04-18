@@ -1,6 +1,7 @@
 import {
   Camera,
   Color,
+  ColorDef,
   Transform,
   TransformDef,
   VertexBuffer,
@@ -60,6 +61,14 @@ export abstract class AbstractRenderable<T extends AbstractShader>
       newTransformDef.rotationInDegree! - this.trsMatrix.getRotationInDegree()
     );
     this.trsMatrix = Transform.Build(newTransformDef);
+
+    return this;
+  }
+
+  setColor(colorDef: ColorDef) {
+    this.color.set(colorDef);
+
+    return this;
   }
 
   addToPosition(vector: Vec2d) {

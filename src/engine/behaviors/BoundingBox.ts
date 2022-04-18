@@ -44,6 +44,15 @@ export class BoundingBox implements IComponent {
     this.height = height;
   }
 
+  static from(owner: ITransformable, tag: string) {
+    return new BoundingBox(
+      owner,
+      tag,
+      owner.getTransform().getScale().x,
+      owner.getTransform().getScale().y
+    );
+  }
+
   minX() {
     return this.owner.getTransform().getPosition().x - this.width / 2;
   }

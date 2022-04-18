@@ -9,6 +9,10 @@ export class Renderable extends AbstractRenderable<SimpleShader> {
     super(gl, vertexBuffer);
   }
 
+  static build() {
+    return new Renderable();
+  }
+
   load() {
     //
   }

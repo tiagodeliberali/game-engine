@@ -36,6 +36,14 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
     );
   }
 
+  static getDefaultFont(initialText: string) {
+    return new FontRenderable(8, 12, initialText);
+  }
+
+  setText(text: string) {
+    this.text = text;
+  }
+
   load() {
     getResourceManager().loadGlobal(defaultFontPath);
   }
@@ -47,27 +55,6 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
 
   update() {
     //
-  }
-
-  static getDefaultFont(initialText: string) {
-    return new FontRenderable(8, 12, initialText);
-  }
-
-  setText(text: string) {
-    this.text = text;
-  }
-
-  setSpritePosition(spritePosition: Box) {
-    if (!spritePosition.isNormalized()) {
-      spritePosition = spritePosition.normalize(
-        this.texture!.width,
-        this.texture!.height
-      );
-    }
-
-    this.textureVertexBuffer.setTextureCoordinate(
-      spritePosition.getElementUVCoordinateArray()
-    );
   }
 
   draw(camera: Camera) {
@@ -96,5 +83,18 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
     this.setTransform({
       position: new Vec2d(initialTrsPosition, this.trsMatrix.getPosition().y),
     });
+  }
+
+  private setSpritePosition(spritePosition: Box) {
+    if (!spritePosition.isNormalized()) {
+      spritePosition = spritePosition.normalize(
+        this.texture!.width,
+        this.texture!.height
+      );
+    }
+
+    this.textureVertexBuffer.setTextureCoordinate(
+      spritePosition.getElementUVCoordinateArray()
+    );
   }
 }

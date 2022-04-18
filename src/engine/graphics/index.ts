@@ -1,4 +1,4 @@
-import { Color } from "./Color";
+import { Color, ColorDef } from "./Color";
 import { ShaderLib } from "./ShaderLib";
 import { Camera } from "./Camera";
 import { Viewport } from "./Viewport";
@@ -21,4 +21,4 @@ export {
   SpriteShader,
 };
 
-export type { TransformDef, ITransformable };
+export type { TransformDef, ITransformable, ColorDef };

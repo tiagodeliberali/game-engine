@@ -44,6 +44,15 @@ export class SpriteRenderable extends AbstractRenderable<TextureShader> {
     this.position = position;
   }
 
+  static build(
+    texturePath: string,
+    rows: number,
+    columns: number,
+    position: number
+  ) {
+    return new SpriteRenderable(texturePath, rows, columns, position);
+  }
+
   load() {
     getResourceManager().loadScene(this.texturePath);
   }

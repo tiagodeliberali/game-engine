@@ -1,4 +1,9 @@
-type ColorDef = { red: number; green: number; blue: number; alpha?: number };
+export type ColorDef = {
+  red: number;
+  green: number;
+  blue: number;
+  alpha?: number;
+};
 
 export class Color {
   red: number;

@@ -28,7 +28,7 @@ const blueSquareBehavior = (transform: ITransformable) => {
 
 const createBlueSquare = () => {
   const blueSquare = new Renderable();
-  blueSquare.color.set({ red: 100, green: 0, blue: 255 });
+  blueSquare.setColor({ red: 100, green: 0, blue: 255 });
   blueSquare.setTransform({
     position: new Vec2d(50, 25),
     scale: new Vec2d(15, 15),
@@ -73,7 +73,7 @@ export function buildInitialScene() {
   scene.add(character);
 
   const redSquare = new Renderable();
-  redSquare.color.set({ red: 255, green: 0, blue: 0 });
+  redSquare.setColor({ red: 255, green: 0, blue: 0 });
   redSquare.setTransform({
     position: new Vec2d(10, 10),
     scale: new Vec2d(7, 7),
@@ -83,7 +83,7 @@ export function buildInitialScene() {
   scene.add(rotate(redSquare, character, 0.5));
 
   const text = FontRenderable.getDefaultFont("Ola Alice!");
-  text.color.set({ red: 100, green: 200, blue: 100, alpha: 1 });
+  text.setColor({ red: 100, green: 200, blue: 100, alpha: 1 });
   text.setTransform({
     position: new Vec2d(20, 40),
     scale: new Vec2d(3, 3),

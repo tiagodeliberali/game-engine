@@ -91,7 +91,7 @@ export class SecondScene extends BasicScene {
 
   private buildEnderman() {
     const cabeca = new Renderable();
-    cabeca.color.set({
+    cabeca.setColor({
       red: 0,
       green: 0,
       blue: 0,
@@ -104,7 +104,7 @@ export class SecondScene extends BasicScene {
       rotationInDegree: 0,
       scale: new Vec2d(0.3, 0.1),
     });
-    olho1.color.set({
+    olho1.setColor({
       red: 153,
       green: 88,
       blue: 237,
@@ -117,7 +117,7 @@ export class SecondScene extends BasicScene {
       rotationInDegree: 0,
       scale: new Vec2d(0.3, 0.1),
     });
-    olho2.color.set({
+    olho2.setColor({
       red: 153,
       green: 88,
       blue: 237,
@@ -130,7 +130,7 @@ export class SecondScene extends BasicScene {
       rotationInDegree: 0,
       scale: new Vec2d(1.0, 0.3),
     });
-    boca.color.set({
+    boca.setColor({
       red: 74,
       green: 237,
       blue: 188,
@@ -143,7 +143,7 @@ export class SecondScene extends BasicScene {
       rotationInDegree: 0,
       scale: new Vec2d(0.1, 0.3),
     });
-    bocaLado1.color.set({
+    bocaLado1.setColor({
       red: 0,
       green: 0,
       blue: 0,
@@ -156,7 +156,7 @@ export class SecondScene extends BasicScene {
       rotationInDegree: 0,
       scale: new Vec2d(0.1, 0.3),
     });
-    bocaLado2.color.set({
+    bocaLado2.setColor({
       red: 0,
       green: 0,
       blue: 0,
@@ -164,7 +164,7 @@ export class SecondScene extends BasicScene {
     this.pushComponent(bocaLado2);
 
     this.phoenix = new SpriteRenderable(phoenixPath, 2, 3, 0);
-    this.phoenix.color.set({
+    this.phoenix.setColor({
       red: 200,
       green: 200,
       blue: 200,

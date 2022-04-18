@@ -27,37 +27,33 @@ const addBoundingBox = (box: BoundingBox): BoundingBox => {
 const buildLimits = () => {
   const limits = new GameObject();
 
-  const upperLimit = new Renderable();
-  upperLimit.setTransform({
+  const upperLimit = Renderable.build().setTransform({
     position: Vec2d.from(50, 45),
     scale: Vec2d.from(90, 1),
   });
   limits.add(upperLimit);
-  limits.add(addBoundingBox(new BoundingBox(upperLimit, "limit", 90, 1)));
+  limits.add(addBoundingBox(BoundingBox.from(upperLimit, "limit")));
 
-  const lowerLimit = new Renderable();
-  lowerLimit.setTransform({
+  const lowerLimit = Renderable.build().setTransform({
     position: Vec2d.from(50, 5),
     scale: Vec2d.from(90, 1),
   });
   limits.add(lowerLimit);
-  limits.add(addBoundingBox(new BoundingBox(lowerLimit, "limit", 90, 1)));
+  limits.add(addBoundingBox(BoundingBox.from(lowerLimit, "limit")));
 
-  const leftLimit = new Renderable();
-  leftLimit.setTransform({
+  const leftLimit = Renderable.build().setTransform({
     position: Vec2d.from(5, 25),
     scale: Vec2d.from(1, 41),
   });
   limits.add(leftLimit);
-  limits.add(addBoundingBox(new BoundingBox(leftLimit, "point1", 1, 41)));
+  limits.add(addBoundingBox(BoundingBox.from(leftLimit, "point1")));
 
-  const rightLimit = new Renderable();
-  rightLimit.setTransform({
+  const rightLimit = Renderable.build().setTransform({
     position: Vec2d.from(95, 25),
     scale: Vec2d.from(1, 41),
   });
   limits.add(rightLimit);
-  limits.add(addBoundingBox(new BoundingBox(rightLimit, "point2", 1, 41)));
+  limits.add(addBoundingBox(BoundingBox.from(rightLimit, "point2")));
 
   return limits;
 };
@@ -78,8 +74,7 @@ const createPaddle = (
 ) => {
   const gameObject = new GameObject();
 
-  const paddle = new TextureRenderable(texturePath);
-  paddle.setTransform({
+  const paddle = TextureRenderable.build(texturePath).setTransform({
     position: Vec2d.from(x, 25),
     scale: Vec2d.from(13, 5),
     rotationInDegree: rotation,
@@ -87,11 +82,11 @@ const createPaddle = (
   gameObject.add(paddle);
   gameObject.add(
     new Behavior(() => {
-      if (isKeyPressed(upKey) && paddle.getTransform().getPosition().y < 37) {
+      if (isKeyPressed(upKey) && paddle.getTransform().getPosition().y < 39) {
         paddle.addToPosition(Vec2d.from(0, 2));
       } else if (
         isKeyPressed(downKey) &&
-        paddle.getTransform().getPosition().y > 13
+        paddle.getTransform().getPosition().y > 11
       ) {
         paddle.addToPosition(Vec2d.from(0, -2));
       }
@@ -105,34 +100,36 @@ const createPaddle = (
 
 const createBall = () => {
   const text = new GameObject();
-  const goalText = FontRenderable.getDefaultFont("Ponto!");
-  goalText.color.set({ red: 100, green: 200, blue: 100, alpha: 1 });
-  goalText.setTransform({
-    position: Vec2d.from(40, 25),
-    scale: Vec2d.from(5, 5),
-  });
   text.visible = false;
-  text.add(goalText);
+
+  text.add(
+    FontRenderable.getDefaultFont("Ponto!")
+      .setColor({ red: 100, green: 200, blue: 100, alpha: 1 })
+      .setTransform({
+        position: Vec2d.from(40, 25),
+        scale: Vec2d.from(5, 5),
+      })
+  );
+
   const resultText = FontRenderable.getDefaultFont(
     `score: ${score[0]} - ${score[1]}`
-  );
-  resultText.color.set({ red: 100, green: 200, blue: 100, alpha: 1 });
-  resultText.setTransform({
-    position: Vec2d.from(40, 48),
-    scale: Vec2d.from(2, 2),
-  });
+  )
+    .setColor({ red: 100, green: 200, blue: 100, alpha: 1 })
+    .setTransform({
+      position: Vec2d.from(40, 48),
+      scale: Vec2d.from(2, 2),
+    });
   text.add(resultText);
 
   const gameObject = new GameObject();
-
   gameObject.add(text);
 
-  const ball = new SpriteRenderable(ballPath, 4, 6, 0);
-  ball.setTransform({
+  const ball = SpriteRenderable.build(ballPath, 4, 6, 0).setTransform({
     position: Vec2d.from(50, 25),
     scale: Vec2d.from(5, 5),
     rotationInDegree: 30 - Math.random() * 60,
   });
+
   ball.setAnimator({
     initialPosition: 0,
     lastPosition: 23,
@@ -140,6 +137,7 @@ const createBall = () => {
     type: AnimationType.ForwardToBegining,
   });
   ball.runInLoop();
+
   gameObject.add(ball);
   gameObject.add(moveTowardsCurrentDirection(ball, 0.1));
 
@@ -190,6 +188,30 @@ const createBall = () => {
   return gameObject;
 };
 
+const pauseBehavior = (gameComponents: GameObject) => {
+  const pauseObject = new GameObject();
+  pauseObject.visible = false;
+  pauseObject.add(
+    FontRenderable.getDefaultFont("Paused")
+      .setColor({ red: 100, green: 200, blue: 100, alpha: 1 })
+      .setTransform({
+        position: Vec2d.from(40, 25),
+        scale: Vec2d.from(5, 5),
+      })
+  );
+
+  pauseObject.add(
+    new Behavior(() => {
+      if (isKeyClicked(Keys.Space)) {
+        gameComponents.paused = !gameComponents.paused;
+        pauseObject.visible = gameComponents.paused;
+      }
+    })
+  );
+
+  return pauseObject;
+};
+
 export function pong() {
   const scene = new SimplifiedScene(100, 50);
 
@@ -201,14 +223,7 @@ export function pong() {
   gameComponents.add(createBall());
 
   scene.add(gameComponents);
-
-  scene.add(
-    new Behavior(() => {
-      if (isKeyClicked(Keys.Space)) {
-        gameComponents.paused = !gameComponents.paused;
-      }
-    })
-  );
+  scene.add(pauseBehavior(gameComponents));
 
   return scene;
 }
