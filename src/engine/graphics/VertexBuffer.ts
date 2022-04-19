@@ -2,10 +2,11 @@ import { getGL } from "..";
 import { EngineError } from "../EngineError";
 
 export class VertexBuffer {
-  gl: WebGL2RenderingContext;
-  vertexBuffer: WebGLBuffer;
+  private gl: WebGL2RenderingContext;
+  private vertexBuffer: WebGLBuffer;
+  private size: number;
 
-  constructor() {
+  constructor(size: number) {
     this.gl = getGL();
 
     const buffer = this.gl.createBuffer();
@@ -14,6 +15,7 @@ export class VertexBuffer {
     }
 
     this.vertexBuffer = buffer;
+    this.size = size;
   }
 
   initStaticBuffer(vertices: number[]) {
@@ -42,11 +44,11 @@ export class VertexBuffer {
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
   }
 
-  activate(attributeLocation: number, size: number) {
+  activate(attributeLocation: number) {
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexBuffer);
     this.gl.vertexAttribPointer(
       attributeLocation,
-      size,
+      this.size,
       this.gl.FLOAT,
       false,
       0,

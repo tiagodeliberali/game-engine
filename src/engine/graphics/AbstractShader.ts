@@ -28,14 +28,14 @@ export abstract class AbstractShader {
   }
 
   protected abstractActivate(
-    vertexBuffer: VertexBuffer,
+    vertexPositionBuffer: VertexBuffer,
     pixelColor: Color,
     trsMatrix: mat4,
     cameraMatrix: mat4
   ) {
     this.gl.useProgram(this.compiledShader);
 
-    vertexBuffer.activate(this.vertexPositionLocation, 3);
+    vertexPositionBuffer.activate(this.vertexPositionLocation);
 
     this.gl.uniform4fv(
       this.pixelColorLocation,
@@ -45,7 +45,27 @@ export abstract class AbstractShader {
     this.gl.uniformMatrix4fv(this.cameraXformMatrix, false, cameraMatrix);
   }
 
-  protected compileProgram(
+  protected getUniformLocation(parameter: string) {
+    const parameterLocation = this.gl.getUniformLocation(
+      this.compiledShader,
+      parameter
+    );
+
+    if (parameterLocation === null) {
+      throw new EngineError(
+        AbstractShader.name,
+        `Could not find location for shader ${parameter} parameter`
+      );
+    }
+
+    return parameterLocation;
+  }
+
+  protected getAttribLocation(name: string) {
+    return this.gl.getAttribLocation(this.compiledShader, name);
+  }
+
+  private compileProgram(
     vertexShaderSource: string,
     fragmentShaderSource: string
   ) {
@@ -68,26 +88,6 @@ export abstract class AbstractShader {
     ) {
       throw new EngineError(AbstractShader.name, "Failed to link shader");
     }
-  }
-
-  protected getUniformLocation(parameter: string) {
-    const parameterLocation = this.gl.getUniformLocation(
-      this.compiledShader,
-      parameter
-    );
-
-    if (parameterLocation === null) {
-      throw new EngineError(
-        AbstractShader.name,
-        `Could not find location for shader ${parameter} parameter`
-      );
-    }
-
-    return parameterLocation;
-  }
-
-  protected getAttribLocation(name: string) {
-    return this.gl.getAttribLocation(this.compiledShader, name);
   }
 
   private createShader(shaderSource: string, shaderType: number): WebGLShader {

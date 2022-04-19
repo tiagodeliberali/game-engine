@@ -19,15 +19,20 @@ export class TextureShader extends AbstractShader {
   }
 
   activate(
-    vertexBuffer: VertexBuffer,
-    textureVertexBuffer: VertexBuffer,
+    vertexPositionBuffer: VertexBuffer,
+    textureCoordinateBuffer: VertexBuffer,
     pixelColor: Color,
     trsMatrix: mat4,
     cameraMatrix: mat4
   ) {
-    super.abstractActivate(vertexBuffer, pixelColor, trsMatrix, cameraMatrix);
+    super.abstractActivate(
+      vertexPositionBuffer,
+      pixelColor,
+      trsMatrix,
+      cameraMatrix
+    );
 
-    textureVertexBuffer.activate(this.textureCoordinateLocation, 2);
+    textureCoordinateBuffer.activate(this.textureCoordinateLocation);
 
     this.gl.uniform1i(this.samplerLocation, 0);
   }
