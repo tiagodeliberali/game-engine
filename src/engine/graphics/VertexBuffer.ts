@@ -1,3 +1,4 @@
+import { getGL } from "..";
 import { EngineError } from "../EngineError";
 
 let unitSquareCenteredOnZero: VertexBuffer;
@@ -9,54 +10,55 @@ export class VertexBuffer {
   gl: WebGL2RenderingContext;
   vertexBuffer: WebGLBuffer;
 
-  constructor(gl: WebGL2RenderingContext) {
-    const buffer = gl.createBuffer();
+  constructor() {
+    this.gl = getGL();
+
+    const buffer = this.gl.createBuffer();
     if (buffer === null) {
       throw new EngineError(VertexBuffer.name, "Failed to load vertex buffer");
     }
 
-    this.gl = gl;
     this.vertexBuffer = buffer;
   }
 
-  static UnitSquareCenteredOnZero(gl: WebGL2RenderingContext) {
+  static UnitSquareCenteredOnZero() {
     if (unitSquareCenteredOnZero === undefined) {
       const vertices = [
         0.5, 0.5, 0.0, -0.5, 0.5, 0.0, 0.5, -0.5, 0.0, -0.5, -0.5, 0.0,
       ];
-      unitSquareCenteredOnZero = new VertexBuffer(gl);
+      unitSquareCenteredOnZero = new VertexBuffer();
       unitSquareCenteredOnZero.initStaticBuffer(vertices);
     }
 
     return unitSquareCenteredOnZero;
   }
 
-  static UnitSquareLeftBottonOnZero(gl: WebGL2RenderingContext) {
+  static UnitSquareLeftBottonOnZero() {
     if (unitSquareLeftBottonOnZero === undefined) {
       const vertices = [1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0];
-      unitSquareLeftBottonOnZero = new VertexBuffer(gl);
+      unitSquareLeftBottonOnZero = new VertexBuffer();
       unitSquareLeftBottonOnZero.initStaticBuffer(vertices);
     }
 
     return unitSquareLeftBottonOnZero;
   }
 
-  static DynamicUnitSquareLeftBottonOnZero(gl: WebGL2RenderingContext) {
+  static DynamicUnitSquareLeftBottonOnZero() {
     // should be cached?
     if (dynamicUnitSquareLeftBottonOnZero === undefined) {
       const vertices = [1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0];
-      dynamicUnitSquareLeftBottonOnZero = new VertexBuffer(gl);
+      dynamicUnitSquareLeftBottonOnZero = new VertexBuffer();
       dynamicUnitSquareLeftBottonOnZero.initDynamicBuffer(vertices);
     }
 
     return dynamicUnitSquareLeftBottonOnZero;
   }
 
-  static DynamicUnitSquareLeftBottonOnZeroForFont(gl: WebGL2RenderingContext) {
+  static DynamicUnitSquareLeftBottonOnZeroForFont() {
     // should be cached?
     if (dynamicUnitSquareLeftBottonOnZeroForFont === undefined) {
       const vertices = [1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0];
-      dynamicUnitSquareLeftBottonOnZeroForFont = new VertexBuffer(gl);
+      dynamicUnitSquareLeftBottonOnZeroForFont = new VertexBuffer();
       dynamicUnitSquareLeftBottonOnZeroForFont.initDynamicBuffer(vertices);
     }
 

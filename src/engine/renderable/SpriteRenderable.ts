@@ -6,7 +6,6 @@ import {
   Color,
 } from "../graphics";
 import { getResourceManager, Texture } from "../resources";
-import { getGL } from "../GL";
 import { Box } from "../DataStructures";
 import { RenderableAnimator } from ".";
 import { AbstractRenderable } from "./AbstractRenderable";
@@ -28,16 +27,13 @@ export class SpriteRenderable extends AbstractRenderable<TextureShader> {
     columns: number,
     position: number
   ) {
-    const gl = getGL();
-    const vertexBuffer = VertexBuffer.UnitSquareCenteredOnZero(gl);
+    const vertexBuffer = VertexBuffer.UnitSquareCenteredOnZero();
 
-    super(gl, vertexBuffer);
+    super(vertexBuffer);
     this.color = Color.Transparent();
 
     // sprite sheet
-    this.textureVertexBuffer = VertexBuffer.DynamicUnitSquareLeftBottonOnZero(
-      this.gl
-    );
+    this.textureVertexBuffer = VertexBuffer.DynamicUnitSquareLeftBottonOnZero();
     this.texturePath = texturePath;
     this.rows = rows;
     this.columns = columns;

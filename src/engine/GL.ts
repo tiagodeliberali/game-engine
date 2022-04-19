@@ -36,6 +36,10 @@ export function initGL(htmlCanvasID?: string): WebGL2RenderingContext {
 }
 
 export function getCanvasSize(): Vec2d {
+  if (gl === undefined) {
+    gl = initGL(defaultGlName);
+  }
+
   if (canvasSize === undefined) {
     throw new EngineError("GL", "Canvas not initialized");
   }

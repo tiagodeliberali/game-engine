@@ -1,12 +1,10 @@
 import { SimpleShader, VertexBuffer, Camera, ShaderLib } from "../graphics";
-import { getGL } from "../GL";
 import { AbstractRenderable } from "./AbstractRenderable";
 
 export class Renderable extends AbstractRenderable<SimpleShader> {
   constructor() {
-    const gl = getGL();
-    const vertexBuffer = VertexBuffer.UnitSquareCenteredOnZero(gl);
-    super(gl, vertexBuffer);
+    const vertexBuffer = VertexBuffer.UnitSquareCenteredOnZero();
+    super(vertexBuffer);
   }
 
   static build() {

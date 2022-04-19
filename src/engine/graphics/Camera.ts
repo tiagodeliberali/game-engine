@@ -1,15 +1,12 @@
 import { mat4, vec3 } from "gl-matrix";
-import { getGL } from "../GL";
 import { Vec2d } from "../DataStructures";
 
 export class Camera {
-  private gl: WebGL2RenderingContext;
   private center: Vec2d;
   private size: Vec2d;
   private cameraMatrix: mat4;
 
   constructor(center: Vec2d, size: Vec2d) {
-    this.gl = getGL();
     this.center = center;
     this.size = size;
     this.cameraMatrix = mat4.create();

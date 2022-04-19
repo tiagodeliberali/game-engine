@@ -6,7 +6,6 @@ import {
   Color,
 } from "../graphics";
 import { getResourceManager, Texture } from "../resources";
-import { getGL } from "../GL";
 import { AbstractRenderable } from "./AbstractRenderable";
 
 export class TextureRenderable extends AbstractRenderable<TextureShader> {
@@ -15,13 +14,12 @@ export class TextureRenderable extends AbstractRenderable<TextureShader> {
   texturePath: string;
 
   constructor(texturePath: string) {
-    const gl = getGL();
-    const vertexBuffer = VertexBuffer.UnitSquareCenteredOnZero(gl);
+    const vertexBuffer = VertexBuffer.UnitSquareCenteredOnZero();
 
-    super(gl, vertexBuffer);
+    super(vertexBuffer);
 
     this.color = Color.Transparent();
-    this.textureVertexBuffer = VertexBuffer.UnitSquareLeftBottonOnZero(this.gl);
+    this.textureVertexBuffer = VertexBuffer.UnitSquareLeftBottonOnZero();
     this.texturePath = texturePath;
   }
 

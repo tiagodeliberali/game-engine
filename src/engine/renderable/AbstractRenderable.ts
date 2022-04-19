@@ -8,7 +8,7 @@ import {
 } from "../graphics";
 import { IRenderable } from ".";
 import { AbstractShader } from "../graphics/AbstractShader";
-import { Vec2d } from "..";
+import { getGL, Vec2d } from "..";
 
 export abstract class AbstractRenderable<T extends AbstractShader>
   implements IRenderable
@@ -20,8 +20,8 @@ export abstract class AbstractRenderable<T extends AbstractShader>
   trsMatrix: Transform;
   currentDirection: Vec2d = new Vec2d(1, 0);
 
-  constructor(gl: WebGL2RenderingContext, vertexBuffer: VertexBuffer) {
-    this.gl = gl;
+  constructor(vertexBuffer: VertexBuffer) {
+    this.gl = getGL();
     this.color = Color.White();
     this.trsMatrix = Transform.BuldDefault();
     this.vertexBuffer = vertexBuffer;

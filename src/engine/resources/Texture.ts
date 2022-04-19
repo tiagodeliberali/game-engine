@@ -1,3 +1,4 @@
+import { getGL } from "..";
 import { Box } from "../DataStructures";
 import { EngineError } from "../EngineError";
 
@@ -7,8 +8,8 @@ export class Texture {
   height: number;
   textureId: WebGLTexture;
 
-  constructor(gl: WebGL2RenderingContext, image: HTMLImageElement) {
-    this.gl = gl;
+  constructor(image: HTMLImageElement) {
+    this.gl = getGL();
     const id = this.gl.createTexture();
 
     if (id === null) {

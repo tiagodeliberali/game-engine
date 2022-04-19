@@ -6,7 +6,6 @@ import {
   Color,
 } from "../graphics";
 import { Texture } from "../resources";
-import { getGL } from "../GL";
 import { Box, Vec2d } from "../DataStructures";
 import { getResourceManager } from "../resources";
 import { AbstractRenderable } from "./AbstractRenderable";
@@ -21,10 +20,9 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
   text: string;
 
   private constructor(rows: number, columns: number, text: string) {
-    const gl = getGL();
-    const vertexBuffer = VertexBuffer.UnitSquareCenteredOnZero(gl);
+    const vertexBuffer = VertexBuffer.UnitSquareCenteredOnZero();
 
-    super(gl, vertexBuffer);
+    super(vertexBuffer);
 
     this.color = Color.Transparent();
     this.rows = rows;
@@ -32,7 +30,7 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
     this.text = text;
 
     this.textureVertexBuffer =
-      VertexBuffer.DynamicUnitSquareLeftBottonOnZeroForFont(this.gl);
+      VertexBuffer.DynamicUnitSquareLeftBottonOnZeroForFont();
   }
 
   static getDefaultFont(initialText: string) {
