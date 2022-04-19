@@ -112,16 +112,16 @@ const createBall = () => {
     });
   textGameObject.add(actionText);
 
+  const gameObject = new GameObject();
+  gameObject.add(textGameObject);
+
   const scoreText = FontRenderable.getDefaultFont(`${score[0]} - ${score[1]}`)
     .setColor({ red: 100, green: 200, blue: 100, alpha: 1 })
     .setTransform({
       position: Vec2d.from(48, 48),
       scale: Vec2d.from(2, 2),
     });
-  textGameObject.add(scoreText);
-
-  const gameObject = new GameObject();
-  gameObject.add(textGameObject);
+  gameObject.add(scoreText);
 
   const getRandomAngle = () => {
     let angle = 30 - Math.random() * 60;

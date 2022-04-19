@@ -3,6 +3,7 @@ import { EngineError } from "../EngineError";
 let unitSquareCenteredOnZero: VertexBuffer;
 let unitSquareLeftBottonOnZero: VertexBuffer;
 let dynamicUnitSquareLeftBottonOnZero: VertexBuffer;
+let dynamicUnitSquareLeftBottonOnZeroForFont: VertexBuffer;
 
 export class VertexBuffer {
   gl: WebGL2RenderingContext;
@@ -49,6 +50,17 @@ export class VertexBuffer {
     }
 
     return dynamicUnitSquareLeftBottonOnZero;
+  }
+
+  static DynamicUnitSquareLeftBottonOnZeroForFont(gl: WebGL2RenderingContext) {
+    // should be cached?
+    if (dynamicUnitSquareLeftBottonOnZeroForFont === undefined) {
+      const vertices = [1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0];
+      dynamicUnitSquareLeftBottonOnZeroForFont = new VertexBuffer(gl);
+      dynamicUnitSquareLeftBottonOnZeroForFont.initDynamicBuffer(vertices);
+    }
+
+    return dynamicUnitSquareLeftBottonOnZeroForFont;
   }
 
   initStaticBuffer(vertices: number[]) {
