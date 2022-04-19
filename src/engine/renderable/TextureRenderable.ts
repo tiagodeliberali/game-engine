@@ -2,6 +2,7 @@ import {
   ShaderLib,
   TextureShader,
   VertexBuffer,
+  VertexBufferLib,
   Camera,
   Color,
 } from "../graphics";
@@ -14,12 +15,12 @@ export class TextureRenderable extends AbstractRenderable<TextureShader> {
   texturePath: string;
 
   constructor(texturePath: string) {
-    const vertexBuffer = VertexBuffer.UnitSquareCenteredOnZero();
+    const vertexBuffer = VertexBufferLib.UnitSquareCenteredOnZero();
 
     super(vertexBuffer);
 
     this.color = Color.Transparent();
-    this.textureVertexBuffer = VertexBuffer.UnitSquareLeftBottonOnZero();
+    this.textureVertexBuffer = VertexBufferLib.UnitSquareLeftBottonOnZero();
     this.texturePath = texturePath;
   }
 

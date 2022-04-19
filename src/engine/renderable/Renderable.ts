@@ -1,9 +1,9 @@
-import { SimpleShader, VertexBuffer, Camera, ShaderLib } from "../graphics";
+import { SimpleShader, VertexBufferLib, Camera, ShaderLib } from "../graphics";
 import { AbstractRenderable } from "./AbstractRenderable";
 
 export class Renderable extends AbstractRenderable<SimpleShader> {
   constructor() {
-    const vertexBuffer = VertexBuffer.UnitSquareCenteredOnZero();
+    const vertexBuffer = VertexBufferLib.UnitSquareCenteredOnZero();
     super(vertexBuffer);
   }
 

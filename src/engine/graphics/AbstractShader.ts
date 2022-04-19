@@ -35,16 +35,7 @@ export abstract class AbstractShader {
   ) {
     this.gl.useProgram(this.compiledShader);
 
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vertexBuffer.vertexBuffer);
-    this.gl.vertexAttribPointer(
-      this.vertexPositionRef,
-      3,
-      this.gl.FLOAT,
-      false,
-      0,
-      0
-    );
-    this.gl.enableVertexAttribArray(this.vertexPositionRef);
+    vertexBuffer.activate(this.vertexPositionRef, 3);
 
     this.gl.uniform4fv(this.pixelColorRef, pixelColor.getNormalizedArray());
     this.gl.uniformMatrix4fv(this.modelMatrixRef, false, trsMatrix);

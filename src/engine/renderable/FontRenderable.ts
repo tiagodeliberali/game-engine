@@ -3,6 +3,7 @@ import {
   Camera,
   TextureShader,
   VertexBuffer,
+  VertexBufferLib,
   Color,
 } from "../graphics";
 import { Texture } from "../resources";
@@ -20,7 +21,7 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
   text: string;
 
   private constructor(rows: number, columns: number, text: string) {
-    const vertexBuffer = VertexBuffer.UnitSquareCenteredOnZero();
+    const vertexBuffer = VertexBufferLib.UnitSquareCenteredOnZero();
 
     super(vertexBuffer);
 
@@ -30,7 +31,7 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
     this.text = text;
 
     this.textureVertexBuffer =
-      VertexBuffer.DynamicUnitSquareLeftBottonOnZeroForFont();
+      VertexBufferLib.DynamicUnitSquareLeftBottonOnZeroForFont();
   }
 
   static getDefaultFont(initialText: string) {

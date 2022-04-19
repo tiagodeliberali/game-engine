@@ -3,6 +3,7 @@ import {
   Camera,
   TextureShader,
   VertexBuffer,
+  VertexBufferLib,
   Color,
 } from "../graphics";
 import { getResourceManager, Texture } from "../resources";
@@ -27,13 +28,14 @@ export class SpriteRenderable extends AbstractRenderable<TextureShader> {
     columns: number,
     position: number
   ) {
-    const vertexBuffer = VertexBuffer.UnitSquareCenteredOnZero();
+    const vertexBuffer = VertexBufferLib.UnitSquareCenteredOnZero();
 
     super(vertexBuffer);
     this.color = Color.Transparent();
 
     // sprite sheet
-    this.textureVertexBuffer = VertexBuffer.DynamicUnitSquareLeftBottonOnZero();
+    this.textureVertexBuffer =
+      VertexBufferLib.DynamicUnitSquareLeftBottonOnZero();
     this.texturePath = texturePath;
     this.rows = rows;
     this.columns = columns;

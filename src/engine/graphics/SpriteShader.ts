@@ -31,16 +31,7 @@ export class SpriteShader extends AbstractShader {
       cameraMatrix
     );
 
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, textureVertexBuffer.vertexBuffer);
-    this.gl.vertexAttribPointer(
-      this.textureCoordinateRef,
-      2,
-      this.gl.FLOAT,
-      false,
-      0,
-      0
-    );
-    this.gl.enableVertexAttribArray(this.textureCoordinateRef);
+    textureVertexBuffer.activate(this.textureCoordinateRef, 2);
 
     this.gl.uniform1i(this.samplerRef, 0);
   }

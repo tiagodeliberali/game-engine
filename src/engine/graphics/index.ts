@@ -4,6 +4,7 @@ import { Camera } from "./Camera";
 import { Viewport } from "./Viewport";
 import { Transform, TransformDef } from "./Transform";
 import { VertexBuffer } from "./VertexBuffer";
+import { VertexBufferLib } from "./VertexBufferLib";
 import { SimpleShader } from "./SimpleShader";
 import { TextureShader } from "./TextureShader";
 import { SpriteShader } from "./SpriteShader";
@@ -19,6 +20,7 @@ export {
   SimpleShader,
   TextureShader,
   SpriteShader,
+  VertexBufferLib,
 };
 
 export type { TransformDef, ITransformable, ColorDef };
