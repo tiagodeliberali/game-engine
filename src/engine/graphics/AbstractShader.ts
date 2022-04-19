@@ -5,9 +5,9 @@ import { Color, VertexBuffer } from ".";
 export abstract class AbstractShader {
   gl: WebGL2RenderingContext;
   compiledShader: WebGLProgram;
-  vertexPositionRef: number;
-  pixelColorRef: WebGLUniformLocation;
-  modelMatrixRef: WebGLUniformLocation;
+  vertexPositionLocation: number;
+  pixelColorLocation: WebGLUniformLocation;
+  modelMatrixLocation: WebGLUniformLocation;
   cameraXformMatrix: WebGLUniformLocation;
 
   constructor(
@@ -16,18 +16,18 @@ export abstract class AbstractShader {
     fragmentShaderSource: string
   ) {
     this.gl = gl;
+
     this.compiledShader = this.gl.createProgram()!;
+    this.compileProgram(vertexShaderSource, fragmentShaderSource);
 
-    this.compileAndLinkShader(vertexShaderSource, fragmentShaderSource);
+    this.vertexPositionLocation = this.getAttribLocation("aVertexPosition");
 
-    this.vertexPositionRef = this.getAttribLocation("aVertexPosition");
-
-    this.pixelColorRef = this.getUniformLocation("uPixelColor");
-    this.modelMatrixRef = this.getUniformLocation("uModelXformMatrix");
+    this.pixelColorLocation = this.getUniformLocation("uPixelColor");
+    this.modelMatrixLocation = this.getUniformLocation("uModelXformMatrix");
     this.cameraXformMatrix = this.getUniformLocation("uCameraXformMatrix");
   }
 
-  protected activateAbstractFields(
+  protected abstractActivate(
     vertexBuffer: VertexBuffer,
     pixelColor: Color,
     trsMatrix: mat4,
@@ -35,23 +35,26 @@ export abstract class AbstractShader {
   ) {
     this.gl.useProgram(this.compiledShader);
 
-    vertexBuffer.activate(this.vertexPositionRef, 3);
+    vertexBuffer.activate(this.vertexPositionLocation, 3);
 
-    this.gl.uniform4fv(this.pixelColorRef, pixelColor.getNormalizedArray());
-    this.gl.uniformMatrix4fv(this.modelMatrixRef, false, trsMatrix);
+    this.gl.uniform4fv(
+      this.pixelColorLocation,
+      pixelColor.getNormalizedArray()
+    );
+    this.gl.uniformMatrix4fv(this.modelMatrixLocation, false, trsMatrix);
     this.gl.uniformMatrix4fv(this.cameraXformMatrix, false, cameraMatrix);
   }
 
-  protected compileAndLinkShader(
+  protected compileProgram(
     vertexShaderSource: string,
     fragmentShaderSource: string
   ) {
-    const vertexShader = this.initAndCompileShader(
+    const vertexShader = this.createShader(
       vertexShaderSource,
       this.gl.VERTEX_SHADER
     )!;
 
-    const fragmentShader = this.initAndCompileShader(
+    const fragmentShader = this.createShader(
       fragmentShaderSource,
       this.gl.FRAGMENT_SHADER
     )!;
@@ -68,46 +71,42 @@ export abstract class AbstractShader {
   }
 
   protected getUniformLocation(parameter: string) {
-    const parameterRef = this.gl.getUniformLocation(
+    const parameterLocation = this.gl.getUniformLocation(
       this.compiledShader,
       parameter
     );
 
-    if (parameterRef === null) {
+    if (parameterLocation === null) {
       throw new EngineError(
         AbstractShader.name,
-        `Could not find reference for shader ${parameter} parameter`
+        `Could not find location for shader ${parameter} parameter`
       );
     }
 
-    return parameterRef;
+    return parameterLocation;
   }
 
   protected getAttribLocation(name: string) {
     return this.gl.getAttribLocation(this.compiledShader, name);
   }
 
-  private initAndCompileShader(
-    shaderSource: string,
-    shaderType: number
-  ): WebGLShader {
-    const compiledShader: WebGLShader | null = this.gl.createShader(shaderType);
+  private createShader(shaderSource: string, shaderType: number): WebGLShader {
+    const shader: WebGLShader | null = this.gl.createShader(shaderType);
 
-    if (compiledShader === null) {
+    if (shader === null) {
       throw new EngineError(AbstractShader.name, "Failed to compile shader");
     }
 
-    this.gl.shaderSource(compiledShader, shaderSource);
-    this.gl.compileShader(compiledShader);
+    this.gl.shaderSource(shader, shaderSource);
+    this.gl.compileShader(shader);
 
-    if (!this.gl.getShaderParameter(compiledShader, this.gl.COMPILE_STATUS)) {
+    if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
       throw new EngineError(
         AbstractShader.name,
-        "A shader compiling error occurred: " +
-          this.gl.getShaderInfoLog(compiledShader)
+        "A shader compiling error occurred: " + this.gl.getShaderInfoLog(shader)
       );
     }
 
-    return compiledShader;
+    return shader;
   }
 }

@@ -17,11 +17,6 @@ export class SimpleShader extends AbstractShader {
     trsMatrix: mat4,
     cameraMatrix: mat4
   ) {
-    this.activateAbstractFields(
-      vertexBuffer,
-      pixelColor,
-      trsMatrix,
-      cameraMatrix
-    );
+    super.abstractActivate(vertexBuffer, pixelColor, trsMatrix, cameraMatrix);
   }
 }

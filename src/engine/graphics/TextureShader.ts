@@ -3,8 +3,8 @@ import { Color, VertexBuffer } from ".";
 import { AbstractShader } from "./AbstractShader";
 
 export class TextureShader extends AbstractShader {
-  textureCoordinateRef: number;
-  samplerRef: WebGLUniformLocation;
+  textureCoordinateLocation: number;
+  samplerLocation: WebGLUniformLocation;
 
   constructor(
     gl: WebGL2RenderingContext,
@@ -13,8 +13,9 @@ export class TextureShader extends AbstractShader {
   ) {
     super(gl, vertexShaderSource, fragmentShaderSource);
 
-    this.textureCoordinateRef = this.getAttribLocation("aTextureCoordinate");
-    this.samplerRef = this.getUniformLocation("uSampler");
+    this.textureCoordinateLocation =
+      this.getAttribLocation("aTextureCoordinate");
+    this.samplerLocation = this.getUniformLocation("uSampler");
   }
 
   activate(
@@ -24,15 +25,10 @@ export class TextureShader extends AbstractShader {
     trsMatrix: mat4,
     cameraMatrix: mat4
   ) {
-    super.activateAbstractFields(
-      vertexBuffer,
-      pixelColor,
-      trsMatrix,
-      cameraMatrix
-    );
+    super.abstractActivate(vertexBuffer, pixelColor, trsMatrix, cameraMatrix);
 
-    textureVertexBuffer.activate(this.textureCoordinateRef, 2);
+    textureVertexBuffer.activate(this.textureCoordinateLocation, 2);
 
-    this.gl.uniform1i(this.samplerRef, 0);
+    this.gl.uniform1i(this.samplerLocation, 0);
   }
 }
