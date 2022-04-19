@@ -64,6 +64,7 @@ const slimePaddlePath = "./textures/slime_paddle.png";
 
 // https://www.spriters-resource.com/pc_computer/bioniclethelegendofmatanuiprototype/sheet/108251/
 const ballPath = "./textures/ball.png";
+const phoenixPath = "/textures/phoenix_fly.png";
 
 const createPaddle = (
   texturePath: string,
@@ -132,6 +133,19 @@ const createBall = () => {
 
     return angle;
   };
+
+  const phoenix = SpriteRenderable.build(phoenixPath, 2, 3, 0).setTransform({
+    position: Vec2d.from(50, 25),
+    scale: Vec2d.from(15, 15),
+  });
+  phoenix.setAnimator({
+    initialPosition: 0,
+    lastPosition: 5,
+    speed: 5,
+    type: AnimationType.ForwardToBegining,
+  });
+  phoenix.runInLoop();
+  gameObject.add(phoenix);
 
   const ball = SpriteRenderable.build(ballPath, 4, 6, 0).setTransform({
     position: Vec2d.from(50, 25),

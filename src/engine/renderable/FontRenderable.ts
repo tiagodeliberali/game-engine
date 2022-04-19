@@ -31,7 +31,7 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
     this.text = text;
 
     this.textureVertexBuffer =
-      VertexBufferLib.DynamicUnitSquareLeftBottonOnZeroForFont();
+      VertexBufferLib.DynamicUnitSquareLeftBottonOnZero();
   }
 
   static getDefaultFont(initialText: string) {

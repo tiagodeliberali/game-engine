@@ -2,8 +2,6 @@ import { VertexBuffer } from ".";
 
 let unitSquareCenteredOnZero: VertexBuffer;
 let unitSquareLeftBottonOnZero: VertexBuffer;
-let dynamicUnitSquareLeftBottonOnZero: VertexBuffer;
-let dynamicUnitSquareLeftBottonOnZeroForFont: VertexBuffer;
 
 export class VertexBufferLib {
   static UnitSquareCenteredOnZero() {
@@ -29,24 +27,10 @@ export class VertexBufferLib {
   }
 
   static DynamicUnitSquareLeftBottonOnZero() {
-    // should be cached?
-    if (dynamicUnitSquareLeftBottonOnZero === undefined) {
-      const vertices = [1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0];
-      dynamicUnitSquareLeftBottonOnZero = new VertexBuffer();
-      dynamicUnitSquareLeftBottonOnZero.initDynamicBuffer(vertices);
-    }
+    const vertices = [1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0];
+    const buffer = new VertexBuffer();
+    buffer.initDynamicBuffer(vertices);
 
-    return dynamicUnitSquareLeftBottonOnZero;
-  }
-
-  static DynamicUnitSquareLeftBottonOnZeroForFont() {
-    // should be cached?
-    if (dynamicUnitSquareLeftBottonOnZeroForFont === undefined) {
-      const vertices = [1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0];
-      dynamicUnitSquareLeftBottonOnZeroForFont = new VertexBuffer();
-      dynamicUnitSquareLeftBottonOnZeroForFont.initDynamicBuffer(vertices);
-    }
-
-    return dynamicUnitSquareLeftBottonOnZeroForFont;
+    return buffer;
   }
 }
