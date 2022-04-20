@@ -1,9 +1,8 @@
-import { ShaderLib, TextureShader, Camera, Color } from "../graphics";
-import { getResourceManager, Texture } from "../resources";
+import { ShaderLib, TextureShader, Camera, Color, Texture } from "../graphics";
+import { getResourceManager } from "../resources";
 import { AbstractRenderable } from "./AbstractRenderable";
 
 export class TextureRenderable extends AbstractRenderable<TextureShader> {
-  texture: Texture | undefined;
   texturePath: string;
 
   constructor(texturePath: string) {
@@ -24,10 +23,10 @@ export class TextureRenderable extends AbstractRenderable<TextureShader> {
   init() {
     this.shader = ShaderLib.getTextureShader();
     this.shader.initBuffers(
+      getResourceManager().get<Texture>(this.texturePath),
       [0.5, 0.5, 0.0, -0.5, 0.5, 0.0, 0.5, -0.5, 0.0, -0.5, -0.5, 0.0],
       [1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0]
     );
-    this.texture = getResourceManager().get<Texture>(this.texturePath);
   }
 
   update() {
@@ -35,7 +34,6 @@ export class TextureRenderable extends AbstractRenderable<TextureShader> {
   }
 
   draw(camera: Camera) {
-    this.texture!.activate();
     this.shader!.draw(
       this.color,
       this.trsMatrix.getTrsMatrix(),

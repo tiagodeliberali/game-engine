@@ -19,7 +19,7 @@ import {
 import { BasicScene, SimplifiedScene } from "./scene";
 import { GameEngine } from "./GameEngine";
 import { isKeyPressed, isKeyClicked, Keys } from "./input";
-import { Audio, Texture, ResourceComponent } from "./resources";
+import { Audio, ResourceComponent } from "./resources";
 import { EngineError } from "./EngineError";
 import {
   GameObject,
@@ -48,7 +48,6 @@ export {
   Keys,
   BasicScene,
   Audio,
-  Texture,
   Viewport,
   EngineError,
   SpriteRenderable,

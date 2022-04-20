@@ -1,15 +1,15 @@
 import { mat4 } from "gl-matrix";
-import { Color, VertexBuffer } from ".";
+import { Color, Texture, VertexBuffer } from ".";
 import { AbstractShader } from "./AbstractShader";
 
 export class TextureShader extends AbstractShader {
-  vertexPositionBuffer: VertexBuffer;
-  pixelColorLocation: WebGLUniformLocation;
-  modelMatrixLocation: WebGLUniformLocation;
-  cameraXformMatrix: WebGLUniformLocation;
-
-  textureCoordinateBuffer: VertexBuffer;
-  samplerLocation: WebGLUniformLocation;
+  private texture: Texture | undefined;
+  private vertexPositionBuffer: VertexBuffer;
+  private pixelColorLocation: WebGLUniformLocation;
+  private modelMatrixLocation: WebGLUniformLocation;
+  private cameraXformMatrix: WebGLUniformLocation;
+  private textureCoordinateBuffer: VertexBuffer;
+  private samplerLocation: WebGLUniformLocation;
 
   constructor(vertexShaderSource: string, fragmentShaderSource: string) {
     super(vertexShaderSource, fragmentShaderSource);
@@ -31,15 +31,50 @@ export class TextureShader extends AbstractShader {
     this.samplerLocation = this.getUniformLocation("uSampler");
   }
 
-  initBuffers(vertices: number[], texture: number[]) {
+  initBuffers(
+    texture: Texture,
+    positionVertices: number[],
+    textureVertices: number[]
+  ) {
+    this.texture = texture;
     this.vertexPositionBuffer.initVertexArray();
-    this.vertexPositionBuffer.initBuffer(vertices, this.gl.STATIC_DRAW);
-    this.textureCoordinateBuffer.initBuffer(texture, this.gl.STATIC_DRAW);
+    this.vertexPositionBuffer.initBuffer(positionVertices, this.gl.STATIC_DRAW);
+    this.textureCoordinateBuffer.initBuffer(
+      textureVertices,
+      this.gl.STATIC_DRAW
+    );
     this.vertexPositionBuffer.clearVertexArray();
   }
 
-  setTextureCoordinate(vertices: number[]) {
+  setSpritePosition(rows: number, columns: number, position: number) {
+    this.setTextureCoordinate(
+      this.getSpritePosition(
+        rows,
+        columns,
+        position
+      ).getElementUVCoordinateArray()
+    );
+  }
+
+  private setTextureCoordinate(vertices: number[]) {
     this.textureCoordinateBuffer.setTextureCoordinate(vertices);
+  }
+
+  private getSpritePosition(rows: number, columns: number, position: number) {
+    let spritePosition = this.texture!.getSpritePositionLinear(
+      rows,
+      columns,
+      position
+    );
+
+    if (!spritePosition.isNormalized()) {
+      spritePosition = spritePosition.normalize(
+        this.texture!.width,
+        this.texture!.height
+      );
+    }
+
+    return spritePosition;
   }
 
   draw(pixelColor: Color, trsMatrix: mat4, cameraMatrix: mat4) {
@@ -52,7 +87,7 @@ export class TextureShader extends AbstractShader {
     this.gl.uniformMatrix4fv(this.modelMatrixLocation, false, trsMatrix);
     this.gl.uniformMatrix4fv(this.cameraXformMatrix, false, cameraMatrix);
 
-    this.gl.uniform1i(this.samplerLocation, 0);
+    this.texture?.activate(this.samplerLocation);
 
     this.vertexPositionBuffer.activate();
     this.vertexPositionBuffer.drawSquare();

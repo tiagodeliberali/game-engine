@@ -4,7 +4,6 @@ import { AudioProcessor } from "./AudioProcessor";
 import { Audio } from "./Audio";
 import { TextProcessor } from "./TextProcessor";
 import { TextureProcessor } from "./TextureProcessor";
-import { Texture } from "./Texture";
 import { MapEntry } from "./MapEntry";
 import { ResourceComponent } from "./ResourceComponent";
 
@@ -24,7 +23,6 @@ function getResourceManager() {
 export {
   getResourceManager,
   Audio,
-  Texture,
   MapEntry,
   ResourceProcessor,
   ResourceManager,

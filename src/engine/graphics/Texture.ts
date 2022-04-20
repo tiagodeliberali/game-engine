@@ -3,10 +3,10 @@ import { Box } from "../DataStructures";
 import { EngineError } from "../EngineError";
 
 export class Texture {
-  gl: WebGL2RenderingContext;
+  private gl: WebGL2RenderingContext;
+  private textureId: WebGLTexture;
   width: number;
   height: number;
-  textureId: WebGLTexture;
 
   constructor(image: HTMLImageElement) {
     this.gl = getGL();
@@ -22,7 +22,7 @@ export class Texture {
     this.init(image);
   }
 
-  init(image: HTMLImageElement) {
+  private init(image: HTMLImageElement) {
     this.gl.bindTexture(this.gl.TEXTURE_2D, this.textureId);
 
     this.gl.texImage2D(
@@ -33,16 +33,13 @@ export class Texture {
       this.gl.UNSIGNED_BYTE,
       image
     );
+    this.setFilters();
 
     this.gl.generateMipmap(this.gl.TEXTURE_2D);
     this.gl.bindTexture(this.gl.TEXTURE_2D, null);
   }
 
-  activate() {
-    // Binds texture reference to the current webGL texture functionality
-    this.gl.activeTexture(this.gl.TEXTURE0);
-    this.gl.bindTexture(this.gl.TEXTURE_2D, this.textureId);
-    // To prevent texture wrapping
+  private setFilters() {
     this.gl.texParameteri(
       this.gl.TEXTURE_2D,
       this.gl.TEXTURE_WRAP_S,
@@ -53,18 +50,7 @@ export class Texture {
       this.gl.TEXTURE_WRAP_T,
       this.gl.CLAMP_TO_EDGE
     );
-    // Handles how magnification and minimization filters will work.
-    this.gl.texParameteri(
-      this.gl.TEXTURE_2D,
-      this.gl.TEXTURE_MAG_FILTER,
-      this.gl.LINEAR
-    );
-    this.gl.texParameteri(
-      this.gl.TEXTURE_2D,
-      this.gl.TEXTURE_MIN_FILTER,
-      this.gl.LINEAR_MIPMAP_LINEAR
-    );
-    // For the texture to look "sharp" do the following:
+
     this.gl.texParameteri(
       this.gl.TEXTURE_2D,
       this.gl.TEXTURE_MAG_FILTER,
@@ -75,6 +61,12 @@ export class Texture {
       this.gl.TEXTURE_MIN_FILTER,
       this.gl.NEAREST
     );
+  }
+
+  activate(location: WebGLUniformLocation) {
+    this.gl.activeTexture(this.gl.TEXTURE0);
+    this.gl.bindTexture(this.gl.TEXTURE_2D, this.textureId);
+    this.gl.uniform1i(location, 0);
   }
 
   deactivate() {

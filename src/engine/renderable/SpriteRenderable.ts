@@ -1,13 +1,11 @@
-import { ShaderLib, Camera, TextureShader, Color } from "../graphics";
-import { getResourceManager, Texture } from "../resources";
-import { Box } from "../DataStructures";
+import { ShaderLib, Camera, TextureShader, Color, Texture } from "../graphics";
+import { getResourceManager } from "../resources";
 import { RenderableAnimator } from ".";
 import { AbstractRenderable } from "./AbstractRenderable";
 import { EngineError } from "../EngineError";
 import { AnimationSettings } from "./animator";
 
 export class SpriteRenderable extends AbstractRenderable<TextureShader> {
-  texture: Texture | undefined;
   texturePath: string;
   rows: number;
   columns: number;
@@ -46,11 +44,11 @@ export class SpriteRenderable extends AbstractRenderable<TextureShader> {
   init() {
     this.shader = ShaderLib.getTextureShader();
     this.shader.initBuffers(
+      getResourceManager().get<Texture>(this.texturePath),
       [0.5, 0.5, 0.0, -0.5, 0.5, 0.0, 0.5, -0.5, 0.0, -0.5, -0.5, 0.0],
       [1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0]
     );
 
-    this.texture = getResourceManager().get<Texture>(this.texturePath);
     this.setSprite(this.position);
   }
 
@@ -89,26 +87,10 @@ export class SpriteRenderable extends AbstractRenderable<TextureShader> {
   }
 
   setSprite(position: number) {
-    this.setSpritePosition(
-      this.texture!.getSpritePositionLinear(this.rows, this.columns, position)
-    );
-  }
-
-  private setSpritePosition(spritePosition: Box) {
-    if (!spritePosition.isNormalized()) {
-      spritePosition = spritePosition.normalize(
-        this.texture!.width,
-        this.texture!.height
-      );
-    }
-
-    this.shader!.setTextureCoordinate(
-      spritePosition.getElementUVCoordinateArray()
-    );
+    this.shader!.setSpritePosition(this.rows, this.columns, position);
   }
 
   draw(camera: Camera) {
-    this.texture!.activate();
     this.shader!.draw(
       this.color,
       this.trsMatrix.getTrsMatrix(),

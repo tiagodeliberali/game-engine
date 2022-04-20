@@ -1,4 +1,5 @@
-import { MapEntry, ResourceProcessor, Texture } from ".";
+import { MapEntry, ResourceProcessor } from ".";
+import { Texture } from "../graphics";
 
 export class TextureProcessor extends ResourceProcessor {
   extensions() {
@@ -8,10 +9,6 @@ export class TextureProcessor extends ResourceProcessor {
   async fetch(path: string): Promise<unknown> {
     const image = new Image();
     image.src = path;
-    // return new Promise((resolve) => {
-    //   image.onload = resolve;
-    // });
-
     return image.decode().then(() => image);
   }
 

@@ -7,6 +7,7 @@ import { VertexBuffer } from "./VertexBuffer";
 import { SimpleShader } from "./SimpleShader";
 import { TextureShader } from "./TextureShader";
 import { ITransformable } from "./ITransformable";
+import { Texture } from "./Texture";
 
 export {
   Color,
@@ -17,6 +18,7 @@ export {
   VertexBuffer,
   SimpleShader,
   TextureShader,
+  Texture,
 };
 
 export type { TransformDef, ITransformable, ColorDef };

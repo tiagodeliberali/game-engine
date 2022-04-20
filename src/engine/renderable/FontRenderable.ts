@@ -1,13 +1,11 @@
-import { ShaderLib, Camera, TextureShader, Color } from "../graphics";
-import { Texture } from "../resources";
-import { Box, Vec2d } from "../DataStructures";
+import { ShaderLib, Camera, TextureShader, Color, Texture } from "../graphics";
+import { Vec2d } from "../DataStructures";
 import { getResourceManager } from "../resources";
 import { AbstractRenderable } from "./AbstractRenderable";
 
 export const defaultFontPath = "/textures/default_font.png";
 
 export class FontRenderable extends AbstractRenderable<TextureShader> {
-  texture: Texture | undefined;
   rows: number;
   columns: number;
   text: string;
@@ -36,11 +34,10 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
   init() {
     this.shader = ShaderLib.getTextureShader();
     this.shader.initBuffers(
+      getResourceManager().get<Texture>(defaultFontPath),
       [0.5, 0.5, 0.0, -0.5, 0.5, 0.0, 0.5, -0.5, 0.0, -0.5, -0.5, 0.0],
       [1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0]
     );
-
-    this.texture = getResourceManager().get<Texture>(defaultFontPath);
   }
 
   update() {
@@ -48,15 +45,12 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
   }
 
   draw(camera: Camera) {
-    this.texture!.activate();
     const initialTrsPosition = this.trsMatrix.getPosition().x;
 
     this.text.split("").forEach((character) => {
       const charCode = character.charCodeAt(0);
       const position = charCode - 33;
-      this.setSpritePosition(
-        this.texture!.getSpritePositionLinear(this.rows, this.columns, position)
-      );
+      this.shader!.setSpritePosition(this.rows, this.columns, position);
 
       this.shader!.draw(
         this.color,
@@ -70,18 +64,5 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
     this.setTransform({
       position: new Vec2d(initialTrsPosition, this.trsMatrix.getPosition().y),
     });
-  }
-
-  private setSpritePosition(spritePosition: Box) {
-    if (!spritePosition.isNormalized()) {
-      spritePosition = spritePosition.normalize(
-        this.texture!.width,
-        this.texture!.height
-      );
-    }
-
-    this.shader!.setTextureCoordinate(
-      spritePosition.getElementUVCoordinateArray()
-    );
   }
 }
