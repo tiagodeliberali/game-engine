@@ -57,11 +57,11 @@ export abstract class AbstractShader {
       this.gl.FRAGMENT_SHADER
     );
 
-    this.gl.attachShader(this.program, vertexShader);
-    this.gl.attachShader(this.program, fragmentShader);
-    this.gl.linkProgram(this.program);
+    this.gl.attachShader(program, vertexShader);
+    this.gl.attachShader(program, fragmentShader);
+    this.gl.linkProgram(program);
 
-    if (!this.gl.getProgramParameter(this.program, this.gl.LINK_STATUS)) {
+    if (!this.gl.getProgramParameter(program, this.gl.LINK_STATUS)) {
       throw new EngineError(AbstractShader.name, "Failed to link shader");
     }
 
