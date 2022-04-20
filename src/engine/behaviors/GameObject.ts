@@ -68,7 +68,8 @@ export class GameObject implements IComponent, ITransformable {
     });
 
     this.currentDirection = this.currentDirection.rotateInDegree(
-      newTransformDef.rotationInDegree! - this.transform.getRotationInDegree()
+      (newTransformDef.rotationInDegree || 0) -
+        this.transform.getRotationInDegree()
     );
     this.transform = Transform.Build(newTransformDef);
   }

@@ -87,11 +87,25 @@ export class SpriteRenderable extends AbstractRenderable<TextureShader> {
   }
 
   setSprite(position: number) {
-    this.shader!.setSpritePosition(this.rows, this.columns, position);
+    if (this.shader === undefined) {
+      throw new EngineError(
+        SpriteRenderable.name,
+        "Cannot run setSprite with undefined shader"
+      );
+    }
+
+    this.shader.setSpritePosition(this.rows, this.columns, position);
   }
 
   draw(camera: Camera) {
-    this.shader!.draw(
+    if (this.shader === undefined) {
+      throw new EngineError(
+        SpriteRenderable.name,
+        "Cannot run draw with undefined shader"
+      );
+    }
+
+    this.shader.draw(
       this.color,
       this.trsMatrix.getTrsMatrix(),
       camera.getCameraMatrix()

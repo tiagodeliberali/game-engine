@@ -1,3 +1,4 @@
+import { EngineError } from "../EngineError";
 import { SimpleShader, Camera, ShaderLib } from "../graphics";
 import { AbstractRenderable } from "./AbstractRenderable";
 
@@ -26,7 +27,14 @@ export class Renderable extends AbstractRenderable<SimpleShader> {
   }
 
   draw(camera: Camera) {
-    this.shader!.draw(
+    if (this.shader === undefined) {
+      throw new EngineError(
+        Renderable.name,
+        "Cannot run draw with undefined shader"
+      );
+    }
+
+    this.shader.draw(
       this.color,
       this.trsMatrix.getTrsMatrix(),
       camera.getCameraMatrix()

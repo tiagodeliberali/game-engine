@@ -8,8 +8,10 @@ export abstract class AbstractShader {
   constructor(vertexShaderSource: string, fragmentShaderSource: string) {
     this.gl = getGL();
 
-    this.program = this.gl.createProgram()!;
-    this.compileProgram(vertexShaderSource, fragmentShaderSource);
+    this.program = this.compileProgram(
+      vertexShaderSource,
+      fragmentShaderSource
+    );
   }
 
   protected getUniformLocation(parameter: string) {
@@ -35,16 +37,25 @@ export abstract class AbstractShader {
   private compileProgram(
     vertexShaderSource: string,
     fragmentShaderSource: string
-  ) {
+  ): WebGLProgram {
+    const program = this.gl.createProgram();
+
+    if (program === null) {
+      throw new EngineError(
+        AbstractShader.name,
+        "Call to createProgram returned null"
+      );
+    }
+
     const vertexShader = this.createShader(
       vertexShaderSource,
       this.gl.VERTEX_SHADER
-    )!;
+    );
 
     const fragmentShader = this.createShader(
       fragmentShaderSource,
       this.gl.FRAGMENT_SHADER
-    )!;
+    );
 
     this.gl.attachShader(this.program, vertexShader);
     this.gl.attachShader(this.program, fragmentShader);
@@ -53,6 +64,8 @@ export abstract class AbstractShader {
     if (!this.gl.getProgramParameter(this.program, this.gl.LINK_STATUS)) {
       throw new EngineError(AbstractShader.name, "Failed to link shader");
     }
+
+    return program;
   }
 
   private createShader(shaderSource: string, shaderType: number): WebGLShader {

@@ -22,7 +22,7 @@ const timestamp = performance.now();
 const blueSquareBehavior = (transform: ITransformable) => {
   transform.addToRotationInDegree(10);
 
-  const scale = Math.min(15 + (performance.now() - timestamp!) / 300, 50);
+  const scale = Math.min(15 + (performance.now() - timestamp) / 300, 50);
   transform.setTransform({ scale: new Vec2d(scale, scale) });
 };
 
@@ -61,9 +61,10 @@ export function buildInitialScene() {
   character.add(stageCue);
   character.add(
     new Behavior(() => {
+      const caracterRenderable = character.getFirst<TextureRenderable>();
       if (
-        character.getFirst<TextureRenderable>()!.getTransform().getPosition()
-          .x > 100
+        caracterRenderable &&
+        caracterRenderable.getTransform().getPosition().x > 100
       ) {
         stageCue.get<Audio>().playOnce();
         scene.goToScene(pong());

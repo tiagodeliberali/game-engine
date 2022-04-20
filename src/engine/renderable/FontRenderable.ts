@@ -47,12 +47,18 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
   draw(camera: Camera) {
     const initialTrsPosition = this.trsMatrix.getPosition().x;
 
+    if (this.shader === undefined) {
+      return;
+    }
+
+    const shader = this.shader;
+
     this.text.split("").forEach((character) => {
       const charCode = character.charCodeAt(0);
       const position = charCode - 33;
-      this.shader!.setSpritePosition(this.rows, this.columns, position);
+      shader.setSpritePosition(this.rows, this.columns, position);
 
-      this.shader!.draw(
+      shader.draw(
         this.color,
         this.trsMatrix.getTrsMatrix(),
         camera.getCameraMatrix()

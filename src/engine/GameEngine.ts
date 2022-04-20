@@ -33,12 +33,12 @@ export class GameEngine {
   }
 
   private drawLoop() {
-    this.currentScene!.draw();
+    this.currentScene.draw();
     updateKeyboard();
   }
 
   private updateLoop() {
-    this.currentScene!.update();
+    this.currentScene.update();
   }
 
   async changeScene(scene: AbstractScene) {

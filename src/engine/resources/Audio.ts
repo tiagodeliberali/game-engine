@@ -78,7 +78,7 @@ export class Audio {
 
   stop() {
     if (this.isPlaying()) {
-      this.latestSource!.stop(0);
+      this.latestSource && this.latestSource.stop(0);
       this.latestSource = undefined;
     }
   }

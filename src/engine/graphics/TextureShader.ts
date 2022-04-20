@@ -1,5 +1,6 @@
 import { mat4 } from "gl-matrix";
 import { Color, Texture, VertexBuffer } from ".";
+import { EngineError } from "../EngineError";
 import { AbstractShader } from "./AbstractShader";
 
 export class TextureShader extends AbstractShader {
@@ -61,7 +62,14 @@ export class TextureShader extends AbstractShader {
   }
 
   private getSpritePosition(rows: number, columns: number, position: number) {
-    let spritePosition = this.texture!.getSpritePositionLinear(
+    if (this.texture === undefined) {
+      throw new EngineError(
+        TextureShader.name,
+        "Trying to getSpritePosition with undefined texture"
+      );
+    }
+
+    let spritePosition = this.texture.getSpritePositionLinear(
       rows,
       columns,
       position
@@ -69,8 +77,8 @@ export class TextureShader extends AbstractShader {
 
     if (!spritePosition.isNormalized()) {
       spritePosition = spritePosition.normalize(
-        this.texture!.width,
-        this.texture!.height
+        this.texture.width,
+        this.texture.height
       );
     }
 

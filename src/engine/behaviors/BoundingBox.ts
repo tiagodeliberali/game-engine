@@ -135,21 +135,22 @@ export class BoundingBox implements IComponent {
       return;
     }
 
+    const actions = this.actions;
+
     this.targets.forEach((target) => {
       if (target.intersectsBound(this)) {
         if (!this.colisionList.includes(target.owner)) {
           this.colisionList.push(target.owner);
 
-          this.actions!.onCollideStarted &&
-            this.actions!.onCollideStarted(
+          actions.onCollideStarted &&
+            actions.onCollideStarted(
               target.owner,
               target.tag,
               this.boundCollideStatus(target)
             );
         }
 
-        this.actions!.onColliding &&
-          this.actions!.onColliding(target.owner, target.tag);
+        actions.onColliding && actions.onColliding(target.owner, target.tag);
       } else {
         if (this.colisionList.includes(target.owner)) {
           const index = this.colisionList.indexOf(target.owner, 0);
@@ -157,8 +158,8 @@ export class BoundingBox implements IComponent {
             this.colisionList.splice(index, 1);
           }
 
-          this.actions!.onCollideEnded &&
-            this.actions!.onCollideEnded(target.owner, target.tag);
+          actions.onCollideEnded &&
+            actions.onCollideEnded(target.owner, target.tag);
         }
       }
     });

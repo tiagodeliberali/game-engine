@@ -1,4 +1,5 @@
 import { getGL } from "..";
+import { EngineError } from "../EngineError";
 
 export class VertexBuffer {
   private gl: WebGL2RenderingContext;
@@ -14,7 +15,10 @@ export class VertexBuffer {
   }
 
   initVertexArray() {
-    this.vao = this.gl.createVertexArray()!;
+    this.vao = this.notNull(
+      this.gl.createVertexArray(),
+      "Call to createVertexArray returned undefined"
+    );
     this.gl.bindVertexArray(this.vao);
   }
 
@@ -24,8 +28,11 @@ export class VertexBuffer {
   }
 
   initBuffer(vertices: number[], usage: number) {
-    this.buffer = this.gl.createBuffer()!;
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer!);
+    this.buffer = this.notNull(
+      this.gl.createBuffer(),
+      "Call to createBuffer returned undefined"
+    );
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
     this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertices), usage);
 
     this.gl.enableVertexAttribArray(this.attributeLocation);
@@ -40,14 +47,35 @@ export class VertexBuffer {
     );
   }
 
+  private notNull<T>(value: T | undefined | null, error: string): T {
+    if (value === null || value === undefined) {
+      throw new EngineError(VertexBuffer.name, error);
+    }
+    return value;
+  }
+
   setTextureCoordinate(vertices: number[]) {
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer!);
+    if (this.buffer === undefined) {
+      throw new EngineError(
+        VertexBuffer.name,
+        "Call to setTextureCoordinate with undefined buffer"
+      );
+    }
+
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
     this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array(vertices));
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
   }
 
   activate() {
-    this.gl.bindVertexArray(this.vao!);
+    if (this.vao === undefined) {
+      throw new EngineError(
+        VertexBuffer.name,
+        "Call to activate with undefined vao"
+      );
+    }
+
+    this.gl.bindVertexArray(this.vao);
   }
 
   drawSquare() {

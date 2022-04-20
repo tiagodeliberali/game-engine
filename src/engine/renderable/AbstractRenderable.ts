@@ -46,7 +46,8 @@ export abstract class AbstractRenderable<T extends AbstractShader>
     };
 
     this.currentDirection = this.currentDirection.rotateInDegree(
-      newTransformDef.rotationInDegree! - this.trsMatrix.getRotationInDegree()
+      (newTransformDef.rotationInDegree || 0) -
+        this.trsMatrix.getRotationInDegree()
     );
     this.trsMatrix = Transform.Build(newTransformDef);
 

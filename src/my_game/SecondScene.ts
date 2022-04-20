@@ -63,29 +63,33 @@ export class SecondScene extends BasicScene {
   update() {
     super.update();
 
+    if (this.phoenix === undefined) {
+      return;
+    }
+
     if (isKeyClicked(Keys.Left)) {
-      this.phoenix!.setAnimator({
+      this.phoenix.setAnimator({
         initialPosition: 0,
         lastPosition: 5,
         speed: 5,
         type: AnimationType.BackwardToBegining,
       });
-      this.phoenix!.runInLoop();
+      this.phoenix.runInLoop();
     }
     if (isKeyClicked(Keys.Right)) {
-      this.phoenix!.setAnimator({
+      this.phoenix.setAnimator({
         initialPosition: 0,
         lastPosition: 5,
         speed: 5,
         type: AnimationType.ForwardToBegining,
       });
-      this.phoenix!.runInLoop();
+      this.phoenix.runInLoop();
     }
     if (isKeyPressed(Keys.Up)) {
-      this.phoenix!.runOnce();
+      this.phoenix.runOnce();
     }
     if (isKeyPressed(Keys.Down)) {
-      this.phoenix!.stopLooping();
+      this.phoenix.stopLooping();
     }
   }
 

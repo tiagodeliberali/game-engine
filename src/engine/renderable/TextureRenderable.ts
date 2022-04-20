@@ -1,3 +1,4 @@
+import { EngineError } from "..";
 import { ShaderLib, TextureShader, Camera, Color, Texture } from "../graphics";
 import { getResourceManager } from "../resources";
 import { AbstractRenderable } from "./AbstractRenderable";
@@ -34,7 +35,14 @@ export class TextureRenderable extends AbstractRenderable<TextureShader> {
   }
 
   draw(camera: Camera) {
-    this.shader!.draw(
+    if (this.shader === undefined) {
+      throw new EngineError(
+        TextureRenderable.name,
+        "Cannot run draw with undefined shader"
+      );
+    }
+
+    this.shader.draw(
       this.color,
       this.trsMatrix.getTrsMatrix(),
       camera.getCameraMatrix()
