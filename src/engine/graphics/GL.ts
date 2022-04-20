@@ -1,4 +1,4 @@
-import { Vec2d, EngineError, Color } from ".";
+import { Vec2d, EngineError, Color } from "..";
 
 const defaultGlName = "GLCanvas";
 let gl: WebGL2RenderingContext | undefined;

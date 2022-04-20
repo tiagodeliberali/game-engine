@@ -1,4 +1,3 @@
-import { initGL, clearCanvas, getGL } from "./GL";
 import { Vec2d } from "./DataStructures";
 import {
   Camera,
@@ -7,6 +6,9 @@ import {
   Viewport,
   Transform,
   ITransformable,
+  initGL,
+  clearCanvas,
+  getGL,
 } from "./graphics";
 import {
   SpriteRenderable,

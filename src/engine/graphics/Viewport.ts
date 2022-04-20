@@ -1,6 +1,5 @@
 import { Vec2d } from "../DataStructures";
-import { getGL, clearCanvas, getCanvasSize } from "../GL";
-import { Color } from ".";
+import { Color, getGL, clearCanvas, getCanvasSize } from ".";
 
 export class Viewport {
   private gl: WebGL2RenderingContext;

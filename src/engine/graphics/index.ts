@@ -8,6 +8,7 @@ import { SimpleShader } from "./SimpleShader";
 import { TextureShader } from "./TextureShader";
 import { ITransformable } from "./ITransformable";
 import { Texture } from "./Texture";
+import { initGL, getGL, clearCanvas, getCanvasSize } from "./GL";
 
 export {
   Color,
@@ -19,6 +20,10 @@ export {
   SimpleShader,
   TextureShader,
   Texture,
+  initGL,
+  getGL,
+  clearCanvas,
+  getCanvasSize,
 };
 
 export type { TransformDef, ITransformable, ColorDef };

@@ -1,5 +1,4 @@
-import { clearCanvas } from "../GL";
-import { Camera, Color, Viewport } from "../graphics";
+import { Camera, Color, Viewport, clearCanvas } from "../graphics";
 import { AbstractScene } from ".";
 import { GameObject } from "..";
 import { IComponent } from "../behaviors";
