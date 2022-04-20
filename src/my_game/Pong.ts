@@ -236,7 +236,7 @@ const createBall = (scene: SimplifiedScene) => {
 
   gameObject.add(
     new Behavior(() => {
-      scene.camera.clampAtBoundary(box, 1);
+      scene.camera.clampAtBoundary(box, 0.7);
     })
   );
 

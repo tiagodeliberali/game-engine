@@ -29,6 +29,7 @@ export class BoundingBox implements IComponent {
   actions?: ColisionActions;
   colisionList: ITransformable[] = [];
   tag: string;
+  zone = 1;
 
   constructor(
     owner: ITransformable,
@@ -44,6 +45,10 @@ export class BoundingBox implements IComponent {
     this.height = height;
   }
 
+  setZone(value: number) {
+    this.zone = value;
+  }
+
   static from(owner: ITransformable, tag: string) {
     return new BoundingBox(
       owner,
@@ -54,22 +59,26 @@ export class BoundingBox implements IComponent {
   }
 
   minX() {
-    return this.owner.getTransform().getPosition().x - this.width / 2;
+    return (
+      this.owner.getTransform().getPosition().x - (this.zone * this.width) / 2
+    );
   }
 
   maxX() {
     return (
-      this.owner.getTransform().getPosition().x - this.width / 2 + this.width
+      this.owner.getTransform().getPosition().x + (this.zone * this.width) / 2
     );
   }
 
   minY() {
-    return this.owner.getTransform().getPosition().y - this.height / 2;
+    return (
+      this.owner.getTransform().getPosition().y - (this.zone * this.height) / 2
+    );
   }
 
   maxY() {
     return (
-      this.owner.getTransform().getPosition().y - this.height / 2 + this.height
+      this.owner.getTransform().getPosition().y + (this.zone * this.height) / 2
     );
   }
 
