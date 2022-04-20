@@ -181,6 +181,7 @@ const createBall = () => {
     setTimeout(() => {
       score[0] = 0;
       score[1] = 0;
+      scoreText.setText(`${score[1]} - ${score[0]}`);
       startAgain();
     }, 5000);
   };
