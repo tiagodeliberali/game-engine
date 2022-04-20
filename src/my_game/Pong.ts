@@ -16,13 +16,21 @@ import {
   Vec2d,
 } from "../engine";
 
-const boundingBoxList: BoundingBox[] = [];
-const score = [0, 0];
+export function pong() {
+  const scene = new SimplifiedScene(100, 50);
 
-const addBoundingBox = (box: BoundingBox): BoundingBox => {
-  boundingBoxList.push(box);
-  return box;
-};
+  const gameComponents = new GameObject();
+
+  gameComponents.add(buildLimits());
+  gameComponents.add(createPaddle(icePaddlePath, 15, 270, Keys.W, Keys.S));
+  gameComponents.add(createPaddle(slimePaddlePath, 85, 90, Keys.Up, Keys.Down));
+  gameComponents.add(createBall());
+
+  scene.add(gameComponents);
+  scene.add(pauseBehavior(gameComponents));
+
+  return scene;
+}
 
 const buildLimits = () => {
   const limits = new GameObject();
@@ -56,6 +64,12 @@ const buildLimits = () => {
   limits.add(addBoundingBox(BoundingBox.from(rightLimit, "point2")));
 
   return limits;
+};
+
+const boundingBoxList: BoundingBox[] = [];
+const addBoundingBox = (box: BoundingBox): BoundingBox => {
+  boundingBoxList.push(box);
+  return box;
 };
 
 // https://craftpix.net/freebies/free-buttons-2d-game-objects/
@@ -99,6 +113,7 @@ const createPaddle = (
 };
 
 const actionMessageText = "Ponto!";
+const score = [0, 0];
 
 const createBall = () => {
   const textGameObject = new GameObject();
@@ -245,19 +260,3 @@ const pauseBehavior = (gameComponents: GameObject) => {
 
   return pauseObject;
 };
-
-export function pong() {
-  const scene = new SimplifiedScene(100, 50);
-
-  const gameComponents = new GameObject();
-
-  gameComponents.add(buildLimits());
-  gameComponents.add(createPaddle(icePaddlePath, 15, 270, Keys.W, Keys.S));
-  gameComponents.add(createPaddle(slimePaddlePath, 85, 90, Keys.Up, Keys.Down));
-  gameComponents.add(createBall());
-
-  scene.add(gameComponents);
-  scene.add(pauseBehavior(gameComponents));
-
-  return scene;
-}
