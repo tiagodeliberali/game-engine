@@ -1,4 +1,5 @@
-import { ShaderLib, Camera, TextureShader, Color, Texture } from "../graphics";
+import { ShaderLib, TextureShader, Texture } from "../graphics";
+import { Camera, Color } from "..";
 import { getResourceManager } from "../resources";
 import { RenderableAnimator } from ".";
 import { AbstractRenderable } from "./AbstractRenderable";

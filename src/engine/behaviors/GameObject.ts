@@ -1,7 +1,7 @@
 import { Camera, Transform, Vec2d } from "..";
 import { getResourceManager } from "../resources";
 import { IComponent } from ".";
-import { ITransformable, TransformDef } from "../graphics";
+import { ITransformable, TransformDef } from "..";
 
 export class GameObject implements IComponent, ITransformable {
   private transform: Transform;

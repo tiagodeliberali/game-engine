@@ -1,5 +1,6 @@
 import { mat4 } from "gl-matrix";
-import { Color, VertexBuffer } from ".";
+import { VertexBuffer } from ".";
+import { Color } from "..";
 import { AbstractShader } from "./AbstractShader";
 
 export class SimpleShader extends AbstractShader {

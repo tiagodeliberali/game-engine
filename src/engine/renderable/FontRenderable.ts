@@ -1,4 +1,5 @@
-import { ShaderLib, Camera, TextureShader, Color, Texture } from "../graphics";
+import { ShaderLib, TextureShader, Texture } from "../graphics";
+import { Camera, Color } from "..";
 import { Vec2d } from "../DataStructures";
 import { getResourceManager } from "../resources";
 import { AbstractRenderable } from "./AbstractRenderable";

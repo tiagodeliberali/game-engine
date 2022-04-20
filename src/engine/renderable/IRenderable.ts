@@ -1,4 +1,4 @@
 import { IComponent } from "..";
-import { ITransformable } from "../graphics";
+import { ITransformable } from "..";
 
 export interface IRenderable extends IComponent, ITransformable {}

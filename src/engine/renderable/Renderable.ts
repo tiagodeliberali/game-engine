@@ -1,5 +1,6 @@
 import { EngineError } from "../EngineError";
-import { SimpleShader, Camera, ShaderLib } from "../graphics";
+import { SimpleShader, ShaderLib } from "../graphics";
+import { Camera } from "..";
 import { AbstractRenderable } from "./AbstractRenderable";
 
 export class Renderable extends AbstractRenderable<SimpleShader> {

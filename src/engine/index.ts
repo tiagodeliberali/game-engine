@@ -1,15 +1,13 @@
 import { Vec2d } from "./DataStructures";
+import { Viewport, initGL, clearCanvas, getGL } from "./graphics";
 import {
   Camera,
   Color,
+  ColorDef,
   TransformDef,
-  Viewport,
   Transform,
   ITransformable,
-  initGL,
-  clearCanvas,
-  getGL,
-} from "./graphics";
+} from "./core";
 import {
   SpriteRenderable,
   TextureRenderable,
@@ -66,4 +64,4 @@ export {
   ColisionStatus,
 };
 
-export type { IRenderable, TransformDef, IComponent, ITransformable };
+export type { IRenderable, TransformDef, IComponent, ITransformable, ColorDef };

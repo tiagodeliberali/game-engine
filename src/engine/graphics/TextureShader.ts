@@ -1,5 +1,6 @@
 import { mat4 } from "gl-matrix";
-import { Color, Texture, VertexBuffer } from ".";
+import { Texture, VertexBuffer } from ".";
+import { Color } from "..";
 import { EngineError } from "../EngineError";
 import { AbstractShader } from "./AbstractShader";
 

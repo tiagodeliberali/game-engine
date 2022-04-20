@@ -1,4 +1,4 @@
-import { Camera, Color, ColorDef, Transform, TransformDef } from "../graphics";
+import { Camera, Color, ColorDef, Transform, TransformDef } from "..";
 import { IRenderable } from ".";
 import { AbstractShader } from "../graphics/AbstractShader";
 import { Vec2d } from "..";

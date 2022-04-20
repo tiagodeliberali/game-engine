@@ -1,5 +1,5 @@
-import { EngineError } from "..";
-import { ShaderLib, TextureShader, Camera, Color, Texture } from "../graphics";
+import { Camera, Color, EngineError } from "..";
+import { ShaderLib, TextureShader, Texture } from "../graphics";
 import { getResourceManager } from "../resources";
 import { AbstractRenderable } from "./AbstractRenderable";
 

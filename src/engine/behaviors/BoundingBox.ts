@@ -1,5 +1,5 @@
 import { Vec2d } from "../DataStructures";
-import { ITransformable } from "../graphics";
+import { ITransformable } from "..";
 import { IComponent } from "./IComponent";
 
 export enum ColisionStatus {
