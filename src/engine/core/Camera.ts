@@ -95,29 +95,32 @@ export class Camera implements ITransformable {
     return status;
   }
 
-  //   panWith = function (aXform, zone) {
-  //     let status = this.collideWCBound(aXform, zone);
-  //     if (status !== eBoundCollideStatus.eInside) {
-  //         let pos = aXform.getPosition();
-  //         let newC = this.getWCCenter();
-  //         if ((status & eBoundCollideStatus.eCollideTop) !== 0) {
-  //             newC[1] = pos[1]+(aXform.getHeight() / 2) –
-  //                       (zone * this.getWCHeight() / 2);
-  //         }
-  //         if ((status & eBoundCollideStatus.eCollideBottom) !== 0) {
-  //             newC[1] = pos[1] - (aXform.getHeight() / 2) +
-  //                       (zone * this.getWCHeight() / 2);
-  //         }
-  //         if ((status & eBoundCollideStatus.eCollideRight) !== 0) {
-  //             newC[0] = pos[0] + (aXform.getWidth() / 2) –
-  //                       (zone * this.getWCWidth() / 2);
-  //         }
-  //         if ((status & eBoundCollideStatus.eCollideLeft) !== 0) {
-  //             newC[0] = pos[0] - (aXform.getWidth() / 2) +
-  //                       (zone * this.getWCWidth() / 2);
-  //         }
-  //     }
-  // }
+  panWith(target: BoundingBox, zone: number) {
+    const status = this.boudingBox.boundCollideStatus(target);
+    this.boudingBox.setZone(zone);
+
+    if (status !== ColisionStatus.inside) {
+      const targetPosition = target.owner.getTransform().getPosition();
+
+      let x = this.center.x;
+      let y = this.center.y;
+
+      if ((status & ColisionStatus.collideTop) !== 0) {
+        y = targetPosition.y + target.height / 2 - (zone * this.size.y) / 2;
+      }
+      if ((status & ColisionStatus.collideBottom) !== 0) {
+        y = targetPosition.y - target.height / 2 + (zone * this.size.y) / 2;
+      }
+      if ((status & ColisionStatus.collideRight) !== 0) {
+        x = targetPosition.x + target.width / 2 - (zone * this.size.x) / 2;
+      }
+      if ((status & ColisionStatus.collideLeft) !== 0) {
+        x = targetPosition.x - target.width / 2 + (zone * this.size.x) / 2;
+      }
+
+      this.setTransform({ position: Vec2d.from(x, y) });
+    }
+  }
 
   private configureCamera() {
     mat4.scale(
