@@ -4,7 +4,7 @@ import { GameObject, Vec2d } from "..";
 import { IComponent } from "../behaviors";
 
 export class SimplifiedScene extends AbstractScene {
-  private camera: Camera;
+  camera: Camera;
   private viewport: Viewport;
   private gameObjects: GameObject;
   private color: Color;

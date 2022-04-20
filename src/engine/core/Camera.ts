@@ -1,18 +1,56 @@
 import { mat4, vec3 } from "gl-matrix";
+import { BoundingBox, ColisionStatus } from "../behaviors";
 import { Vec2d } from "../DataStructures";
 import { ITransformable } from "./ITransformable";
+import { Transform, TransformDef } from "./Transform";
 
-export class Camera {
+export class Camera implements ITransformable {
   private center: Vec2d;
   private size: Vec2d;
   private cameraMatrix: mat4;
+  private boudingBox: BoundingBox;
 
   constructor(center: Vec2d, size: Vec2d) {
     this.center = center;
     this.size = size;
     this.cameraMatrix = mat4.create();
 
+    this.boudingBox = BoundingBox.from(this, "camera");
+
     this.configureCamera();
+  }
+
+  getTransform(): Transform {
+    return Transform.Build({
+      position: this.center,
+      scale: this.size,
+    });
+  }
+
+  setTransform(transform: TransformDef) {
+    if (transform.position !== undefined) {
+      this.setCenter(transform.position);
+    }
+
+    if (transform.scale !== undefined) {
+      this.setSize(transform.scale);
+    }
+  }
+
+  getCurrentDirection() {
+    return Vec2d.from(0, 0);
+  }
+
+  addToPosition(vector: Vec2d) {
+    this.center = this.center.add(vector);
+  }
+
+  addToRotationInDegree() {
+    // do nothing
+  }
+
+  factorToScale(vector: Vec2d) {
+    this.size = Vec2d.from(this.size.x * vector.x, this.size.y * vector.y);
   }
 
   getCameraMatrix() {
@@ -29,33 +67,32 @@ export class Camera {
     this.configureCamera();
   }
 
-  //   clampAtBoundary(target: ITransformable, zone) {
-  //     let status = this.collideWCBound(aXform, zone);
-  //     if (status !== eBoundCollideStatus.eInside) {
-  //         let pos = aXform.getPosition();
-  //         if ((status & eBoundCollideStatus.eCollideTop) !== 0) {
-  //             pos[1] = (this.getWCCenter())[1] +
-  //                      (zone * this.getWCHeight() / 2) –
-  //                      (aXform.getHeight() / 2);
-  //         }
-  //         if ((status & eBoundCollideStatus.eCollideBottom) !== 0) {
-  //             pos[1] = (this.getWCCenter())[1] –
-  //                      (zone * this.getWCHeight() / 2) +
-  //                      (aXform.getHeight() / 2);
-  //         }
-  //         if ((status & eBoundCollideStatus.eCollideRight) !== 0) {
-  //             pos[0] = (this.getWCCenter())[0] +
-  //                      (zone * this.getWCWidth() / 2) –
-  //                      (aXform.getWidth() / 2);
-  //         }
-  //         if ((status & eBoundCollideStatus.eCollideLeft) !== 0) {
-  //             pos[0] = (this.getWCCenter())[0] –
-  //                      (zone * this.getWCWidth() / 2) +
-  //                      (aXform.getWidth() / 2);
-  //         }
-  //     }
-  //     return status;
-  // }
+  clampAtBoundary(target: BoundingBox, zone: number) {
+    const status = this.boudingBox.boundCollideStatus(target);
+
+    if (status !== ColisionStatus.inside) {
+      const targetPosition = target.owner.getTransform().getPosition();
+
+      let x = targetPosition.x;
+      let y = targetPosition.y;
+
+      if ((status & ColisionStatus.collideTop) !== 0) {
+        y = this.center.y + (zone * this.size.y) / 2 - target.height / 2;
+      }
+      if ((status & ColisionStatus.collideBottom) !== 0) {
+        y = this.center.y - (zone * this.size.y) / 2 + target.height / 2;
+      }
+      if ((status & ColisionStatus.collideRight) !== 0) {
+        x = this.center.x + (zone * this.size.x) / 2 - target.width / 2;
+      }
+      if ((status & ColisionStatus.collideLeft) !== 0) {
+        x = this.center.x - (zone * this.size.x) / 2 + target.width / 2;
+      }
+
+      target.owner.setTransform({ position: Vec2d.from(x, y) });
+    }
+    return status;
+  }
 
   private configureCamera() {
     mat4.scale(

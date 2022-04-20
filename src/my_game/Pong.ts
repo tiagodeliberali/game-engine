@@ -21,10 +21,10 @@ export function pong() {
 
   const gameComponents = new GameObject();
 
-  gameComponents.add(buildLimits());
+  // gameComponents.add(buildLimits());
   gameComponents.add(createPaddle(icePaddlePath, 15, 270, Keys.W, Keys.S));
   gameComponents.add(createPaddle(slimePaddlePath, 85, 90, Keys.Up, Keys.Down));
-  gameComponents.add(createBall());
+  gameComponents.add(createBall(scene));
 
   scene.add(gameComponents);
   scene.add(pauseBehavior(gameComponents));
@@ -115,7 +115,7 @@ const createPaddle = (
 const actionMessageText = "Ponto!";
 const score = [0, 0];
 
-const createBall = () => {
+const createBall = (scene: SimplifiedScene) => {
   const textGameObject = new GameObject();
   textGameObject.visible = false;
 
@@ -233,6 +233,12 @@ const createBall = () => {
   boundingBoxList.forEach((item) => box.add(item));
 
   gameObject.add(box);
+
+  gameObject.add(
+    new Behavior(() => {
+      scene.camera.clampAtBoundary(box, 1);
+    })
+  );
 
   return gameObject;
 };
