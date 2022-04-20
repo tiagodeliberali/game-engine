@@ -1,60 +1,59 @@
 import { getGL } from "..";
-import { EngineError } from "../EngineError";
 
 export class VertexBuffer {
   private gl: WebGL2RenderingContext;
-  private vertexBuffer: WebGLBuffer;
+  private vao: WebGLVertexArrayObject | undefined;
+  private attributeLocation: number;
   private size: number;
+  private buffer: WebGLBuffer | undefined;
 
-  constructor(size: number) {
+  constructor(attributeLocation: number, size: number) {
     this.gl = getGL();
-
-    const buffer = this.gl.createBuffer();
-    if (buffer === null) {
-      throw new EngineError(VertexBuffer.name, "Failed to load vertex buffer");
-    }
-
-    this.vertexBuffer = buffer;
+    this.attributeLocation = attributeLocation;
     this.size = size;
   }
 
-  initStaticBuffer(vertices: number[]) {
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexBuffer);
-    this.gl.bufferData(
-      this.gl.ARRAY_BUFFER,
-      new Float32Array(vertices),
-      this.gl.STATIC_DRAW
-    );
+  initVertexArray() {
+    this.vao = this.gl.createVertexArray()!;
+    this.gl.bindVertexArray(this.vao);
+  }
+
+  clearVertexArray() {
+    this.gl.bindVertexArray(null);
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
   }
 
-  initDynamicBuffer(vertices: number[]) {
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexBuffer);
-    this.gl.bufferData(
-      this.gl.ARRAY_BUFFER,
-      new Float32Array(vertices),
-      this.gl.DYNAMIC_DRAW
-    );
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
-  }
+  initBuffer(vertices: number[], usage: number) {
+    this.buffer = this.gl.createBuffer()!;
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer!);
+    this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertices), usage);
 
-  setTextureCoordinate(vertices: number[]) {
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexBuffer);
-    this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array(vertices));
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
-  }
+    this.gl.enableVertexAttribArray(this.attributeLocation);
 
-  activate(attributeLocation: number) {
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexBuffer);
     this.gl.vertexAttribPointer(
-      attributeLocation,
+      this.attributeLocation,
       this.size,
       this.gl.FLOAT,
       false,
       0,
       0
     );
-    this.gl.enableVertexAttribArray(attributeLocation);
+  }
+
+  setTextureCoordinate(vertices: number[]) {
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer!);
+    this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, new Float32Array(vertices));
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
+  }
+
+  activate() {
+    this.gl.bindVertexArray(this.vao!);
+  }
+
+  drawSquare() {
+    this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
+
+    this.gl.bindVertexArray(null);
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
   }
 }

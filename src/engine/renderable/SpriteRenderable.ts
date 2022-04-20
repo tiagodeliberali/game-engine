@@ -1,11 +1,4 @@
-import {
-  ShaderLib,
-  Camera,
-  TextureShader,
-  VertexBuffer,
-  VertexBufferLib,
-  Color,
-} from "../graphics";
+import { ShaderLib, Camera, TextureShader, Color } from "../graphics";
 import { getResourceManager, Texture } from "../resources";
 import { Box } from "../DataStructures";
 import { RenderableAnimator } from ".";
@@ -14,7 +7,6 @@ import { EngineError } from "../EngineError";
 import { AnimationSettings } from "./animator";
 
 export class SpriteRenderable extends AbstractRenderable<TextureShader> {
-  textureVertexBuffer: VertexBuffer;
   texture: Texture | undefined;
   texturePath: string;
   rows: number;
@@ -28,14 +20,10 @@ export class SpriteRenderable extends AbstractRenderable<TextureShader> {
     columns: number,
     position: number
   ) {
-    const vertexBuffer = VertexBufferLib.UnitSquareCenteredOnZero();
-
-    super(vertexBuffer);
+    super();
     this.color = Color.Transparent();
 
     // sprite sheet
-    this.textureVertexBuffer =
-      VertexBufferLib.DynamicUnitSquareLeftBottonOnZero();
     this.texturePath = texturePath;
     this.rows = rows;
     this.columns = columns;
@@ -56,7 +44,12 @@ export class SpriteRenderable extends AbstractRenderable<TextureShader> {
   }
 
   init() {
-    this.shader = ShaderLib.getSpriteShader(this.gl);
+    this.shader = ShaderLib.getTextureShader();
+    this.shader.initBuffers(
+      [0.5, 0.5, 0.0, -0.5, 0.5, 0.0, 0.5, -0.5, 0.0, -0.5, -0.5, 0.0],
+      [1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0]
+    );
+
     this.texture = getResourceManager().get<Texture>(this.texturePath);
     this.setSprite(this.position);
   }
@@ -109,20 +102,17 @@ export class SpriteRenderable extends AbstractRenderable<TextureShader> {
       );
     }
 
-    this.textureVertexBuffer.setTextureCoordinate(
+    this.shader!.setTextureCoordinate(
       spritePosition.getElementUVCoordinateArray()
     );
   }
 
   draw(camera: Camera) {
     this.texture!.activate();
-    this.shader!.activate(
-      this.vertexBuffer,
-      this.textureVertexBuffer,
+    this.shader!.draw(
       this.color,
       this.trsMatrix.getTrsMatrix(),
       camera.getCameraMatrix()
     );
-    this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
   }
 }

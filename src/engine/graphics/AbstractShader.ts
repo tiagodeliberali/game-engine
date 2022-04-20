@@ -1,53 +1,20 @@
+import { getGL } from "..";
 import { EngineError } from "../EngineError";
-import { mat4 } from "gl-matrix";
-import { Color, VertexBuffer } from ".";
 
 export abstract class AbstractShader {
   gl: WebGL2RenderingContext;
-  compiledShader: WebGLProgram;
-  vertexPositionLocation: number;
-  pixelColorLocation: WebGLUniformLocation;
-  modelMatrixLocation: WebGLUniformLocation;
-  cameraXformMatrix: WebGLUniformLocation;
+  program: WebGLProgram;
 
-  constructor(
-    gl: WebGL2RenderingContext,
-    vertexShaderSource: string,
-    fragmentShaderSource: string
-  ) {
-    this.gl = gl;
+  constructor(vertexShaderSource: string, fragmentShaderSource: string) {
+    this.gl = getGL();
 
-    this.compiledShader = this.gl.createProgram()!;
+    this.program = this.gl.createProgram()!;
     this.compileProgram(vertexShaderSource, fragmentShaderSource);
-
-    this.vertexPositionLocation = this.getAttribLocation("aVertexPosition");
-
-    this.pixelColorLocation = this.getUniformLocation("uPixelColor");
-    this.modelMatrixLocation = this.getUniformLocation("uModelXformMatrix");
-    this.cameraXformMatrix = this.getUniformLocation("uCameraXformMatrix");
-  }
-
-  protected abstractActivate(
-    vertexPositionBuffer: VertexBuffer,
-    pixelColor: Color,
-    trsMatrix: mat4,
-    cameraMatrix: mat4
-  ) {
-    this.gl.useProgram(this.compiledShader);
-
-    vertexPositionBuffer.activate(this.vertexPositionLocation);
-
-    this.gl.uniform4fv(
-      this.pixelColorLocation,
-      pixelColor.getNormalizedArray()
-    );
-    this.gl.uniformMatrix4fv(this.modelMatrixLocation, false, trsMatrix);
-    this.gl.uniformMatrix4fv(this.cameraXformMatrix, false, cameraMatrix);
   }
 
   protected getUniformLocation(parameter: string) {
     const parameterLocation = this.gl.getUniformLocation(
-      this.compiledShader,
+      this.program,
       parameter
     );
 
@@ -62,7 +29,7 @@ export abstract class AbstractShader {
   }
 
   protected getAttribLocation(name: string) {
-    return this.gl.getAttribLocation(this.compiledShader, name);
+    return this.gl.getAttribLocation(this.program, name);
   }
 
   private compileProgram(
@@ -79,13 +46,11 @@ export abstract class AbstractShader {
       this.gl.FRAGMENT_SHADER
     )!;
 
-    this.gl.attachShader(this.compiledShader, vertexShader);
-    this.gl.attachShader(this.compiledShader, fragmentShader);
-    this.gl.linkProgram(this.compiledShader);
+    this.gl.attachShader(this.program, vertexShader);
+    this.gl.attachShader(this.program, fragmentShader);
+    this.gl.linkProgram(this.program);
 
-    if (
-      !this.gl.getProgramParameter(this.compiledShader, this.gl.LINK_STATUS)
-    ) {
+    if (!this.gl.getProgramParameter(this.program, this.gl.LINK_STATUS)) {
       throw new EngineError(AbstractShader.name, "Failed to link shader");
     }
   }

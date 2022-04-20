@@ -1,26 +1,15 @@
-import {
-  ShaderLib,
-  TextureShader,
-  VertexBuffer,
-  VertexBufferLib,
-  Camera,
-  Color,
-} from "../graphics";
+import { ShaderLib, TextureShader, Camera, Color } from "../graphics";
 import { getResourceManager, Texture } from "../resources";
 import { AbstractRenderable } from "./AbstractRenderable";
 
 export class TextureRenderable extends AbstractRenderable<TextureShader> {
-  textureVertexBuffer: VertexBuffer;
   texture: Texture | undefined;
   texturePath: string;
 
   constructor(texturePath: string) {
-    const vertexBuffer = VertexBufferLib.UnitSquareCenteredOnZero();
-
-    super(vertexBuffer);
+    super();
 
     this.color = Color.Transparent();
-    this.textureVertexBuffer = VertexBufferLib.UnitSquareLeftBottonOnZero();
     this.texturePath = texturePath;
   }
 
@@ -33,7 +22,11 @@ export class TextureRenderable extends AbstractRenderable<TextureShader> {
   }
 
   init() {
-    this.shader = ShaderLib.getTextureShader(this.gl);
+    this.shader = ShaderLib.getTextureShader();
+    this.shader.initBuffers(
+      [0.5, 0.5, 0.0, -0.5, 0.5, 0.0, 0.5, -0.5, 0.0, -0.5, -0.5, 0.0],
+      [1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0]
+    );
     this.texture = getResourceManager().get<Texture>(this.texturePath);
   }
 
@@ -43,13 +36,10 @@ export class TextureRenderable extends AbstractRenderable<TextureShader> {
 
   draw(camera: Camera) {
     this.texture!.activate();
-    this.shader!.activate(
-      this.vertexBuffer,
-      this.textureVertexBuffer,
+    this.shader!.draw(
       this.color,
       this.trsMatrix.getTrsMatrix(),
       camera.getCameraMatrix()
     );
-    this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
   }
 }

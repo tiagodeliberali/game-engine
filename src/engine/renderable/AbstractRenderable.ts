@@ -1,36 +1,24 @@
-import {
-  Camera,
-  Color,
-  ColorDef,
-  Transform,
-  TransformDef,
-  VertexBuffer,
-} from "../graphics";
+import { Camera, Color, ColorDef, Transform, TransformDef } from "../graphics";
 import { IRenderable } from ".";
 import { AbstractShader } from "../graphics/AbstractShader";
-import { getGL, Vec2d } from "..";
+import { Vec2d } from "..";
 
 export abstract class AbstractRenderable<T extends AbstractShader>
   implements IRenderable
 {
-  gl: WebGL2RenderingContext;
   shader: T | undefined;
-  vertexBuffer: VertexBuffer;
   color: Color;
   trsMatrix: Transform;
   currentDirection: Vec2d = new Vec2d(1, 0);
 
-  constructor(vertexBuffer: VertexBuffer) {
-    this.gl = getGL();
+  constructor() {
     this.color = Color.White();
     this.trsMatrix = Transform.BuldDefault();
-    this.vertexBuffer = vertexBuffer;
   }
 
   abstract update(): void;
   abstract load(): void;
   abstract init(): void;
-
   abstract draw(_camera: Camera): void;
 
   getTransform() {

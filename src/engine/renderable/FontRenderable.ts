@@ -1,11 +1,4 @@
-import {
-  ShaderLib,
-  Camera,
-  TextureShader,
-  VertexBuffer,
-  VertexBufferLib,
-  Color,
-} from "../graphics";
+import { ShaderLib, Camera, TextureShader, Color } from "../graphics";
 import { Texture } from "../resources";
 import { Box, Vec2d } from "../DataStructures";
 import { getResourceManager } from "../resources";
@@ -14,24 +7,18 @@ import { AbstractRenderable } from "./AbstractRenderable";
 export const defaultFontPath = "/textures/default_font.png";
 
 export class FontRenderable extends AbstractRenderable<TextureShader> {
-  textureVertexBuffer: VertexBuffer;
   texture: Texture | undefined;
   rows: number;
   columns: number;
   text: string;
 
   private constructor(rows: number, columns: number, text: string) {
-    const vertexBuffer = VertexBufferLib.UnitSquareCenteredOnZero();
-
-    super(vertexBuffer);
+    super();
 
     this.color = Color.Transparent();
     this.rows = rows;
     this.columns = columns;
     this.text = text;
-
-    this.textureVertexBuffer =
-      VertexBufferLib.DynamicUnitSquareLeftBottonOnZero();
   }
 
   static getDefaultFont(initialText: string) {
@@ -47,7 +34,12 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
   }
 
   init() {
-    this.shader = ShaderLib.getSpriteShader(this.gl);
+    this.shader = ShaderLib.getTextureShader();
+    this.shader.initBuffers(
+      [0.5, 0.5, 0.0, -0.5, 0.5, 0.0, 0.5, -0.5, 0.0, -0.5, -0.5, 0.0],
+      [1.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0]
+    );
+
     this.texture = getResourceManager().get<Texture>(defaultFontPath);
   }
 
@@ -66,14 +58,11 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
         this.texture!.getSpritePositionLinear(this.rows, this.columns, position)
       );
 
-      this.shader!.activate(
-        this.vertexBuffer,
-        this.textureVertexBuffer,
+      this.shader!.draw(
         this.color,
         this.trsMatrix.getTrsMatrix(),
         camera.getCameraMatrix()
       );
-      this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
 
       this.addToPosition(new Vec2d(this.trsMatrix.getHorizontalScale(), 0));
     });
@@ -91,7 +80,7 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
       );
     }
 
-    this.textureVertexBuffer.setTextureCoordinate(
+    this.shader!.setTextureCoordinate(
       spritePosition.getElementUVCoordinateArray()
     );
   }

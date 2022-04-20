@@ -1,10 +1,9 @@
-import { SimpleShader, VertexBufferLib, Camera, ShaderLib } from "../graphics";
+import { SimpleShader, Camera, ShaderLib } from "../graphics";
 import { AbstractRenderable } from "./AbstractRenderable";
 
 export class Renderable extends AbstractRenderable<SimpleShader> {
   constructor() {
-    const vertexBuffer = VertexBufferLib.UnitSquareCenteredOnZero();
-    super(vertexBuffer);
+    super();
   }
 
   static build() {
@@ -16,7 +15,10 @@ export class Renderable extends AbstractRenderable<SimpleShader> {
   }
 
   init() {
-    this.shader = ShaderLib.getConstColorShader(this.gl);
+    this.shader = ShaderLib.getConstColorShader();
+    this.shader.initBuffer([
+      0.5, 0.5, 0.0, -0.5, 0.5, 0.0, 0.5, -0.5, 0.0, -0.5, -0.5, 0.0,
+    ]);
   }
 
   update() {
@@ -24,12 +26,10 @@ export class Renderable extends AbstractRenderable<SimpleShader> {
   }
 
   draw(camera: Camera) {
-    this.shader!.activate(
-      this.vertexBuffer,
+    this.shader!.draw(
       this.color,
       this.trsMatrix.getTrsMatrix(),
       camera.getCameraMatrix()
     );
-    this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, 4);
   }
 }

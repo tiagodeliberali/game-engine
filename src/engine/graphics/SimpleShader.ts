@@ -3,20 +3,41 @@ import { Color, VertexBuffer } from ".";
 import { AbstractShader } from "./AbstractShader";
 
 export class SimpleShader extends AbstractShader {
-  constructor(
-    gl: WebGL2RenderingContext,
-    vertexShaderSource: string,
-    fragmentShaderSource: string
-  ) {
-    super(gl, vertexShaderSource, fragmentShaderSource);
+  vertexPositionBuffer: VertexBuffer;
+  pixelColorLocation: WebGLUniformLocation;
+  modelMatrixLocation: WebGLUniformLocation;
+  cameraXformMatrix: WebGLUniformLocation;
+
+  constructor(vertexShaderSource: string, fragmentShaderSource: string) {
+    super(vertexShaderSource, fragmentShaderSource);
+
+    this.vertexPositionBuffer = new VertexBuffer(
+      this.getAttribLocation("aVertexPosition"),
+      3
+    );
+
+    this.pixelColorLocation = this.getUniformLocation("uPixelColor");
+    this.modelMatrixLocation = this.getUniformLocation("uModelXformMatrix");
+    this.cameraXformMatrix = this.getUniformLocation("uCameraXformMatrix");
   }
 
-  activate(
-    vertexBuffer: VertexBuffer,
-    pixelColor: Color,
-    trsMatrix: mat4,
-    cameraMatrix: mat4
-  ) {
-    super.abstractActivate(vertexBuffer, pixelColor, trsMatrix, cameraMatrix);
+  initBuffer(vertices: number[]) {
+    this.vertexPositionBuffer.initVertexArray();
+    this.vertexPositionBuffer.initBuffer(vertices, this.gl.STATIC_DRAW);
+    this.vertexPositionBuffer.clearVertexArray();
+  }
+
+  draw(pixelColor: Color, trsMatrix: mat4, cameraMatrix: mat4) {
+    this.gl.useProgram(this.program);
+
+    this.gl.uniform4fv(
+      this.pixelColorLocation,
+      pixelColor.getNormalizedArray()
+    );
+    this.gl.uniformMatrix4fv(this.modelMatrixLocation, false, trsMatrix);
+    this.gl.uniformMatrix4fv(this.cameraXformMatrix, false, cameraMatrix);
+
+    this.vertexPositionBuffer.activate();
+    this.vertexPositionBuffer.drawSquare();
   }
 }
