@@ -67,27 +67,31 @@ export class Camera implements ITransformable {
     this.configureCamera();
   }
 
-  clampAtBoundary(target: BoundingBox, zone: number) {
+  clampAtBoundary(target: BoundingBox, zone: Vec2d) {
     const status = this.boudingBox.boundCollideStatus(target);
-    this.boudingBox.setZone(zone);
+    this.boudingBox.setScale(zone);
 
     if (status !== ColisionStatus.inside) {
-      const targetPosition = target.owner.getTransform().getPosition();
+      const targetPosition = target.getPosition();
 
       let x = targetPosition.x;
       let y = targetPosition.y;
 
       if ((status & ColisionStatus.collideTop) !== 0) {
-        y = this.center.y + (zone * this.size.y) / 2 - target.height / 2;
+        y =
+          this.center.y + (zone.y * this.size.y) / 2 - target.getScale().y / 2;
       }
       if ((status & ColisionStatus.collideBottom) !== 0) {
-        y = this.center.y - (zone * this.size.y) / 2 + target.height / 2;
+        y =
+          this.center.y - (zone.y * this.size.y) / 2 + target.getScale().y / 2;
       }
       if ((status & ColisionStatus.collideRight) !== 0) {
-        x = this.center.x + (zone * this.size.x) / 2 - target.width / 2;
+        x =
+          this.center.x + (zone.x * this.size.x) / 2 - target.getScale().x / 2;
       }
       if ((status & ColisionStatus.collideLeft) !== 0) {
-        x = this.center.x - (zone * this.size.x) / 2 + target.width / 2;
+        x =
+          this.center.x - (zone.x * this.size.x) / 2 + target.getScale().x / 2;
       }
 
       target.owner.setTransform({ position: Vec2d.from(x, y) });
@@ -95,27 +99,39 @@ export class Camera implements ITransformable {
     return status;
   }
 
-  panWith(target: BoundingBox, zone: number) {
+  panWith(target: BoundingBox, zone: Vec2d) {
     const status = this.boudingBox.boundCollideStatus(target);
-    this.boudingBox.setZone(zone);
+    this.boudingBox.setScale(zone);
 
     if (status !== ColisionStatus.inside) {
-      const targetPosition = target.owner.getTransform().getPosition();
+      const targetPosition = target.getPosition();
 
       let x = this.center.x;
       let y = this.center.y;
 
       if ((status & ColisionStatus.collideTop) !== 0) {
-        y = targetPosition.y + target.height / 2 - (zone * this.size.y) / 2;
+        y =
+          targetPosition.y +
+          target.getScale().y / 2 -
+          (zone.y * this.size.y) / 2;
       }
       if ((status & ColisionStatus.collideBottom) !== 0) {
-        y = targetPosition.y - target.height / 2 + (zone * this.size.y) / 2;
+        y =
+          targetPosition.y -
+          target.getScale().y / 2 +
+          (zone.y * this.size.y) / 2;
       }
       if ((status & ColisionStatus.collideRight) !== 0) {
-        x = targetPosition.x + target.width / 2 - (zone * this.size.x) / 2;
+        x =
+          targetPosition.x +
+          target.getScale().x / 2 -
+          (zone.x * this.size.x) / 2;
       }
       if ((status & ColisionStatus.collideLeft) !== 0) {
-        x = targetPosition.x - target.width / 2 + (zone * this.size.x) / 2;
+        x =
+          targetPosition.x -
+          target.getScale().x / 2 +
+          (zone.x * this.size.x) / 2;
       }
 
       this.setTransform({ position: Vec2d.from(x, y) });

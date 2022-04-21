@@ -92,11 +92,11 @@ export function buildInitialScene() {
   });
   scene.add(text);
 
-  const redSquareBoundingBox = new BoundingBox(redSquare, "", 5, 5, {});
+  const redSquareBoundingBox = BoundingBox.from(redSquare, "");
 
   scene.add(redSquareBoundingBox);
 
-  const characterBoundingBox = new BoundingBox(character, "", 1, 1, {
+  const characterBoundingBox = BoundingBox.withAction(character, "", {
     onCollideStarted: () => text.setText("Collided!!!"),
     onCollideEnded: () => text.setText("Collision ended..."),
   });

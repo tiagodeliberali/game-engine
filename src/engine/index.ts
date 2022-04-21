@@ -31,6 +31,7 @@ import {
   ColisionStatus,
 } from "./behaviors";
 import { IComponent } from "./behaviors";
+import { isDebugMode } from "./Settings";
 
 export {
   getGL,
@@ -62,6 +63,7 @@ export {
   moveTowardsCurrentDirection,
   BoundingBox,
   ColisionStatus,
+  isDebugMode,
 };
 
 export type { IRenderable, TransformDef, IComponent, ITransformable, ColorDef };

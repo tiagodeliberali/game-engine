@@ -1,6 +1,7 @@
 import { Vec2d } from "../DataStructures";
-import { ITransformable } from "..";
+import { isDebugMode, ITransformable, Renderable } from "..";
 import { IComponent } from "./IComponent";
+import { Camera } from "../core";
 
 export enum ColisionStatus {
   collideLeft = 1,
@@ -22,64 +23,70 @@ export type ColisionActions = {
 };
 
 export class BoundingBox implements IComponent {
-  width: number;
-  height: number;
-  targets: BoundingBox[] = [];
+  private targets: BoundingBox[] = [];
+  private actions?: ColisionActions;
+  private colisionList: ITransformable[] = [];
+  private tag: string;
+  private scale: Vec2d = Vec2d.from(1, 1);
+  private debugBox: Renderable;
   owner: ITransformable;
-  actions?: ColisionActions;
-  colisionList: ITransformable[] = [];
-  tag: string;
-  zone = 1;
 
-  constructor(
+  private constructor(
     owner: ITransformable,
     tag: string,
-    width: number,
-    height: number,
     actions?: ColisionActions
   ) {
     this.owner = owner;
     this.tag = tag;
     this.actions = actions;
-    this.width = width;
-    this.height = height;
+    this.debugBox = Renderable.build().setColor({
+      red: 255,
+      green: 255,
+      blue: 255,
+      alpha: 0.2,
+    });
   }
 
-  setZone(value: number) {
-    this.zone = value;
+  setScale(vector: Vec2d) {
+    this.scale = vector;
   }
 
-  static from(owner: ITransformable, tag: string) {
-    return new BoundingBox(
-      owner,
-      tag,
-      owner.getTransform().getScale().x,
-      owner.getTransform().getScale().y
-    );
+  static from(owner: ITransformable, tag: string, scale?: Vec2d) {
+    const box = new BoundingBox(owner, tag);
+    scale && box.setScale(scale);
+    return box;
+  }
+
+  static withAction(
+    owner: ITransformable,
+    tag: string,
+    actions: ColisionActions
+  ) {
+    return new BoundingBox(owner, tag, actions);
   }
 
   minX() {
-    return (
-      this.owner.getTransform().getPosition().x - (this.zone * this.width) / 2
-    );
+    return this.getPosition().x - this.getScale().x / 2;
   }
 
   maxX() {
-    return (
-      this.owner.getTransform().getPosition().x + (this.zone * this.width) / 2
-    );
+    return this.getPosition().x + this.getScale().x / 2;
   }
 
   minY() {
-    return (
-      this.owner.getTransform().getPosition().y - (this.zone * this.height) / 2
-    );
+    return this.getPosition().y - this.getScale().y / 2;
   }
 
   maxY() {
-    return (
-      this.owner.getTransform().getPosition().y + (this.zone * this.height) / 2
-    );
+    return this.getPosition().y + this.getScale().y / 2;
+  }
+
+  getPosition() {
+    return this.owner.getTransform().getPosition();
+  }
+
+  getScale() {
+    return this.owner.getTransform().getScale().multiply(this.scale);
   }
 
   containsPoint(point: Vec2d) {
@@ -136,10 +143,16 @@ export class BoundingBox implements IComponent {
   }
 
   init() {
-    //
+    this.debugBox.init();
   }
 
   update() {
+    isDebugMode() &&
+      this.debugBox.setTransform({
+        position: this.getPosition(),
+        scale: this.getScale(),
+      });
+
     if (this.actions === undefined) {
       return;
     }
@@ -174,8 +187,8 @@ export class BoundingBox implements IComponent {
     });
   }
 
-  draw() {
-    //
+  draw(camera: Camera) {
+    isDebugMode() && this.debugBox.draw(camera);
   }
 
   unload() {

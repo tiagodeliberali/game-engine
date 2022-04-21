@@ -50,6 +50,10 @@ export class Vec2d {
     return new Vec2d(this.x - vector.x, this.y - vector.y);
   }
 
+  multiply(vector: Vec2d) {
+    return Vec2d.from(this.x * vector.x, this.y * vector.y);
+  }
+
   length() {
     return vec2.length(this.toVec2());
   }

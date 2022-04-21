@@ -21,7 +21,7 @@ export function pong() {
 
   const gameComponents = new GameObject();
 
-  // gameComponents.add(buildLimits());
+  gameComponents.add(buildLimits());
   gameComponents.add(createPaddle(icePaddlePath, 15, 270, Keys.W, Keys.S));
   gameComponents.add(createPaddle(slimePaddlePath, 85, 90, Keys.Up, Keys.Down));
   gameComponents.add(createBall(scene));
@@ -107,7 +107,9 @@ const createPaddle = (
     })
   );
 
-  gameObject.add(addBoundingBox(new BoundingBox(paddle, "paddle", 1, 8)));
+  gameObject.add(
+    addBoundingBox(BoundingBox.from(paddle, "paddle", Vec2d.from(0.2, 2.2)))
+  );
 
   return gameObject;
 };
@@ -205,7 +207,7 @@ const createBall = (scene: SimplifiedScene) => {
     }, 2000);
   };
 
-  const box = new BoundingBox(ball, "ball", 2, 2, {
+  const box = BoundingBox.withAction(ball, "ball", {
     onCollideStarted: (target, tag, status) => {
       if (tag === "point1") {
         computeScore(0);
@@ -228,12 +230,13 @@ const createBall = (scene: SimplifiedScene) => {
       }
     },
   });
+  box.setScale(Vec2d.from(0.5, 0.5));
 
-  gameObject.add(
-    new Behavior(() => {
-      scene.camera.clampAtBoundary(box, 0.7);
-    })
-  );
+  // gameObject.add(
+  //   new Behavior(() => {
+  //     scene.camera.clampAtBoundary(box, Vec2d.from(0.7, 0.7));
+  //   })
+  // );
 
   boundingBoxList.forEach((item) => box.add(item));
 
