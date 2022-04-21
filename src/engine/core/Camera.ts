@@ -122,6 +122,33 @@ export class Camera implements ITransformable {
     }
   }
 
+  panBy(vector: Vec2d) {
+    this.addToPosition(vector);
+  }
+
+  panTo(point: Vec2d) {
+    this.setTransform({ position: point });
+  }
+
+  zoomBy(zoom: number) {
+    if (zoom > 0) {
+      this.factorToScale(Vec2d.from(zoom, zoom));
+    }
+  }
+
+  zoomTowards(target: BoundingBox, zoom: number) {
+    // still for reference since I am not sure it is working properly
+    // let delta = [];
+    // vec2.sub(delta, pos, this.mWCCenter);
+    // vec2.scale(delta, delta, zoom - 1);
+    // vec2.sub(this.mWCCenter, this.mWCCenter, delta);
+    // this.zoomBy(zoom);
+    const position = target.owner.getTransform().getPosition();
+    const delta = position.sub(this.center).scale(zoom - 1);
+    this.setTransform({ position: this.center.sub(delta) });
+    this.zoomBy(zoom);
+  }
+
   private configureCamera() {
     mat4.scale(
       this.cameraMatrix,

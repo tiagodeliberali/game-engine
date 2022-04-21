@@ -170,7 +170,6 @@ const createBall = (scene: SimplifiedScene) => {
     gameObject.paused = false;
     ball.setTransform({
       position: Vec2d.from(50, 25),
-      scale: Vec2d.from(5, 5),
       rotationInDegree: getRandomAngle(),
     });
   };
@@ -230,15 +229,25 @@ const createBall = (scene: SimplifiedScene) => {
     },
   });
 
-  boundingBoxList.forEach((item) => box.add(item));
+  gameObject.add(
+    new Behavior(() => {
+      scene.camera.clampAtBoundary(box, 0.7);
+    })
+  );
 
-  gameObject.add(box);
+  boundingBoxList.forEach((item) => box.add(item));
 
   gameObject.add(
     new Behavior(() => {
-      scene.camera.panWith(box, 0.7);
+      if (isKeyPressed(Keys.Q)) {
+        scene.camera.zoomTowards(boundingBoxList[0], 1 + 0.01);
+      } else if (isKeyPressed(Keys.E)) {
+        scene.camera.zoomTowards(boundingBoxList[0], 1 - 0.01);
+      }
     })
   );
+
+  gameObject.add(box);
 
   return gameObject;
 };
