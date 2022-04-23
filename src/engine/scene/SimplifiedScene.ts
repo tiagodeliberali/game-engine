@@ -6,7 +6,6 @@ import { IComponent } from "../behaviors";
 export class SimplifiedScene extends AbstractScene {
   camera: Camera;
   private viewport: Viewport;
-  private gameObjects: GameObject;
   private color: Color;
 
   constructor(width: number, height: number) {
@@ -21,28 +20,33 @@ export class SimplifiedScene extends AbstractScene {
   }
 
   add(component: IComponent) {
-    this.gameObjects.add(GameObject.FromComponent(component));
+    this.gameObjects.add(component);
   }
 
   load() {
+    super.load();
     this.gameObjects.load();
   }
 
   init() {
+    super.init();
     this.gameObjects.init();
   }
 
   update() {
+    super.update();
     this.gameObjects.update();
   }
 
   draw() {
+    super.draw();
     clearCanvas(this.color);
     this.viewport.draw();
     this.gameObjects.draw(this.camera);
   }
 
   unload() {
+    super.unload();
     this.gameObjects.unload();
   }
 }

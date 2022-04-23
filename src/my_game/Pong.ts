@@ -1,12 +1,12 @@
 import {
   AnimationType,
   Behavior,
-  BoundingBox,
   ColisionStatus,
   FontRenderable,
   GameObject,
   isKeyClicked,
   isKeyPressed,
+  ITransformable,
   Keys,
   moveTowardsCurrentDirection,
   Renderable,
@@ -16,15 +16,24 @@ import {
   Vec2d,
 } from "../engine";
 
+type HUD = {
+  updateMessage: (message: string) => void;
+  hideMessage: () => void;
+  updateScore: (player: number) => void;
+  resetScore: () => void;
+};
+
 export function pong() {
   const scene = new SimplifiedScene(100, 50);
 
   const gameComponents = new GameObject();
 
+  const hud = createHUD(scene);
+
   gameComponents.add(buildLimits());
   gameComponents.add(createPaddle(icePaddlePath, 15, 270, Keys.W, Keys.S));
   gameComponents.add(createPaddle(slimePaddlePath, 85, 90, Keys.Up, Keys.Down));
-  gameComponents.add(createBall(scene));
+  gameComponents.add(createBall(hud));
 
   scene.add(gameComponents);
   scene.add(pauseBehavior(gameComponents));
@@ -35,41 +44,43 @@ export function pong() {
 const buildLimits = () => {
   const limits = new GameObject();
 
-  const upperLimit = Renderable.build().setTransform({
-    position: Vec2d.from(50, 45),
-    scale: Vec2d.from(90, 1),
-  });
-  limits.add(upperLimit);
-  limits.add(addBoundingBox(BoundingBox.from(upperLimit, "limit")));
+  limits
+    .add(
+      Renderable.build().setTransform({
+        position: Vec2d.from(50, 45),
+        scale: Vec2d.from(90, 1),
+      })
+    )
+    .withBoundingBox("limit");
 
-  const lowerLimit = Renderable.build().setTransform({
-    position: Vec2d.from(50, 5),
-    scale: Vec2d.from(90, 1),
-  });
-  limits.add(lowerLimit);
-  limits.add(addBoundingBox(BoundingBox.from(lowerLimit, "limit")));
+  limits
+    .add(
+      Renderable.build().setTransform({
+        position: Vec2d.from(50, 5),
+        scale: Vec2d.from(90, 1),
+      })
+    )
+    .withBoundingBox("limit");
 
-  const leftLimit = Renderable.build().setTransform({
-    position: Vec2d.from(5, 25),
-    scale: Vec2d.from(1, 41),
-  });
-  limits.add(leftLimit);
-  limits.add(addBoundingBox(BoundingBox.from(leftLimit, "point1")));
+  limits
+    .add(
+      Renderable.build().setTransform({
+        position: Vec2d.from(5, 25),
+        scale: Vec2d.from(1, 41),
+      })
+    )
+    .withBoundingBox("point1");
 
-  const rightLimit = Renderable.build().setTransform({
-    position: Vec2d.from(95, 25),
-    scale: Vec2d.from(1, 41),
-  });
-  limits.add(rightLimit);
-  limits.add(addBoundingBox(BoundingBox.from(rightLimit, "point2")));
+  limits
+    .add(
+      Renderable.build().setTransform({
+        position: Vec2d.from(95, 25),
+        scale: Vec2d.from(1, 41),
+      })
+    )
+    .withBoundingBox("point2");
 
   return limits;
-};
-
-const boundingBoxList: BoundingBox[] = [];
-const addBoundingBox = (box: BoundingBox): BoundingBox => {
-  boundingBoxList.push(box);
-  return box;
 };
 
 // https://craftpix.net/freebies/free-buttons-2d-game-objects/
@@ -88,14 +99,18 @@ const createPaddle = (
 ) => {
   const gameObject = new GameObject();
 
-  const paddle = TextureRenderable.build(texturePath).setTransform({
-    position: Vec2d.from(x, 25),
-    scale: Vec2d.from(13, 5),
-    rotationInDegree: rotation,
-  });
-  gameObject.add(paddle);
-  gameObject.add(
-    new Behavior(() => {
+  gameObject
+    .add(
+      TextureRenderable.build(texturePath).setTransform({
+        position: Vec2d.from(x, 25),
+        scale: Vec2d.from(13, 5),
+        rotationInDegree: rotation,
+      })
+    )
+    .withBoundingBox("paddle", Vec2d.from(0.2, 2.2))
+    .withBehavior((component) => {
+      const paddle = component as unknown as ITransformable;
+
       if (isKeyPressed(upKey) && paddle.getTransform().getPosition().y < 39) {
         paddle.addToPosition(Vec2d.from(0, 2));
       } else if (
@@ -104,12 +119,7 @@ const createPaddle = (
       ) {
         paddle.addToPosition(Vec2d.from(0, -2));
       }
-    })
-  );
-
-  gameObject.add(
-    addBoundingBox(BoundingBox.from(paddle, "paddle", Vec2d.from(0.2, 2.2)))
-  );
+    });
 
   return gameObject;
 };
@@ -117,28 +127,41 @@ const createPaddle = (
 const actionMessageText = "Ponto!";
 const score = [0, 0];
 
-const createBall = (scene: SimplifiedScene) => {
-  const textGameObject = new GameObject();
-  textGameObject.visible = false;
-
-  const actionText = FontRenderable.getDefaultFont(actionMessageText)
+const createHUD = (scene: SimplifiedScene) => {
+  const messageText = FontRenderable.getDefaultFont("")
     .setColor({ red: 100, green: 200, blue: 100, alpha: 1 })
     .setTransform({
       position: Vec2d.from(40, 25),
       scale: Vec2d.from(5, 5),
     });
-  textGameObject.add(actionText);
 
-  const gameObject = new GameObject();
-  gameObject.add(textGameObject);
-
-  const scoreText = FontRenderable.getDefaultFont(`${score[0]} - ${score[1]}`)
+  const scoreText = FontRenderable.getDefaultFont("0 - 0")
     .setColor({ red: 100, green: 200, blue: 100, alpha: 1 })
     .setTransform({
       position: Vec2d.from(48, 48),
       scale: Vec2d.from(2, 2),
     });
-  gameObject.add(scoreText);
+
+  scene.add(messageText);
+  scene.add(scoreText);
+
+  return {
+    updateMessage: (message: string) => messageText.setText(message),
+    hideMessage: () => messageText.setText(""),
+    updateScore: (player: number) => {
+      score[player] += 1;
+      scoreText.setText(`${score[0]} - ${score[1]}`);
+    },
+    resetScore: () => {
+      score[0] = 0;
+      score[1] = 0;
+      scoreText.setText(`${score[0]} - ${score[1]}`);
+    },
+  };
+};
+
+const createBall = (hud: HUD) => {
+  const gameObject = new GameObject();
 
   const getRandomAngle = () => {
     let angle = 30 - Math.random() * 60;
@@ -150,107 +173,91 @@ const createBall = (scene: SimplifiedScene) => {
     return angle;
   };
 
-  const ball = SpriteRenderable.build(ballPath, 4, 6, 0).setTransform({
-    position: Vec2d.from(50, 25),
-    scale: Vec2d.from(5, 5),
-    rotationInDegree: getRandomAngle(),
-  });
+  gameObject
+    .add(
+      SpriteRenderable.build(ballPath, 4, 6, 0)
+        .setTransform({
+          position: Vec2d.from(50, 25),
+          scale: Vec2d.from(5, 5),
+          rotationInDegree: getRandomAngle(),
+        })
+        .setAnimator({
+          initialPosition: 0,
+          lastPosition: 23,
+          speed: 3,
+          type: AnimationType.ForwardToBegining,
+        })
+        .runInLoop()
+    )
+    .withBehavior((component) => {
+      const ball = component as unknown as ITransformable;
+      moveTowardsCurrentDirection(ball, 0.1);
+    })
+    .withBoundingBox("ball", Vec2d.from(0.5, 0.5), (component) => {
+      const ball = component as unknown as ITransformable;
 
-  ball.setAnimator({
-    initialPosition: 0,
-    lastPosition: 23,
-    speed: 3,
-    type: AnimationType.ForwardToBegining,
-  });
-  ball.runInLoop();
+      const startAgain = () => {
+        hud.hideMessage();
+        gameObject.paused = false;
+        ball.setTransform({
+          position: Vec2d.from(50, 25),
+          rotationInDegree: getRandomAngle(),
+        });
+      };
 
-  gameObject.add(ball);
-  gameObject.add(moveTowardsCurrentDirection(ball, 0.1));
+      const finishGame = (winner: number) => {
+        hud.updateMessage(`#${winner + 1} won!`);
+        setTimeout(() => {
+          hud.resetScore();
+          startAgain();
+        }, 5000);
+      };
 
-  const startAgain = () => {
-    textGameObject.visible = false;
-    gameObject.paused = false;
-    ball.setTransform({
-      position: Vec2d.from(50, 25),
-      rotationInDegree: getRandomAngle(),
+      const computeScore = (player: number) => {
+        gameObject.paused = true;
+        hud.updateScore(player);
+        hud.updateMessage(actionMessageText);
+        setTimeout(() => {
+          if (score[0] > 2) {
+            finishGame(0);
+          } else if (score[1] > 2) {
+            finishGame(1);
+          } else {
+            startAgain();
+          }
+        }, 2000);
+      };
+
+      return {
+        onCollideStarted: (target, tag, status) => {
+          if (tag === "point1") {
+            computeScore(1);
+          } else if (tag === "point2") {
+            computeScore(0);
+          } else if (
+            !(status & ColisionStatus.collideLeft) ||
+            !(status & ColisionStatus.collideRight)
+          ) {
+            ball.setTransform({
+              rotationInDegree: 180 - ball.getTransform().getRotationInDegree(),
+            });
+          } else if (
+            !(status & ColisionStatus.collideTop) ||
+            !(status & ColisionStatus.collideBottom)
+          ) {
+            ball.setTransform({
+              rotationInDegree: -ball.getTransform().getRotationInDegree(),
+            });
+          }
+        },
+      };
     });
-  };
-
-  const finishGame = (winner: number) => {
-    actionText
-      .setTransform({ position: Vec2d.from(21, 25) })
-      .setText(`Player ${winner + 1} won!`);
-    setTimeout(() => {
-      score[0] = 0;
-      score[1] = 0;
-      scoreText.setText(`${score[1]} - ${score[0]}`);
-      startAgain();
-    }, 5000);
-  };
-
-  const computeScore = (player: number) => {
-    textGameObject.visible = true;
-    gameObject.paused = true;
-    score[player] += 1;
-    scoreText.setText(`${score[1]} - ${score[0]}`);
-    actionText
-      .setTransform({ position: Vec2d.from(40, 25) })
-      .setText(actionMessageText);
-    setTimeout(() => {
-      if (score[0] > 2) {
-        finishGame(1);
-      } else if (score[1] > 2) {
-        finishGame(0);
-      } else {
-        startAgain();
-      }
-    }, 2000);
-  };
-
-  const box = BoundingBox.withAction(ball, "ball", {
-    onCollideStarted: (target, tag, status) => {
-      if (tag === "point1") {
-        computeScore(0);
-      } else if (tag === "point2") {
-        computeScore(1);
-      } else if (
-        !(status & ColisionStatus.collideLeft) ||
-        !(status & ColisionStatus.collideRight)
-      ) {
-        ball.setTransform({
-          rotationInDegree: 180 - ball.getTransform().getRotationInDegree(),
-        });
-      } else if (
-        !(status & ColisionStatus.collideTop) ||
-        !(status & ColisionStatus.collideBottom)
-      ) {
-        ball.setTransform({
-          rotationInDegree: -ball.getTransform().getRotationInDegree(),
-        });
-      }
-    },
-  });
-  box.setScale(Vec2d.from(0.5, 0.5));
 
   // gameObject.add(
   //   new Behavior(() => {
   //     scene.camera.clampAtBoundary(box, Vec2d.from(0.7, 0.7));
   //   })
   // );
-
-  boundingBoxList.forEach((item) => box.add(item));
-
-  gameObject.add(
-    new Behavior(() => {
-      if (isKeyPressed(Keys.Q)) {
-        scene.camera.zoomTowards(boundingBoxList[0], 1 + 0.01);
-      } else if (isKeyPressed(Keys.E)) {
-        scene.camera.zoomTowards(boundingBoxList[0], 1 - 0.01);
-      }
-    })
-  );
-
-  gameObject.add(box);
 
   return gameObject;
 };

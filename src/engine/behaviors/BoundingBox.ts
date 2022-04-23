@@ -23,12 +23,10 @@ export type ColisionActions = {
 };
 
 export class BoundingBox implements IComponent {
-  private targets: BoundingBox[] = [];
-  private actions?: ColisionActions;
-  private colisionList: ITransformable[] = [];
-  private tag: string;
+  actions?: ColisionActions;
   private scale: Vec2d = Vec2d.from(1, 1);
   private debugBox: Renderable;
+  tag: string;
   owner: ITransformable;
 
   private constructor(
@@ -60,9 +58,12 @@ export class BoundingBox implements IComponent {
   static withAction(
     owner: ITransformable,
     tag: string,
-    actions: ColisionActions
+    scale?: Vec2d,
+    actions?: ColisionActions
   ) {
-    return new BoundingBox(owner, tag, actions);
+    const box = new BoundingBox(owner, tag, actions);
+    scale && box.setScale(scale);
+    return box;
   }
 
   minX() {
@@ -134,10 +135,6 @@ export class BoundingBox implements IComponent {
     return status;
   }
 
-  add(box: BoundingBox) {
-    this.targets.push(box);
-  }
-
   load() {
     //
   }
@@ -152,39 +149,6 @@ export class BoundingBox implements IComponent {
         position: this.getPosition(),
         scale: this.getScale(),
       });
-
-    if (this.actions === undefined) {
-      return;
-    }
-
-    const actions = this.actions;
-
-    this.targets.forEach((target) => {
-      if (target.intersectsBound(this)) {
-        if (!this.colisionList.includes(target.owner)) {
-          this.colisionList.push(target.owner);
-
-          actions.onCollideStarted &&
-            actions.onCollideStarted(
-              target.owner,
-              target.tag,
-              this.boundCollideStatus(target)
-            );
-        }
-
-        actions.onColliding && actions.onColliding(target.owner, target.tag);
-      } else {
-        if (this.colisionList.includes(target.owner)) {
-          const index = this.colisionList.indexOf(target.owner, 0);
-          if (index > -1) {
-            this.colisionList.splice(index, 1);
-          }
-
-          actions.onCollideEnded &&
-            actions.onCollideEnded(target.owner, target.tag);
-        }
-      }
-    });
   }
 
   draw(camera: Camera) {
@@ -193,5 +157,14 @@ export class BoundingBox implements IComponent {
 
   unload() {
     //
+  }
+
+  hasAction(): unknown {
+    return (
+      this.actions !== undefined &&
+      (this.actions.onCollideEnded !== undefined ||
+        this.actions.onCollideStarted !== undefined ||
+        this.actions.onColliding !== undefined)
+    );
   }
 }

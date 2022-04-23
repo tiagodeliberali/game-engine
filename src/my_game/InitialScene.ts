@@ -59,18 +59,18 @@ export function buildInitialScene() {
 
   const stageCue = new ResourceComponent(stageCuePath);
   character.add(stageCue);
-  character.add(
-    new Behavior(() => {
-      const caracterRenderable = character.getFirst<TextureRenderable>();
-      if (
-        caracterRenderable &&
-        caracterRenderable.getTransform().getPosition().x > 100
-      ) {
-        stageCue.get<Audio>().playOnce();
-        scene.goToScene(pong());
-      }
-    })
-  );
+  // character.add(
+  //   new Behavior(() => {
+  //     const caracterRenderable = character.getFirst<TextureRenderable>();
+  //     if (
+  //       caracterRenderable &&
+  //       caracterRenderable.getTransform().getPosition().x > 100
+  //     ) {
+  //       stageCue.get<Audio>().playOnce();
+  //       scene.goToScene(pong());
+  //     }
+  //   })
+  // );
   scene.add(character);
 
   const redSquare = new Renderable();
@@ -96,11 +96,16 @@ export function buildInitialScene() {
 
   scene.add(redSquareBoundingBox);
 
-  const characterBoundingBox = BoundingBox.withAction(character, "", {
-    onCollideStarted: () => text.setText("Collided!!!"),
-    onCollideEnded: () => text.setText("Collision ended..."),
-  });
-  characterBoundingBox.add(redSquareBoundingBox);
+  const characterBoundingBox = BoundingBox.withAction(
+    character,
+    "",
+    Vec2d.from(1, 1),
+    {
+      onCollideStarted: () => text.setText("Collided!!!"),
+      onCollideEnded: () => text.setText("Collision ended..."),
+    }
+  );
+  // characterBoundingBox.add(redSquareBoundingBox);
   scene.add(characterBoundingBox);
 
   return scene;

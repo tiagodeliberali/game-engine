@@ -61,6 +61,8 @@ export class SpriteRenderable extends AbstractRenderable<TextureShader> {
     this.animator = new RenderableAnimator(settings, (position) =>
       this.setSprite(position)
     );
+
+    return this;
   }
 
   runInLoop() {
@@ -69,6 +71,8 @@ export class SpriteRenderable extends AbstractRenderable<TextureShader> {
     }
 
     this.animator.runInLoop();
+
+    return this;
   }
 
   runOnce() {

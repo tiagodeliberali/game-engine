@@ -1,12 +1,13 @@
 import { Camera, Transform, Vec2d } from "..";
 import { getResourceManager } from "../resources";
-import { IComponent } from ".";
+import { BoundingBox, GameObjectHelper, IComponent } from ".";
 import { ITransformable, TransformDef } from "..";
 
 export class GameObject implements IComponent, ITransformable {
   private transform: Transform;
   private components: IComponent[] = [];
   private currentDirection: Vec2d = new Vec2d(1, 0);
+  private boundingBoxList: BoundingBox[] = [];
   paused: boolean;
   visible: boolean;
 
@@ -16,6 +17,9 @@ export class GameObject implements IComponent, ITransformable {
     this.visible = true;
   }
 
+  ///
+  // ITransformable
+  ///
   getTransform() {
     return this.transform;
   }
@@ -105,18 +109,9 @@ export class GameObject implements IComponent, ITransformable {
     this.transform = this.transform.factorToScale(vector);
   }
 
-  loadResource(path: string, extension?: string) {
-    getResourceManager().loadScene(path, extension);
-  }
-
-  getResource<T>(path: string) {
-    return getResourceManager().get<T>(path);
-  }
-
-  pause() {
-    this.paused = true;
-  }
-
+  ///
+  // IComponent
+  ///
   load() {
     this.components.forEach((item) => item.load());
   }
@@ -137,19 +132,36 @@ export class GameObject implements IComponent, ITransformable {
     this.components.forEach((item) => item.unload());
   }
 
+  ///
+  // GameObject
+  ///
+  loadResource(path: string, extension?: string) {
+    getResourceManager().loadScene(path, extension);
+  }
+
+  getResource<T>(path: string) {
+    return getResourceManager().get<T>(path);
+  }
+
   add(component: IComponent) {
     this.components.push(component);
+    return new GameObjectHelper(this, component);
   }
 
-  getFirst<T extends IComponent>(): T | undefined {
-    const result = this.components.filter((x) => (x as T) !== undefined);
-    return result.length > 0 ? (result[0] as T) : undefined;
+  addBoundingBox(box: BoundingBox) {
+    this.boundingBoxList.push(box);
   }
 
-  static FromComponent(renderable: IComponent): IComponent {
-    const gameObject = new GameObject();
-    gameObject.add(renderable);
+  popBoundingBoxes() {
+    let boxes = [...this.boundingBoxList];
+    this.boundingBoxList = [];
 
-    return gameObject;
+    this.components.forEach((item) => {
+      if ((item as GameObject).popBoundingBoxes !== undefined) {
+        boxes = boxes.concat((item as GameObject).popBoundingBoxes());
+      }
+    });
+
+    return boxes;
   }
 }
