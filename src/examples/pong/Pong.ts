@@ -14,6 +14,8 @@ import {
   SpriteRenderable,
   TextureRenderable,
   Vec2d,
+  ResourceComponent,
+  Audio,
 } from "../../engine";
 
 type HUD = {
@@ -91,6 +93,12 @@ const slimePaddlePath = "./textures/slime_paddle.png";
 
 // https://www.spriters-resource.com/pc_computer/bioniclethelegendofmatanuiprototype/sheet/108251/
 const ballPath = "./textures/ball.png";
+
+// https://freesound.org/people/AdamJ/sounds/417209/
+const pongCuePath = "./sounds/pong.wav";
+
+// https://freesound.org/people/AdamJ/sounds/417210/
+const endCuePath = "./sounds/end.wav";
 
 const createPaddle = (
   texturePath: string,
@@ -188,6 +196,12 @@ const createBall = (hud: HUD) => {
     return angle;
   };
 
+  const pongCue = new ResourceComponent(pongCuePath);
+  gameObject.add(pongCue);
+
+  const endCue = new ResourceComponent(endCuePath);
+  gameObject.add(endCue);
+
   gameObject
     .add(
       SpriteRenderable.build(ballPath, 4, 6, 0)
@@ -226,6 +240,7 @@ const createBall = (hud: HUD) => {
       };
 
       const computeScore = (player: number) => {
+        endCue.get<Audio>().playOnce(0.5);
         gameObject.paused = true;
         hud.updateScore(player);
         hud.updateMessage(actionMessageText);
@@ -253,6 +268,7 @@ const createBall = (hud: HUD) => {
             ball.setTransform({
               rotationInDegree: 180 - ball.getTransform().getRotationInDegree(),
             });
+            pongCue.get<Audio>().playOnce();
           } else if (
             !(status & ColisionStatus.collideTop) ||
             !(status & ColisionStatus.collideBottom)
@@ -260,6 +276,7 @@ const createBall = (hud: HUD) => {
             ball.setTransform({
               rotationInDegree: -ball.getTransform().getRotationInDegree(),
             });
+            pongCue.get<Audio>().playOnce();
           }
         },
       };
