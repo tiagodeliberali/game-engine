@@ -5,7 +5,7 @@ import {
   TransformDef,
   ResourceComponent,
   walk2d,
-} from "../../engine";
+} from "../../../engine";
 
 const footCuePath = "/sounds/footstep.wav";
 const pokemonTexturePath = "/textures/character.png";

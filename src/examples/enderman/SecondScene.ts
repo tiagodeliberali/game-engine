@@ -11,7 +11,7 @@ import {
   AnimationType,
   isKeyClicked,
   Viewport,
-} from "../engine";
+} from "../../engine";
 import { buildCharacter } from "./assets/Character";
 
 const backgroundMusicPath = "/sounds/background_music.mp3";
@@ -100,7 +100,7 @@ export class SecondScene extends BasicScene {
       green: 0,
       blue: 0,
     });
-    this.pushComponent(cabeca);
+    this.add(cabeca);
 
     const olho1 = new Renderable();
     olho1.setTransform({
@@ -113,7 +113,7 @@ export class SecondScene extends BasicScene {
       green: 88,
       blue: 237,
     });
-    this.pushComponent(olho1);
+    this.add(olho1);
 
     const olho2 = new Renderable();
     olho2.setTransform({
@@ -126,7 +126,7 @@ export class SecondScene extends BasicScene {
       green: 88,
       blue: 237,
     });
-    this.pushComponent(olho2);
+    this.add(olho2);
 
     const boca = new Renderable();
     boca.setTransform({
@@ -139,7 +139,7 @@ export class SecondScene extends BasicScene {
       green: 237,
       blue: 188,
     });
-    this.pushComponent(boca);
+    this.add(boca);
 
     const bocaLado1 = new Renderable();
     bocaLado1.setTransform({
@@ -152,7 +152,7 @@ export class SecondScene extends BasicScene {
       green: 0,
       blue: 0,
     });
-    this.pushComponent(bocaLado1);
+    this.add(bocaLado1);
 
     const bocaLado2 = new Renderable();
     bocaLado2.setTransform({
@@ -165,7 +165,7 @@ export class SecondScene extends BasicScene {
       green: 0,
       blue: 0,
     });
-    this.pushComponent(bocaLado2);
+    this.add(bocaLado2);
 
     this.phoenix = new SpriteRenderable(phoenixPath, 2, 3, 0);
     this.phoenix.setColor({
@@ -178,6 +178,6 @@ export class SecondScene extends BasicScene {
       scale: new Vec2d(0.3, 0.3),
       rotationInDegree: 0,
     });
-    this.pushComponent(this.phoenix);
+    this.add(this.phoenix);
   }
 }

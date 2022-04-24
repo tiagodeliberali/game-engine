@@ -14,10 +14,10 @@ export class GameObjectHelper {
     this.component = component;
   }
 
-  withBoundingBox(
+  withBoundingBox<T>(
     tag: string,
     scale?: Vec2d,
-    actions?: (component: IComponent) => ColisionActions
+    actions?: (component: T) => ColisionActions
   ) {
     const transformable = this.component as unknown as ITransformable;
 
@@ -32,17 +32,17 @@ export class GameObjectHelper {
       transformable,
       tag,
       scale,
-      actions && actions(this.component)
+      actions && actions(this.component as unknown as T)
     );
-    this.gameObject.addBoundingBox(box);
+    this.gameObject.add(box);
 
     return this;
   }
 
-  withBehavior(action: (component: IComponent) => void) {
+  withBehavior<T>(action: (component: T) => void) {
     this.gameObject.add(
       new Behavior(() => {
-        action(this.component);
+        action(this.component as unknown as T);
       })
     );
 

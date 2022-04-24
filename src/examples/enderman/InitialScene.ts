@@ -1,19 +1,16 @@
 import {
   Renderable,
   Vec2d,
-  Audio,
   SimplifiedScene,
   Behavior,
   ResourceComponent,
-  TextureRenderable,
   ITransformable,
   FontRenderable,
   rotate,
   BoundingBox,
   GameObject,
-} from "../engine";
+} from "../../engine";
 import { buildCharacter } from "./assets/Character";
-import { pong } from ".";
 
 const stageCuePath = "/sounds/change_level.wav";
 

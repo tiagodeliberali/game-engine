@@ -7,7 +7,7 @@ export class GameObject implements IComponent, ITransformable {
   private transform: Transform;
   private components: IComponent[] = [];
   private currentDirection: Vec2d = new Vec2d(1, 0);
-  private boundingBoxList: BoundingBox[] = [];
+  private boundingBoxes: BoundingBox[] = [];
   paused: boolean;
   visible: boolean;
 
@@ -144,17 +144,18 @@ export class GameObject implements IComponent, ITransformable {
   }
 
   add(component: IComponent) {
-    this.components.push(component);
+    if ((component as BoundingBox).boundCollideStatus !== undefined) {
+      this.boundingBoxes.push(component as BoundingBox);
+    } else {
+      this.components.push(component);
+    }
+
     return new GameObjectHelper(this, component);
   }
 
-  addBoundingBox(box: BoundingBox) {
-    this.boundingBoxList.push(box);
-  }
-
   popBoundingBoxes() {
-    let boxes = [...this.boundingBoxList];
-    this.boundingBoxList = [];
+    let boxes = [...this.boundingBoxes];
+    this.boundingBoxes = [];
 
     this.components.forEach((item) => {
       if ((item as GameObject).popBoundingBoxes !== undefined) {

@@ -1,5 +1,5 @@
-import { ITransformable } from "..";
-import { BoundingBox, GameObject } from "../behaviors";
+import { Camera, ITransformable } from "..";
+import { BoundingBox, GameObject, IComponent } from "../behaviors";
 import { EngineError } from "../EngineError";
 import { GameEngine } from "../GameEngine";
 import { getResourceManager } from "../resources";
@@ -9,16 +9,18 @@ export abstract class AbstractScene {
   private boundingBoxList: BoundingBox[] = [];
   private colisionList: ITransformable[] = [];
   protected gameObjects: GameObject;
+  protected camera: Camera;
 
-  constructor() {
+  constructor(camera: Camera) {
     this.gameObjects = new GameObject();
+    this.camera = camera;
   }
 
   registerGameEngine(engine: GameEngine) {
     this.gameEngine = engine;
   }
 
-  goToScene(scene: AbstractScene) {
+  protected goToScene(scene: AbstractScene) {
     if (this.gameEngine === undefined) {
       throw new EngineError(AbstractScene.name, "No game engine registered");
     }
@@ -26,39 +28,46 @@ export abstract class AbstractScene {
     this.gameEngine.changeScene(scene);
   }
 
-  loadResource(path: string, extension?: string) {
+  protected loadResource(path: string, extension?: string) {
     getResourceManager().loadScene(path, extension);
   }
 
-  getResource<T>(path: string) {
+  protected getResource<T>(path: string) {
     return getResourceManager().get<T>(path);
   }
 
   load() {
-    // time to load all resources with resource manager
+    this.gameObjects.load();
+
+    this.boundingBoxList = this.gameObjects.popBoundingBoxes();
+    this.boundingBoxList.forEach((x) => x.load());
   }
 
   init() {
-    // all one time actions that should be executed in the begining of the scene
+    this.boundingBoxList.forEach((x) => x.init());
+    this.gameObjects.init();
   }
 
   draw() {
-    // draw stuff every loop iteration
+    this.boundingBoxList.forEach((x) => x.draw(this.camera));
+    this.gameObjects.draw(this.camera);
   }
 
   update() {
+    this.gameObjects.update();
+    this.boundingBoxList.forEach((x) => x.update());
     this.processBoudingBoxes();
   }
 
   unload() {
-    // unload all objects
+    this.gameObjects.unload();
   }
 
-  processBoudingBoxes() {
-    this.boundingBoxList = this.boundingBoxList.concat(
-      this.gameObjects.popBoundingBoxes()
-    );
+  add(component: IComponent) {
+    this.gameObjects.add(component);
+  }
 
+  private processBoudingBoxes() {
     if (this.boundingBoxList.length === 0) {
       return;
     }
@@ -75,11 +84,22 @@ export abstract class AbstractScene {
       (x) => !x.hasAction()
     );
 
+    // interact each actionable with each non-actionable
     actionableBoudingBoxes.forEach((actionable) => {
       nonActionableBoudingBoxes.forEach((nonActinable) => {
         this.executeActions(actionable, nonActinable);
       });
     });
+
+    // interactions between actionables
+    for (let i = 0; i < actionableBoudingBoxes.length - 1; i++) {
+      for (let j = i + 1; j < actionableBoudingBoxes.length; j++) {
+        this.executeActions(
+          actionableBoudingBoxes[i],
+          actionableBoudingBoxes[j]
+        );
+      }
+    }
   }
 
   private executeActions(origin: BoundingBox, target: BoundingBox) {

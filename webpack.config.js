@@ -25,8 +25,8 @@ module.exports = {
     new CopyPlugin({
       patterns: [
         { from: "./src/shaders", to: "./shaders" },
-        { from: "./src/my_game/sounds", to: "./sounds" },
-        { from: "./src/my_game/textures", to: "./textures" },
+        { from: "./src/examples/sounds", to: "./sounds" },
+        { from: "./src/examples/textures", to: "./textures" },
         { from: "./src/textures", to: "./textures" },
       ],
     }),

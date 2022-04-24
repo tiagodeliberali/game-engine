@@ -4,9 +4,9 @@ import {
   ColisionStatus,
   FontRenderable,
   GameObject,
+  IRenderable,
   isKeyClicked,
   isKeyPressed,
-  ITransformable,
   Keys,
   moveTowardsCurrentDirection,
   Renderable,
@@ -14,9 +14,10 @@ import {
   SpriteRenderable,
   TextureRenderable,
   Vec2d,
-} from "../engine";
+} from "../../engine";
 
 type HUD = {
+  togglePause: () => void;
   updateMessage: (message: string) => void;
   hideMessage: () => void;
   updateScore: (player: number) => void;
@@ -28,7 +29,8 @@ export function pong() {
 
   const gameComponents = new GameObject();
 
-  const hud = createHUD(scene);
+  const { hud, hudGameObject } = createHUD();
+  scene.add(hudGameObject);
 
   gameComponents.add(buildLimits());
   gameComponents.add(createPaddle(icePaddlePath, 15, 270, Keys.W, Keys.S));
@@ -36,7 +38,7 @@ export function pong() {
   gameComponents.add(createBall(hud));
 
   scene.add(gameComponents);
-  scene.add(pauseBehavior(gameComponents));
+  scene.add(pauseBehavior(gameComponents, hud));
 
   return scene;
 }
@@ -108,9 +110,7 @@ const createPaddle = (
       })
     )
     .withBoundingBox("paddle", Vec2d.from(0.2, 2.2))
-    .withBehavior((component) => {
-      const paddle = component as unknown as ITransformable;
-
+    .withBehavior<IRenderable>((paddle) => {
       if (isKeyPressed(upKey) && paddle.getTransform().getPosition().y < 39) {
         paddle.addToPosition(Vec2d.from(0, 2));
       } else if (
@@ -124,10 +124,12 @@ const createPaddle = (
   return gameObject;
 };
 
+const pausedText = "Paused";
 const actionMessageText = "Ponto!";
 const score = [0, 0];
+let paused = false;
 
-const createHUD = (scene: SimplifiedScene) => {
+const createHUD = () => {
   const messageText = FontRenderable.getDefaultFont("")
     .setColor({ red: 100, green: 200, blue: 100, alpha: 1 })
     .setTransform({
@@ -142,12 +144,14 @@ const createHUD = (scene: SimplifiedScene) => {
       scale: Vec2d.from(2, 2),
     });
 
-  scene.add(messageText);
-  scene.add(scoreText);
+  const hudGameObject = new GameObject();
 
-  return {
-    updateMessage: (message: string) => messageText.setText(message),
-    hideMessage: () => messageText.setText(""),
+  hudGameObject.add(messageText);
+  hudGameObject.add(scoreText);
+
+  const hud = {
+    updateMessage: (message: string) => !paused && messageText.setText(message),
+    hideMessage: () => !paused && messageText.setText(""),
     updateScore: (player: number) => {
       score[player] += 1;
       scoreText.setText(`${score[0]} - ${score[1]}`);
@@ -157,7 +161,18 @@ const createHUD = (scene: SimplifiedScene) => {
       score[1] = 0;
       scoreText.setText(`${score[0]} - ${score[1]}`);
     },
+    togglePause: () => {
+      paused = !paused;
+
+      if (paused) {
+        messageText.setText(pausedText);
+      } else {
+        messageText.setText("");
+      }
+    },
   };
+
+  return { hud, hudGameObject };
 };
 
 const createBall = (hud: HUD) => {
@@ -189,13 +204,10 @@ const createBall = (hud: HUD) => {
         })
         .runInLoop()
     )
-    .withBehavior((component) => {
-      const ball = component as unknown as ITransformable;
+    .withBehavior<IRenderable>((ball) => {
       moveTowardsCurrentDirection(ball, 0.1);
     })
-    .withBoundingBox("ball", Vec2d.from(0.5, 0.5), (component) => {
-      const ball = component as unknown as ITransformable;
-
+    .withBoundingBox<IRenderable>("ball", Vec2d.from(0.5, 0.5), (ball) => {
       const startAgain = () => {
         hud.hideMessage();
         gameObject.paused = false;
@@ -253,32 +265,17 @@ const createBall = (hud: HUD) => {
       };
     });
 
-  // gameObject.add(
-  //   new Behavior(() => {
-  //     scene.camera.clampAtBoundary(box, Vec2d.from(0.7, 0.7));
-  //   })
-  // );
-
   return gameObject;
 };
 
-const pauseBehavior = (gameComponents: GameObject) => {
+const pauseBehavior = (gameComponents: GameObject, hud: HUD) => {
   const pauseObject = new GameObject();
-  pauseObject.visible = false;
-  pauseObject.add(
-    FontRenderable.getDefaultFont("Paused")
-      .setColor({ red: 100, green: 200, blue: 100, alpha: 1 })
-      .setTransform({
-        position: Vec2d.from(40, 25),
-        scale: Vec2d.from(5, 5),
-      })
-  );
 
   pauseObject.add(
     new Behavior(() => {
       if (isKeyClicked(Keys.Space)) {
         gameComponents.paused = !gameComponents.paused;
-        pauseObject.visible = gameComponents.paused;
+        hud.togglePause();
       }
     })
   );

@@ -136,7 +136,7 @@ export class BoundingBox implements IComponent {
   }
 
   load() {
-    //
+    this.debugBox.load();
   }
 
   init() {
