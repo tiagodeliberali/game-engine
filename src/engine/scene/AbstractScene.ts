@@ -20,7 +20,7 @@ export abstract class AbstractScene {
     this.gameEngine = engine;
   }
 
-  protected goToScene(scene: AbstractScene) {
+  goToScene(scene: AbstractScene) {
     if (this.gameEngine === undefined) {
       throw new EngineError(AbstractScene.name, "No game engine registered");
     }

@@ -14,6 +14,10 @@ export class GameObjectHelper {
     this.component = component;
   }
 
+  getComponent<T>() {
+    return this.component as unknown as T;
+  }
+
   withBoundingBox<T>(
     tag: string,
     scale?: Vec2d,

@@ -29,6 +29,7 @@ import {
   moveTowardsCurrentDirection,
   BoundingBox,
   ColisionStatus,
+  GameObjectHelper,
 } from "./behaviors";
 import { IComponent } from "./behaviors";
 import { isDebugMode } from "./Settings";
@@ -64,6 +65,7 @@ export {
   BoundingBox,
   ColisionStatus,
   isDebugMode,
+  GameObjectHelper,
 };
 
 export type { IRenderable, TransformDef, IComponent, ITransformable, ColorDef };

@@ -39,13 +39,13 @@ export class SecondScene extends BasicScene {
 
     this.buildEnderman();
 
-    this.gameObjects.add(
-      buildCharacter({
-        position: new Vec2d(0, 0),
-        scale: new Vec2d(0.2, 0.2),
-        rotationInDegree: 0,
-      })
-    );
+    const { characterGameObject } = buildCharacter({
+      position: new Vec2d(0, 0),
+      scale: new Vec2d(0.2, 0.2),
+      rotationInDegree: 0,
+    });
+
+    this.gameObjects.add(characterGameObject);
   }
 
   load() {

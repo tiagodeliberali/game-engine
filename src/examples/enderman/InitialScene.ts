@@ -2,17 +2,62 @@ import {
   Renderable,
   Vec2d,
   SimplifiedScene,
-  Behavior,
   ResourceComponent,
   ITransformable,
   FontRenderable,
   rotate,
-  BoundingBox,
   GameObject,
+  Audio,
 } from "../../engine";
 import { buildCharacter } from "./assets/Character";
+import { SecondScene } from "./SecondScene";
 
 const stageCuePath = "/sounds/change_level.wav";
+
+export function buildInitialScene() {
+  const scene = new SimplifiedScene(100, 50);
+
+  scene.add(createBlueSquare());
+
+  const text = FontRenderable.getDefaultFont("Ola Alice!")
+    .setColor({ red: 100, green: 200, blue: 100, alpha: 1 })
+    .setTransform({
+      position: new Vec2d(20, 40),
+      scale: new Vec2d(3, 3),
+      rotationInDegree: 0,
+    });
+
+  scene.add(text);
+
+  const stageCue = new ResourceComponent(stageCuePath);
+  scene.add(stageCue);
+
+  const { characterGameObject, characterHelper } = buildCharacter({
+    position: new Vec2d(50, 25),
+    scale: new Vec2d(6, 6),
+    rotationInDegree: 0,
+  });
+
+  scene.add(characterGameObject);
+
+  characterHelper
+    .withBehavior<ITransformable>((character) => {
+      if (character && character.getTransform().getPosition().x > 100) {
+        stageCue.get<Audio>().playOnce();
+        scene.goToScene(new SecondScene());
+      }
+    })
+    .withBoundingBox<ITransformable>("", Vec2d.from(1, 1), () => {
+      return {
+        onCollideStarted: () => text.setText("Collided!!!"),
+        onCollideEnded: () => text.setText("Collision ended..."),
+      };
+    });
+
+  scene.add(createRedSquare(characterHelper.getComponent<ITransformable>()));
+
+  return scene;
+}
 
 const timestamp = performance.now();
 
@@ -24,86 +69,36 @@ const blueSquareBehavior = (transform: ITransformable) => {
 };
 
 const createBlueSquare = () => {
-  const blueSquare = new Renderable();
-  blueSquare.setColor({ red: 100, green: 0, blue: 255 });
-  blueSquare.setTransform({
-    position: new Vec2d(50, 25),
-    scale: new Vec2d(15, 15),
-    rotationInDegree: 25,
-  });
-
   const gameObject = new GameObject();
-  gameObject.add(blueSquare);
-  gameObject.add(
-    new Behavior(() => {
-      blueSquareBehavior(blueSquare);
-    })
-  );
-
+  gameObject
+    .add(
+      Renderable.build()
+        .setColor({ red: 100, green: 0, blue: 255 })
+        .setTransform({
+          position: new Vec2d(50, 25),
+          scale: new Vec2d(15, 15),
+          rotationInDegree: 25,
+        })
+    )
+    .withBehavior<Renderable>((blueSquare) => blueSquareBehavior(blueSquare));
   return gameObject;
 };
 
-export function buildInitialScene() {
-  const scene = new SimplifiedScene(100, 50);
+const createRedSquare = (character: ITransformable) => {
+  const gameObject = new GameObject();
 
-  scene.add(createBlueSquare());
+  gameObject
+    .add(
+      Renderable.build()
+        .setColor({ red: 255, green: 0, blue: 0 })
+        .setTransform({
+          position: new Vec2d(10, 10),
+          scale: new Vec2d(7, 7),
+          rotationInDegree: 0,
+        })
+    )
+    .withBehavior<Renderable>((redSquare) => rotate(redSquare, character, 0.5))
+    .withBoundingBox("");
 
-  const character = buildCharacter({
-    position: new Vec2d(50, 25),
-    scale: new Vec2d(6, 6),
-    rotationInDegree: 0,
-  });
-
-  const stageCue = new ResourceComponent(stageCuePath);
-  character.add(stageCue);
-  // character.add(
-  //   new Behavior(() => {
-  //     const caracterRenderable = character.getFirst<TextureRenderable>();
-  //     if (
-  //       caracterRenderable &&
-  //       caracterRenderable.getTransform().getPosition().x > 100
-  //     ) {
-  //       stageCue.get<Audio>().playOnce();
-  //       scene.goToScene(pong());
-  //     }
-  //   })
-  // );
-  scene.add(character);
-
-  const redSquare = new Renderable();
-  redSquare.setColor({ red: 255, green: 0, blue: 0 });
-  redSquare.setTransform({
-    position: new Vec2d(10, 10),
-    scale: new Vec2d(7, 7),
-    rotationInDegree: 0,
-  });
-  scene.add(redSquare);
-  scene.add(rotate(redSquare, character, 0.5));
-
-  const text = FontRenderable.getDefaultFont("Ola Alice!");
-  text.setColor({ red: 100, green: 200, blue: 100, alpha: 1 });
-  text.setTransform({
-    position: new Vec2d(20, 40),
-    scale: new Vec2d(3, 3),
-    rotationInDegree: 0,
-  });
-  scene.add(text);
-
-  const redSquareBoundingBox = BoundingBox.from(redSquare, "");
-
-  scene.add(redSquareBoundingBox);
-
-  const characterBoundingBox = BoundingBox.withAction(
-    character,
-    "",
-    Vec2d.from(1, 1),
-    {
-      onCollideStarted: () => text.setText("Collided!!!"),
-      onCollideEnded: () => text.setText("Collision ended..."),
-    }
-  );
-  // characterBoundingBox.add(redSquareBoundingBox);
-  scene.add(characterBoundingBox);
-
-  return scene;
-}
+  return gameObject;
+};

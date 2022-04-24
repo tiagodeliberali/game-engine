@@ -12,8 +12,8 @@ export class BasicScene extends AbstractScene {
   }
 
   draw() {
-    super.draw();
     clearCanvas(this.color);
     this.viewport.draw();
+    super.draw();
   }
 }

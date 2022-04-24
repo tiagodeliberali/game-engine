@@ -5,34 +5,35 @@ import {
   TransformDef,
   ResourceComponent,
   walk2d,
+  ITransformable,
 } from "../../../engine";
 
 const footCuePath = "/sounds/footstep.wav";
 const pokemonTexturePath = "/textures/character.png";
 
-export function buildCharacter(characterTransform: TransformDef): GameObject {
-  const character = new GameObject();
-
-  // add the sprite!
-  const renderable = new TextureRenderable(pokemonTexturePath);
-  character.add(renderable);
+export function buildCharacter(characterTransform: TransformDef) {
+  const characterGameObject = new GameObject();
 
   // add sound
   const footCue = new ResourceComponent(footCuePath);
-  character.add(footCue);
+  characterGameObject.add(footCue);
 
-  // add a behavior
-  character.add(
-    walk2d(character, 0.08, (isWalking) => {
-      if (isWalking) {
-        footCue.get<Audio>().playLoop();
-      } else {
-        footCue.get<Audio>().stop();
-      }
-    })
-  );
+  // add the sprite!
+  const characterHelper = characterGameObject
+    .add(
+      TextureRenderable.build(pokemonTexturePath).setTransform(
+        characterTransform
+      )
+    )
+    .withBehavior<ITransformable>((character) =>
+      walk2d(character, 0.08, (isWalking) => {
+        if (isWalking) {
+          footCue.get<Audio>().playLoop();
+        } else {
+          footCue.get<Audio>().stop();
+        }
+      })
+    );
 
-  character.setTransform(characterTransform);
-
-  return character;
+  return { characterGameObject, characterHelper };
 }
