@@ -1,5 +1,4 @@
 import { GameObject } from "./GameObject";
-import { IComponent } from "./IComponent";
 import { Behavior } from "./Behavior";
 import { walk2d, rotate, moveTowardsCurrentDirection } from "./Walking";
 import { BoundingBox, ColisionStatus } from "./BoundingBox";
@@ -15,4 +14,3 @@ export {
   BoundingBox,
   ColisionStatus,
 };
-export type { IComponent };

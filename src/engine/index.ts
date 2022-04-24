@@ -7,6 +7,7 @@ import {
   TransformDef,
   Transform,
   ITransformable,
+  IComponent,
 } from "./core";
 import {
   SpriteRenderable,
@@ -31,7 +32,6 @@ import {
   ColisionStatus,
   GameObjectHelper,
 } from "./behaviors";
-import { IComponent } from "./behaviors";
 import { isDebugMode } from "./Settings";
 
 export {

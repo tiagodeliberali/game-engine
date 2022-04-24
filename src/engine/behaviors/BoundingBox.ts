@@ -1,7 +1,6 @@
 import { Vec2d } from "../DataStructures";
 import { isDebugMode, ITransformable, Renderable } from "..";
-import { IComponent } from "./IComponent";
-import { Camera } from "../core";
+import { Camera, IComponent } from "../core";
 
 export enum ColisionStatus {
   collideLeft = 1,

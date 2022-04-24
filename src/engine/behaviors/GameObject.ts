@@ -1,6 +1,6 @@
-import { Camera, Transform, Vec2d } from "..";
+import { Camera, Transform, Vec2d, IComponent } from "..";
 import { getResourceManager } from "../resources";
-import { BoundingBox, GameObjectHelper, IComponent } from ".";
+import { BoundingBox, GameObjectHelper } from ".";
 import { ITransformable, TransformDef } from "..";
 
 export class GameObject implements IComponent, ITransformable {

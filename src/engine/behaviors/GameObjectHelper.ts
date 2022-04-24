@@ -1,9 +1,8 @@
 import { BoundingBox, GameObject } from ".";
-import { ITransformable, Vec2d } from "..";
+import { IComponent, ITransformable, Vec2d } from "..";
 import { EngineError } from "../EngineError";
 import { Behavior } from "./Behavior";
 import { ColisionActions } from "./BoundingBox";
-import { IComponent } from "./IComponent";
 
 export class GameObjectHelper {
   gameObject: GameObject;

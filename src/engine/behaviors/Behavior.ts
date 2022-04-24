@@ -1,4 +1,4 @@
-import { IComponent } from ".";
+import { IComponent } from "..";
 
 export class Behavior implements IComponent {
   action: () => void;

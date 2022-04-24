@@ -1,5 +1,5 @@
-import { Camera, ITransformable } from "..";
-import { BoundingBox, GameObject, IComponent } from "../behaviors";
+import { Camera, IComponent, ITransformable } from "..";
+import { BoundingBox, GameObject } from "../behaviors";
 import { EngineError } from "../EngineError";
 import { GameEngine } from "../GameEngine";
 import { getResourceManager } from "../resources";
