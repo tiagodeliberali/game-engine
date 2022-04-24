@@ -1,5 +1,5 @@
-import { buildInitialScene } from "./enderman/InitialScene";
-import { SecondScene } from "./enderman/SecondScene";
-import { pong } from "./pong/Pong";
+import { buildInitialScene, SecondScene } from "./enderman";
+import { pong } from "./pong";
+import { findEggs } from "./find_eggs";
 
-export { buildInitialScene, SecondScene, pong };
+export { buildInitialScene, SecondScene, pong, findEggs };
