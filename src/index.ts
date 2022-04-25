@@ -1,6 +1,5 @@
 import { GameEngine } from "./engine";
 import { buildInitialScene, findEggs, pong } from "./examples";
-import { getDocs } from "./docs";
 
 const params = new URLSearchParams(window.location.search);
 
@@ -15,11 +14,6 @@ if (gameName === "pong") {
 } else if (gameName === "findeggs") {
   const engine = new GameEngine(findEggs());
   engine.startGame();
-} else if (gameName === "docs") {
-  const contentName = params.get("content");
-  const { index, content } = getDocs(contentName || "index");
-  document.body.insertAdjacentHTML("afterbegin", index.getIndex());
-  document.body.insertAdjacentHTML("beforeend", content.getHtml());
 } else {
   document.body.insertAdjacentHTML(
     "afterbegin",
