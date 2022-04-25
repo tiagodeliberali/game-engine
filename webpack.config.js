@@ -29,6 +29,10 @@ module.exports = {
         { from: "./src/examples/enderman/textures", to: "./textures" },
         { from: "./src/examples/pong/textures", to: "./textures" },
         { from: "./src/examples/pong/sounds", to: "./sounds" },
+        {
+          from: "./src/examples/find_eggs/textures",
+          to: "./find_eggs/textures",
+        },
         { from: "./src/textures", to: "./textures" },
       ],
     }),

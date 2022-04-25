@@ -58,10 +58,6 @@ export class TextureShader extends AbstractShader {
     );
   }
 
-  private setTextureCoordinate(vertices: number[]) {
-    this.textureCoordinateBuffer.setTextureCoordinate(vertices);
-  }
-
   private getSpritePosition(rows: number, columns: number, position: number) {
     if (this.texture === undefined) {
       throw new EngineError(
@@ -84,6 +80,56 @@ export class TextureShader extends AbstractShader {
     }
 
     return spritePosition;
+  }
+
+  setSpriteByRowColumn(
+    rows: number,
+    columns: number,
+    row: number,
+    column: number
+  ) {
+    this.setTextureCoordinate(
+      this.getSpritePositionByRowColumn(
+        rows,
+        columns,
+        row,
+        column
+      ).getElementUVCoordinateArray()
+    );
+  }
+
+  private getSpritePositionByRowColumn(
+    rows: number,
+    columns: number,
+    row: number,
+    column: number
+  ) {
+    if (this.texture === undefined) {
+      throw new EngineError(
+        TextureShader.name,
+        "Trying to getSpritePosition with undefined texture"
+      );
+    }
+
+    let spritePosition = this.texture.getSpritePositionAsArray(
+      rows,
+      columns,
+      row,
+      column
+    );
+
+    if (!spritePosition.isNormalized()) {
+      spritePosition = spritePosition.normalize(
+        this.texture.width,
+        this.texture.height
+      );
+    }
+
+    return spritePosition;
+  }
+
+  private setTextureCoordinate(vertices: number[]) {
+    this.textureCoordinateBuffer.setTextureCoordinate(vertices);
   }
 
   draw(pixelColor: Color, trsMatrix: mat4, cameraMatrix: mat4) {
