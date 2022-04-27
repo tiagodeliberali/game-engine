@@ -33,6 +33,7 @@ import {
   GameObjectHelper,
 } from "./behaviors";
 import { isDebugMode } from "./Settings";
+import { Movement } from "./behaviors/Walking";
 
 export {
   getGL,
@@ -57,6 +58,7 @@ export {
   GameObject,
   ResourceComponent,
   Behavior,
+  Movement,
   walk2d,
   SimplifiedScene,
   Transform,

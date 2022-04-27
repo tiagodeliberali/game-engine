@@ -54,6 +54,7 @@ export abstract class AbstractScene {
   }
 
   update() {
+    this.camera.update();
     this.gameObjects.update();
     this.boundingBoxList.forEach((x) => x.update());
     this.processBoudingBoxes();

@@ -1,33 +1,40 @@
 import { Vec2d } from "../DataStructures";
-import { ITransformable } from "..";
+import { GameObject, ITransformable } from "..";
 import { isKeyPressed, Keys } from "../input";
 
+export enum Movement {
+  up = 1,
+  down = 2,
+  left = 4,
+  right = 8,
+  idle = 0,
+}
+
 export function walk2d(
-  transform: ITransformable,
+  gameObject: GameObject,
   speed: number,
-  onUpdate?: (isWalking: boolean) => void
+  onUpdate?: (isWalking: Movement) => void
 ) {
-  const scaledSpeed = speed * transform.getTransform().getHorizontalScale();
+  const scaledSpeed = speed * gameObject.getTransform().getHorizontalScale();
+  let movement = Movement.idle;
 
-  let isWalking = false;
   if (isKeyPressed(Keys.Left)) {
-    transform.addToPosition(new Vec2d(-scaledSpeed, 0));
-    isWalking = true;
-  }
-  if (isKeyPressed(Keys.Right)) {
-    transform.addToPosition(new Vec2d(scaledSpeed, 0));
-    isWalking = true;
-  }
-  if (isKeyPressed(Keys.Up)) {
-    transform.addToPosition(new Vec2d(0, scaledSpeed));
-    isWalking = true;
-  }
-  if (isKeyPressed(Keys.Down)) {
-    transform.addToPosition(new Vec2d(0, -scaledSpeed));
-    isWalking = true;
+    gameObject.addToPosition(new Vec2d(-scaledSpeed, 0));
+    movement |= Movement.left;
+  } else if (isKeyPressed(Keys.Right)) {
+    gameObject.addToPosition(new Vec2d(scaledSpeed, 0));
+    movement |= Movement.right;
   }
 
-  onUpdate && onUpdate(isWalking);
+  if (isKeyPressed(Keys.Up)) {
+    gameObject.addToPosition(new Vec2d(0, scaledSpeed));
+    movement |= Movement.up;
+  } else if (isKeyPressed(Keys.Down)) {
+    gameObject.addToPosition(new Vec2d(0, -scaledSpeed));
+    movement |= Movement.down;
+  }
+
+  onUpdate && onUpdate(movement);
 }
 
 export function moveTowardsCurrentDirection(

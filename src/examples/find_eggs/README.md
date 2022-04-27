@@ -13,3 +13,7 @@ There is a city. Around the city is a forest.
 The forest can be dangerous. Add some enemies.
 
 When you die, the eggs on inventory are displaced randomly
+
+# Tileset editor
+
+https://blurymind.github.io/tilemap-editor/

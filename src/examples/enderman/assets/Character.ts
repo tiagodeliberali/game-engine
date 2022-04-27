@@ -25,8 +25,8 @@ export function buildCharacter(characterTransform: TransformDef) {
         characterTransform
       )
     )
-    .withBehavior<ITransformable>((character) =>
-      walk2d(character, 0.08, (isWalking) => {
+    .withBehavior<ITransformable>(() =>
+      walk2d(characterGameObject, 0.08, (isWalking) => {
         if (isWalking) {
           footCue.get<Audio>().playLoop();
         } else {

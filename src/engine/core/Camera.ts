@@ -1,5 +1,5 @@
 import { mat4, vec3 } from "gl-matrix";
-import { BoundingBox, ColisionStatus } from "../behaviors";
+import { BoundingBox, ColisionStatus, LerpVec2 } from "../behaviors";
 import { Vec2d } from "../DataStructures";
 import { ITransformable } from "./ITransformable";
 import { Transform, TransformDef } from "./Transform";
@@ -9,6 +9,8 @@ export class Camera implements ITransformable {
   private size: Vec2d;
   private cameraMatrix: mat4;
   private boudingBox: BoundingBox;
+  lerpPosition: LerpVec2 | undefined;
+  lerpScale: LerpVec2 | undefined;
 
   constructor(center: Vec2d, size: Vec2d) {
     this.center = center;
@@ -43,6 +45,7 @@ export class Camera implements ITransformable {
 
   addToPosition(vector: Vec2d) {
     this.center = this.center.add(vector);
+    this.configureCamera();
   }
 
   addToRotationInDegree() {
@@ -50,7 +53,8 @@ export class Camera implements ITransformable {
   }
 
   factorToScale(vector: Vec2d) {
-    this.size = Vec2d.from(this.size.x * vector.x, this.size.y * vector.y);
+    this.size = this.size.multiply(vector);
+    this.configureCamera();
   }
 
   getCameraMatrix() {
@@ -139,30 +143,53 @@ export class Camera implements ITransformable {
   }
 
   panBy(vector: Vec2d) {
-    this.addToPosition(vector);
+    this.lerpPosition = new LerpVec2(this.center, 50, 0.1);
+    this.lerpPosition.setFinal(this.center.add(vector));
   }
 
   panTo(point: Vec2d) {
-    this.setTransform({ position: point });
+    this.lerpPosition = new LerpVec2(this.center, 50, 0.1);
+    this.lerpPosition.setFinal(point);
   }
 
   zoomBy(zoom: number) {
     if (zoom > 0) {
-      this.factorToScale(Vec2d.from(zoom, zoom));
+      this.lerpScale = new LerpVec2(this.size, 50, 0.1);
+      this.lerpScale.setFinal(Vec2d.from(zoom, zoom).multiply(this.size));
     }
   }
 
-  zoomTowards(target: BoundingBox, zoom: number) {
+  zoomTowards(target: ITransformable, zoom: number) {
     // still for reference since I am not sure it is working properly
     // let delta = [];
     // vec2.sub(delta, pos, this.mWCCenter);
     // vec2.scale(delta, delta, zoom - 1);
     // vec2.sub(this.mWCCenter, this.mWCCenter, delta);
     // this.zoomBy(zoom);
-    const position = target.owner.getTransform().getPosition();
+    const position = target.getTransform().getPosition();
     const delta = position.sub(this.center).scale(zoom - 1);
-    this.setTransform({ position: this.center.sub(delta) });
+    this.panTo(this.center.sub(delta));
     this.zoomBy(zoom);
+  }
+
+  update() {
+    if (this.lerpPosition) {
+      this.lerpPosition.update();
+      this.setCenter(this.lerpPosition.get());
+
+      if (this.lerpPosition.cyclesLeft === 0) {
+        this.lerpPosition = undefined;
+      }
+    }
+
+    if (this.lerpScale) {
+      this.lerpScale.update();
+      this.setSize(this.lerpScale.get());
+
+      if (this.lerpScale.cyclesLeft === 0) {
+        this.lerpScale = undefined;
+      }
+    }
   }
 
   private configureCamera() {

@@ -42,6 +42,14 @@ export class Vec2d {
     return this.rotate(convertDegreeToRads(degreeAngle));
   }
 
+  lerp(finalValue: Vec2d, rate: number) {
+    const current = this.toVec2();
+
+    return Vec2d.fromVec2(
+      vec2.lerp(current, current, finalValue.toVec2(), rate)
+    );
+  }
+
   add(vector: Vec2d): Vec2d {
     return new Vec2d(this.x + vector.x, this.y + vector.y);
   }
