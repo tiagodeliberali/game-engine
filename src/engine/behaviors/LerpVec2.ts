@@ -8,11 +8,10 @@ export class LerpVec2 {
   cyclesLeft: number;
 
   constructor(value: Vec2d, cycles: number, rate: number) {
-    this.currentValue = value; // begin value of interpolation
-    this.finalValue = value; // final value of interpolation
+    this.currentValue = value;
+    this.finalValue = value;
     this.cycles = cycles;
     this.rate = rate;
-    // Number of cycles left for interpolation
     this.cyclesLeft = 0;
   }
 

@@ -1,7 +1,9 @@
 import {
   AnimationType,
   BasicScene,
+  BoundingBox,
   Camera,
+  clampAtBoundary,
   Color,
   GameObject,
   isKeyClicked,
@@ -17,15 +19,32 @@ export function findEggs() {
   const camera = new Camera(Vec2d.from(0, 0), Vec2d.from(16, 8));
   const scene = new BasicScene(camera, Color.Black());
 
+  const characterGameObject = character(camera);
+
   const tiles = new GameObject();
-  tiles.add(
-    TextureRenderable.build("./find_eggs/textures/map.png").setTransform({
-      scale: Vec2d.from(51, 25),
-    })
-  );
+  tiles
+    .add(
+      TextureRenderable.build("./find_eggs/textures/map.png").setTransform({
+        scale: Vec2d.from(51, 25),
+      })
+    )
+    .withBoundingBox("scenario", Vec2d.from(0.8, 0.8))
+    .withBehavior(() => {
+      const tileBoundingBox = tiles.getLastComponent<BoundingBox>(
+        BoundingBox.name
+      );
+      const characterBoundingBox =
+        characterGameObject.getLastComponent<BoundingBox>(BoundingBox.name);
+
+      if (tileBoundingBox === undefined || characterBoundingBox === undefined) {
+        return;
+      }
+
+      clampAtBoundary(tileBoundingBox, characterBoundingBox);
+    });
 
   scene.add(tiles);
-  scene.add(character(camera));
+  scene.add(characterGameObject);
 
   return scene;
 }
@@ -47,6 +66,7 @@ const character = (camera: Camera) => {
         })
         .runInLoop()
     )
+    .withBoundingBox("character")
     .withBehavior(() => {
       // Camera follow user
       if (

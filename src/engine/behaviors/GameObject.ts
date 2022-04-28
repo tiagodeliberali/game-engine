@@ -8,6 +8,7 @@ export class GameObject implements IComponent, ITransformable {
   private components: IComponent[] = [];
   private currentDirection: Vec2d = new Vec2d(1, 0);
   private boundingBoxes: BoundingBox[] = [];
+  private index: Map<string, IComponent[]>;
   paused: boolean;
   visible: boolean;
 
@@ -15,6 +16,7 @@ export class GameObject implements IComponent, ITransformable {
     this.transform = Transform.BuldDefault();
     this.paused = false;
     this.visible = true;
+    this.index = new Map();
   }
 
   ///
@@ -148,17 +150,25 @@ export class GameObject implements IComponent, ITransformable {
       this.boundingBoxes.push(component as BoundingBox);
     }
 
+    const items = this.index.get(component.constructor.name);
+    this.index.set(
+      component.constructor.name,
+      (items || [])?.concat(component)
+    );
+
     this.components.push(component);
 
     return new GameObjectHelper(this, component);
   }
 
-  getLastComponent<T>(): T | undefined {
-    if (this.components.length === 0) {
+  getLastComponent<T>(type: string): T | undefined {
+    const typeArray = this.index.get(type);
+
+    if (typeArray === undefined || typeArray?.length === 0) {
       return undefined;
     }
 
-    return this.components[this.components.length - 1] as unknown as T;
+    return typeArray[typeArray.length - 1] as unknown as T;
   }
 
   popBoundingBoxes() {
