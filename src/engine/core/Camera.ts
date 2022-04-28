@@ -1,5 +1,5 @@
 import { mat4, vec3 } from "gl-matrix";
-import { BoundingBox, ColisionStatus, LerpVec2 } from "../behaviors";
+import { LerpVec2 } from "../behaviors";
 import { Vec2d } from "../DataStructures";
 import { ITransformable } from "./ITransformable";
 import { Transform, TransformDef } from "./Transform";
@@ -8,7 +8,6 @@ export class Camera implements ITransformable {
   private center: Vec2d;
   private size: Vec2d;
   private cameraMatrix: mat4;
-  private boudingBox: BoundingBox;
   lerpPosition: LerpVec2 | undefined;
   lerpScale: LerpVec2 | undefined;
 
@@ -16,8 +15,6 @@ export class Camera implements ITransformable {
     this.center = center;
     this.size = size;
     this.cameraMatrix = mat4.create();
-
-    this.boudingBox = BoundingBox.from(this, "camera");
 
     this.configureCamera();
   }
@@ -71,77 +68,6 @@ export class Camera implements ITransformable {
     this.configureCamera();
   }
 
-  clampAtBoundary(target: BoundingBox, zone: Vec2d) {
-    const status = this.boudingBox.boundCollideStatus(target);
-    this.boudingBox.setScale(zone);
-
-    if (status !== ColisionStatus.inside) {
-      const targetPosition = target.getPosition();
-
-      let x = targetPosition.x;
-      let y = targetPosition.y;
-
-      if ((status & ColisionStatus.collideTop) !== 0) {
-        y =
-          this.center.y + (zone.y * this.size.y) / 2 - target.getScale().y / 2;
-      }
-      if ((status & ColisionStatus.collideBottom) !== 0) {
-        y =
-          this.center.y - (zone.y * this.size.y) / 2 + target.getScale().y / 2;
-      }
-      if ((status & ColisionStatus.collideRight) !== 0) {
-        x =
-          this.center.x + (zone.x * this.size.x) / 2 - target.getScale().x / 2;
-      }
-      if ((status & ColisionStatus.collideLeft) !== 0) {
-        x =
-          this.center.x - (zone.x * this.size.x) / 2 + target.getScale().x / 2;
-      }
-
-      target.owner.setTransform({ position: Vec2d.from(x, y) });
-    }
-    return status;
-  }
-
-  panWith(target: BoundingBox, zone: Vec2d) {
-    const status = this.boudingBox.boundCollideStatus(target);
-    this.boudingBox.setScale(zone);
-
-    if (status !== ColisionStatus.inside) {
-      const targetPosition = target.getPosition();
-
-      let x = this.center.x;
-      let y = this.center.y;
-
-      if ((status & ColisionStatus.collideTop) !== 0) {
-        y =
-          targetPosition.y +
-          target.getScale().y / 2 -
-          (zone.y * this.size.y) / 2;
-      }
-      if ((status & ColisionStatus.collideBottom) !== 0) {
-        y =
-          targetPosition.y -
-          target.getScale().y / 2 +
-          (zone.y * this.size.y) / 2;
-      }
-      if ((status & ColisionStatus.collideRight) !== 0) {
-        x =
-          targetPosition.x +
-          target.getScale().x / 2 -
-          (zone.x * this.size.x) / 2;
-      }
-      if ((status & ColisionStatus.collideLeft) !== 0) {
-        x =
-          targetPosition.x -
-          target.getScale().x / 2 +
-          (zone.x * this.size.x) / 2;
-      }
-
-      this.setTransform({ position: Vec2d.from(x, y) });
-    }
-  }
-
   panBy(vector: Vec2d) {
     this.lerpPosition = new LerpVec2(this.center, 50, 0.1);
     this.lerpPosition.setFinal(this.center.add(vector));
@@ -160,12 +86,6 @@ export class Camera implements ITransformable {
   }
 
   zoomTowards(target: ITransformable, zoom: number) {
-    // still for reference since I am not sure it is working properly
-    // let delta = [];
-    // vec2.sub(delta, pos, this.mWCCenter);
-    // vec2.scale(delta, delta, zoom - 1);
-    // vec2.sub(this.mWCCenter, this.mWCCenter, delta);
-    // this.zoomBy(zoom);
     const position = target.getTransform().getPosition();
     const delta = position.sub(this.center).scale(zoom - 1);
     this.panTo(this.center.sub(delta));

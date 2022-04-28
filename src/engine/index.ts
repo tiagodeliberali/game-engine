@@ -33,7 +33,7 @@ import {
   GameObjectHelper,
 } from "./behaviors";
 import { isDebugMode } from "./Settings";
-import { Movement } from "./behaviors/Walking";
+import { clampAtBoundary, panWith, Movement } from "./behaviors/Walking";
 
 export {
   getGL,
@@ -60,6 +60,8 @@ export {
   Behavior,
   Movement,
   walk2d,
+  clampAtBoundary,
+  panWith,
   SimplifiedScene,
   Transform,
   rotate,

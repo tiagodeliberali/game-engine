@@ -1,5 +1,5 @@
 import { Vec2d } from "../DataStructures";
-import { isDebugMode, ITransformable, Renderable } from "..";
+import { GameObject, isDebugMode, ITransformable, Renderable } from "..";
 import { Camera, IComponent } from "../core";
 
 export enum ColisionStatus {
@@ -22,14 +22,14 @@ export type ColisionActions = {
 };
 
 export class BoundingBox implements IComponent {
-  actions?: ColisionActions;
   private scale: Vec2d = Vec2d.from(1, 1);
   private debugBox: Renderable;
-  tag: string;
   owner: ITransformable;
+  tag: string;
+  actions?: ColisionActions;
 
   private constructor(
-    owner: ITransformable,
+    owner: GameObject,
     tag: string,
     actions?: ColisionActions
   ) {
@@ -48,14 +48,14 @@ export class BoundingBox implements IComponent {
     this.scale = vector;
   }
 
-  static from(owner: ITransformable, tag: string, scale?: Vec2d) {
+  static from(owner: GameObject, tag: string, scale?: Vec2d) {
     const box = new BoundingBox(owner, tag);
     scale && box.setScale(scale);
     return box;
   }
 
   static withAction(
-    owner: ITransformable,
+    owner: GameObject,
     tag: string,
     scale?: Vec2d,
     actions?: ColisionActions

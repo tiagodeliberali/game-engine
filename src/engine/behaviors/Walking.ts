@@ -1,5 +1,5 @@
 import { Vec2d } from "../DataStructures";
-import { GameObject, ITransformable } from "..";
+import { BoundingBox, ColisionStatus, GameObject, ITransformable } from "..";
 import { isKeyPressed, Keys } from "../input";
 
 export enum Movement {
@@ -18,18 +18,18 @@ export function walk2d(
   const scaledSpeed = speed * gameObject.getTransform().getHorizontalScale();
   let movement = Movement.idle;
 
-  if (isKeyPressed(Keys.Left)) {
+  if (isKeyPressed(Keys.A)) {
     gameObject.addToPosition(new Vec2d(-scaledSpeed, 0));
     movement |= Movement.left;
-  } else if (isKeyPressed(Keys.Right)) {
+  } else if (isKeyPressed(Keys.D)) {
     gameObject.addToPosition(new Vec2d(scaledSpeed, 0));
     movement |= Movement.right;
   }
 
-  if (isKeyPressed(Keys.Up)) {
+  if (isKeyPressed(Keys.W)) {
     gameObject.addToPosition(new Vec2d(0, scaledSpeed));
     movement |= Movement.up;
-  } else if (isKeyPressed(Keys.Down)) {
+  } else if (isKeyPressed(Keys.S)) {
     gameObject.addToPosition(new Vec2d(0, -scaledSpeed));
     movement |= Movement.down;
   }
@@ -87,4 +87,59 @@ export function rotate(
   // rotate the facing direction with the angle and rate
   angleToRotate *= speed;
   origin.addToRotationInDegree(angleToRotate);
+}
+
+export function clampAtBoundary(border: BoundingBox, target: BoundingBox) {
+  const status = border.boundCollideStatus(target);
+
+  if (status !== ColisionStatus.inside) {
+    const center = border.getPosition();
+    const size = border.getScale();
+
+    const targetSize = target.getScale();
+    let { x, y } = target.getPosition();
+
+    if ((status & ColisionStatus.collideTop) !== 0) {
+      y = center.y + size.y / 2 - targetSize.y / 2;
+    }
+    if ((status & ColisionStatus.collideBottom) !== 0) {
+      y = center.y - size.y / 2 + targetSize.y / 2;
+    }
+    if ((status & ColisionStatus.collideRight) !== 0) {
+      x = center.x + size.x / 2 - targetSize.x / 2;
+    }
+    if ((status & ColisionStatus.collideLeft) !== 0) {
+      x = center.x - size.x / 2 + targetSize.x / 2;
+    }
+
+    target.owner.setTransform({ position: Vec2d.from(x, y) });
+  }
+  return status;
+}
+
+export function panWith(follower: BoundingBox, target: BoundingBox) {
+  const status = follower.boundCollideStatus(target);
+
+  if (status !== ColisionStatus.inside) {
+    const position = target.getPosition();
+    const scale = target.getScale();
+
+    const followerSize = follower.getScale();
+    let { x, y } = follower.getPosition();
+
+    if ((status & ColisionStatus.collideTop) !== 0) {
+      y = position.y + scale.y / 2 - followerSize.y / 2;
+    }
+    if ((status & ColisionStatus.collideBottom) !== 0) {
+      y = position.y - scale.y / 2 + followerSize.y / 2;
+    }
+    if ((status & ColisionStatus.collideRight) !== 0) {
+      x = position.x + scale.x / 2 - followerSize.x / 2;
+    }
+    if ((status & ColisionStatus.collideLeft) !== 0) {
+      x = position.x - scale.x / 2 + followerSize.x / 2;
+    }
+
+    follower.owner.setTransform({ position: Vec2d.from(x, y) });
+  }
 }

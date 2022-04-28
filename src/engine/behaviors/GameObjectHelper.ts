@@ -1,6 +1,5 @@
 import { BoundingBox, GameObject } from ".";
 import { IComponent, ITransformable, Vec2d } from "..";
-import { EngineError } from "../EngineError";
 import { Behavior } from "./Behavior";
 import { ColisionActions } from "./BoundingBox";
 
@@ -22,21 +21,24 @@ export class GameObjectHelper {
     scale?: Vec2d,
     actions?: (component: T) => ColisionActions
   ) {
-    const transformable = this.component as unknown as ITransformable;
-
-    if (transformable.getTransform === undefined) {
-      throw new EngineError(
-        GameObjectHelper.name,
-        "Cannot add bounding box to a component that does not implements ITransformable"
-      );
-    }
-
     const box = BoundingBox.withAction(
-      transformable,
+      this.gameObject,
       tag,
       scale,
       actions && actions(this.component as unknown as T)
     );
+
+    const transformable = this.component as unknown as ITransformable;
+
+    if (transformable.getTransform !== undefined) {
+      box.setScale(
+        transformable
+          .getTransform()
+          .getScale()
+          .multiply(scale || Vec2d.from(1, 1))
+      );
+    }
+
     this.gameObject.add(box);
 
     return this;
