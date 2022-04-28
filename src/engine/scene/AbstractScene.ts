@@ -6,7 +6,7 @@ import { getResourceManager } from "../resources";
 
 export abstract class AbstractScene {
   private gameEngine: GameEngine | undefined;
-  private boundingBoxList: BoundingBox[] = [];
+  private boundingBoxes: BoundingBox[] = [];
   private colisionList: ITransformable[] = [];
   protected gameObjects: GameObject;
   protected camera: Camera;
@@ -38,25 +38,20 @@ export abstract class AbstractScene {
 
   load() {
     this.gameObjects.load();
-
-    this.boundingBoxList = this.gameObjects.popBoundingBoxes();
-    this.boundingBoxList.forEach((x) => x.load());
+    this.boundingBoxes = this.gameObjects.popBoundingBoxes();
   }
 
   init() {
-    this.boundingBoxList.forEach((x) => x.init());
     this.gameObjects.init();
   }
 
   draw() {
-    this.boundingBoxList.forEach((x) => x.draw(this.camera));
     this.gameObjects.draw(this.camera);
   }
 
   update() {
     this.camera.update();
     this.gameObjects.update();
-    this.boundingBoxList.forEach((x) => x.update());
     this.processBoudingBoxes();
   }
 
@@ -69,11 +64,11 @@ export abstract class AbstractScene {
   }
 
   private processBoudingBoxes() {
-    if (this.boundingBoxList.length === 0) {
+    if (this.boundingBoxes.length === 0) {
       return;
     }
 
-    const actionableBoudingBoxes = this.boundingBoxList.filter((x) =>
+    const actionableBoudingBoxes = this.boundingBoxes.filter((x) =>
       x.hasAction()
     );
 
@@ -81,7 +76,7 @@ export abstract class AbstractScene {
       return;
     }
 
-    const nonActionableBoudingBoxes = this.boundingBoxList.filter(
+    const nonActionableBoudingBoxes = this.boundingBoxes.filter(
       (x) => !x.hasAction()
     );
 

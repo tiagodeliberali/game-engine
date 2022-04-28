@@ -146,11 +146,19 @@ export class GameObject implements IComponent, ITransformable {
   add(component: IComponent) {
     if ((component as BoundingBox).boundCollideStatus !== undefined) {
       this.boundingBoxes.push(component as BoundingBox);
-    } else {
-      this.components.push(component);
     }
 
+    this.components.push(component);
+
     return new GameObjectHelper(this, component);
+  }
+
+  getLastComponent<T>(): T | undefined {
+    if (this.components.length === 0) {
+      return undefined;
+    }
+
+    return this.components[this.components.length - 1] as unknown as T;
   }
 
   popBoundingBoxes() {
