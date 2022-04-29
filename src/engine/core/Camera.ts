@@ -138,4 +138,12 @@ export class Camera implements ITransformable {
       vec3.fromValues(-this.center.x, -this.center.y, 0)
     );
   }
+
+  getViewportOrigin() {
+    return this.viewport.bottomLeftCorner;
+  }
+
+  getViewportSize() {
+    return this.viewport.size;
+  }
 }

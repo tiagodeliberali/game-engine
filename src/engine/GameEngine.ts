@@ -1,5 +1,5 @@
 import { ShaderLib } from "./graphics";
-import { initKeyboard, updateKeyboard } from "./input";
+import { initKeyboard, initMouse, updateKeyboard, updateMouse } from "./input";
 import { initLoop, stopLoop } from "./Loop";
 import { getResourceManager } from "./resources";
 import { AbstractScene } from "./scene";
@@ -17,6 +17,7 @@ export class GameEngine {
   async startGame() {
     ShaderLib.loadShaderLib();
     initKeyboard();
+    initMouse();
     await this.startScene();
   }
 
@@ -35,6 +36,7 @@ export class GameEngine {
   private drawLoop() {
     this.currentScene.draw();
     updateKeyboard();
+    updateMouse();
   }
 
   private updateLoop() {

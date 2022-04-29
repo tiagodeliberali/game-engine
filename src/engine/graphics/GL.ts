@@ -1,12 +1,12 @@
 import { Vec2d, EngineError, Color } from "..";
 
-const defaultGlName = "GLCanvas";
+export const DefaultGlName = "GLCanvas";
 let gl: WebGL2RenderingContext | undefined;
 let canvasSize: Vec2d | undefined;
 
 export function initGL(htmlCanvasID?: string): WebGL2RenderingContext {
   const canvas = document.getElementById(
-    htmlCanvasID || defaultGlName
+    htmlCanvasID || DefaultGlName
   ) as HTMLCanvasElement;
 
   if (canvas === null) {
@@ -37,7 +37,7 @@ export function initGL(htmlCanvasID?: string): WebGL2RenderingContext {
 
 export function getCanvasSize(): Vec2d {
   if (gl === undefined) {
-    gl = initGL(defaultGlName);
+    gl = initGL(DefaultGlName);
   }
 
   if (canvasSize === undefined) {
@@ -49,7 +49,7 @@ export function getCanvasSize(): Vec2d {
 
 export function getGL(): WebGL2RenderingContext {
   if (gl === undefined) {
-    gl = initGL(defaultGlName);
+    gl = initGL(DefaultGlName);
   }
 
   return gl;
@@ -57,7 +57,7 @@ export function getGL(): WebGL2RenderingContext {
 
 export function clearCanvas(color: Color) {
   if (gl === undefined) {
-    gl = initGL(defaultGlName);
+    gl = initGL(DefaultGlName);
   }
 
   gl.clearColor(

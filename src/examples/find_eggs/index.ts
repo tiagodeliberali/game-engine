@@ -9,13 +9,20 @@ import {
   isKeyClicked,
   Keys,
   Movement,
+  Renderable,
   SpriteRenderable,
   TextureRenderable,
   Vec2d,
   Viewport,
   walk2d,
 } from "../../engine";
-import { Oscillate, Shake, Shake2d } from "../../engine/behaviors";
+import { Shake2d } from "../../engine/behaviors";
+import {
+  getMousePosition,
+  isButtonPressed,
+  isMouseInViewport,
+  MouseButton,
+} from "../../engine/input";
 
 export function findEggs() {
   const mainCamera = new Camera(
@@ -31,35 +38,16 @@ export function findEggs() {
   );
   const scene = new BasicScene([mainCamera, mapCamera]);
 
-  const characterGameObject = character(mainCamera);
-  const tiles = createScenario(characterGameObject);
+  const click = createMouseClick(mainCamera);
 
-  const egg = new GameObject();
-  let oscillateObject: Shake2d;
-  egg
-    .add(
-      TextureRenderable.build("./find_eggs/textures/red_egg.png").setTransform({
-        scale: Vec2d.from(0.6, 0.6),
-      })
-    )
-    .withBehavior(() => {
-      if (oscillateObject === undefined) {
-        oscillateObject = new Shake2d(
-          Vec2d.from(0.05, 0.05),
-          Vec2d.from(5, 5),
-          1200
-        );
-      } else {
-        egg.addToPosition(oscillateObject.getNext());
-      }
-    });
-  egg.setTransform({
-    position: Vec2d.from(10, 5),
-  });
+  const characterGameObject = createCharacter(mainCamera);
+  const tiles = createScenario(characterGameObject);
+  const egg = createEgg();
 
   scene.add(tiles);
   scene.add(characterGameObject);
   scene.add(egg);
+  scene.add(click);
 
   return scene;
 }
@@ -89,7 +77,7 @@ const createScenario = (characterGameObject: GameObject) => {
   return tiles;
 };
 
-const character = (camera: Camera) => {
+const createCharacter = (camera: Camera) => {
   const gameObject = new GameObject();
 
   let lastMovement = Movement.idle;
@@ -188,4 +176,56 @@ const character = (camera: Camera) => {
     });
 
   return gameObject;
+};
+
+const createEgg = () => {
+  const egg = new GameObject();
+  let oscillateObject: Shake2d;
+  egg
+    .add(
+      TextureRenderable.build("./find_eggs/textures/red_egg.png").setTransform({
+        scale: Vec2d.from(0.6, 0.6),
+      })
+    )
+    .withBehavior(() => {
+      if (oscillateObject === undefined) {
+        oscillateObject = new Shake2d(
+          Vec2d.from(0.05, 0.05),
+          Vec2d.from(5, 5),
+          1200
+        );
+      } else {
+        egg.addToPosition(oscillateObject.getNext());
+      }
+    });
+  egg.setTransform({
+    position: Vec2d.from(10, 5),
+  });
+  return egg;
+};
+
+const createMouseClick = (mainCamera: Camera) => {
+  const click = new GameObject();
+  click.visible = false;
+
+  click
+    .add(
+      Renderable.build().setTransform({
+        scale: Vec2d.from(0.2, 0.2),
+        position: Vec2d.from(0, 0),
+      })
+    )
+    .withBehavior(() => {
+      click.visible = isMouseInViewport(mainCamera);
+
+      if (isButtonPressed(MouseButton.left)) {
+        click.setTransform({
+          position: getMousePosition(mainCamera),
+        });
+      }
+    });
+
+  click.setTransform({ position: Vec2d.from(100, 100) });
+
+  return click;
 };
