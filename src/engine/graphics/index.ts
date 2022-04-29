@@ -5,6 +5,10 @@ import { SimpleShader } from "./SimpleShader";
 import { TextureShader } from "./TextureShader";
 import { Texture } from "./Texture";
 import { initGL, getGL, clearCanvas, getCanvasSize, DefaultGlName } from "./GL";
+import {
+  getGlobalAmbientColor,
+  getGlobalAmbientIntensity,
+} from "./GraphicSettings";
 
 export {
   ShaderLib,
@@ -18,4 +22,6 @@ export {
   clearCanvas,
   getCanvasSize,
   DefaultGlName,
+  getGlobalAmbientColor,
+  getGlobalAmbientIntensity,
 };

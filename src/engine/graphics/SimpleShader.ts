@@ -1,11 +1,17 @@
 import { mat4 } from "gl-matrix";
-import { VertexBuffer } from ".";
+import {
+  VertexBuffer,
+  getGlobalAmbientColor,
+  getGlobalAmbientIntensity,
+} from ".";
 import { Color } from "..";
 import { AbstractShader } from "./AbstractShader";
 
 export class SimpleShader extends AbstractShader {
   vertexPositionBuffer: VertexBuffer;
   pixelColorLocation: WebGLUniformLocation;
+  globalAmbientColorLocation: WebGLUniformLocation;
+  globalAmbientIntensityLocation: WebGLUniformLocation;
   modelMatrixLocation: WebGLUniformLocation;
   cameraXformMatrix: WebGLUniformLocation;
 
@@ -18,6 +24,13 @@ export class SimpleShader extends AbstractShader {
     );
 
     this.pixelColorLocation = this.getUniformLocation("uPixelColor");
+    this.globalAmbientColorLocation = this.getUniformLocation(
+      "uGlobalAmbientColor"
+    );
+    this.globalAmbientIntensityLocation = this.getUniformLocation(
+      "uGlobalAmbientIntensity"
+    );
+
     this.modelMatrixLocation = this.getUniformLocation("uModelXformMatrix");
     this.cameraXformMatrix = this.getUniformLocation("uCameraXformMatrix");
   }
@@ -34,6 +47,14 @@ export class SimpleShader extends AbstractShader {
     this.gl.uniform4fv(
       this.pixelColorLocation,
       pixelColor.getNormalizedArray()
+    );
+    this.gl.uniform4fv(
+      this.globalAmbientColorLocation,
+      getGlobalAmbientColor()
+    );
+    this.gl.uniform1f(
+      this.globalAmbientIntensityLocation,
+      getGlobalAmbientIntensity()
     );
     this.gl.uniformMatrix4fv(this.modelMatrixLocation, false, trsMatrix);
     this.gl.uniformMatrix4fv(this.cameraXformMatrix, false, cameraMatrix);

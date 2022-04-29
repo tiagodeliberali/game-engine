@@ -1,5 +1,10 @@
 import { mat4 } from "gl-matrix";
-import { Texture, VertexBuffer } from ".";
+import {
+  getGlobalAmbientColor,
+  getGlobalAmbientIntensity,
+  Texture,
+  VertexBuffer,
+} from ".";
 import { Color } from "..";
 import { EngineError } from "../EngineError";
 import { AbstractShader } from "./AbstractShader";
@@ -8,6 +13,8 @@ export class TextureShader extends AbstractShader {
   private texture: Texture | undefined;
   private vertexPositionBuffer: VertexBuffer;
   private pixelColorLocation: WebGLUniformLocation;
+  private globalAmbientColorLocation: WebGLUniformLocation;
+  private globalAmbientIntensityLocation: WebGLUniformLocation;
   private modelMatrixLocation: WebGLUniformLocation;
   private cameraXformMatrix: WebGLUniformLocation;
   private textureCoordinateBuffer: VertexBuffer;
@@ -27,6 +34,12 @@ export class TextureShader extends AbstractShader {
     );
 
     this.pixelColorLocation = this.getUniformLocation("uPixelColor");
+    this.globalAmbientColorLocation = this.getUniformLocation(
+      "uGlobalAmbientColor"
+    );
+    this.globalAmbientIntensityLocation = this.getUniformLocation(
+      "uGlobalAmbientIntensity"
+    );
     this.modelMatrixLocation = this.getUniformLocation("uModelXformMatrix");
     this.cameraXformMatrix = this.getUniformLocation("uCameraXformMatrix");
 
@@ -138,6 +151,14 @@ export class TextureShader extends AbstractShader {
     this.gl.uniform4fv(
       this.pixelColorLocation,
       pixelColor.getNormalizedArray()
+    );
+    this.gl.uniform4fv(
+      this.globalAmbientColorLocation,
+      getGlobalAmbientColor()
+    );
+    this.gl.uniform1f(
+      this.globalAmbientIntensityLocation,
+      getGlobalAmbientIntensity()
     );
     this.gl.uniformMatrix4fv(this.modelMatrixLocation, false, trsMatrix);
     this.gl.uniformMatrix4fv(this.cameraXformMatrix, false, cameraMatrix);
