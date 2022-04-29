@@ -9,11 +9,11 @@ export abstract class AbstractScene {
   private boundingBoxes: BoundingBox[] = [];
   private colisionList: ITransformable[] = [];
   protected gameObjects: GameObject;
-  protected camera: Camera;
+  protected cameras: Camera[];
 
-  constructor(camera: Camera) {
+  constructor(camera: Camera[]) {
     this.gameObjects = new GameObject();
-    this.camera = camera;
+    this.cameras = camera;
   }
 
   registerGameEngine(engine: GameEngine) {
@@ -46,11 +46,14 @@ export abstract class AbstractScene {
   }
 
   draw() {
-    this.gameObjects.draw(this.camera);
+    this.cameras.forEach((c) => {
+      c.draw();
+      this.gameObjects.draw(c);
+    });
   }
 
   update() {
-    this.camera.update();
+    this.cameras.forEach((c) => c.update());
     this.gameObjects.update();
     this.processBoudingBoxes();
   }

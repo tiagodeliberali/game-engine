@@ -12,15 +12,26 @@ import {
   SpriteRenderable,
   TextureRenderable,
   Vec2d,
+  Viewport,
   walk2d,
 } from "../../engine";
 import { Oscillate, Shake, Shake2d } from "../../engine/behaviors";
 
 export function findEggs() {
-  const camera = new Camera(Vec2d.from(0, 0), Vec2d.from(16, 8));
-  const scene = new BasicScene(camera, Color.Black());
+  const mainCamera = new Camera(
+    Vec2d.from(0, 0),
+    Vec2d.from(16, 8),
+    Viewport.Default(Color.Black())
+  );
 
-  const characterGameObject = character(camera);
+  const mapCamera = new Camera(
+    Vec2d.from(0, 0),
+    Vec2d.from(51, 25),
+    Viewport.build(Vec2d.from(5, 5), Vec2d.from(150, 75), Color.Black(), 1)
+  );
+  const scene = new BasicScene([mainCamera, mapCamera]);
+
+  const characterGameObject = character(mainCamera);
   const tiles = createScenario(characterGameObject);
 
   const egg = new GameObject();

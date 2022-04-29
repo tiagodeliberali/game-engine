@@ -1,19 +1,12 @@
-import { Camera, Color, Viewport, clearCanvas } from "..";
+import { Camera } from "..";
 import { AbstractScene } from ".";
 
 export class BasicScene extends AbstractScene {
-  protected viewport: Viewport;
-  protected color: Color;
-
-  constructor(camera: Camera, canvasColor: Color) {
-    super(camera);
-    this.viewport = Viewport.Default(canvasColor);
-    this.color = canvasColor;
+  constructor(cameras: Camera[]) {
+    super(cameras);
   }
 
   draw() {
-    clearCanvas(this.color);
-    this.viewport.draw();
     super.draw();
   }
 }

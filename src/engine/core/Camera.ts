@@ -1,6 +1,7 @@
 import { mat4, vec3 } from "gl-matrix";
 import { Lerp2d } from "../behaviors";
 import { Vec2d } from "../DataStructures";
+import { Viewport } from "../graphics";
 import { ITransformable } from "./ITransformable";
 import { Transform, TransformDef } from "./Transform";
 
@@ -8,17 +9,22 @@ export class Camera implements ITransformable {
   private center: Vec2d;
   private size: Vec2d;
   private cameraMatrix: mat4;
+  private viewport: Viewport;
   lerpPosition: Lerp2d | undefined;
   lerpScale: Lerp2d | undefined;
 
-  constructor(center: Vec2d, size: Vec2d) {
+  constructor(center: Vec2d, size: Vec2d, viewport: Viewport) {
     this.center = center;
     this.size = size;
     this.cameraMatrix = mat4.create();
+    this.viewport = viewport;
 
     this.configureCamera();
   }
 
+  /////
+  /// ITransformable
+  /////
   getTransform(): Transform {
     return Transform.Build({
       position: this.center,
@@ -54,6 +60,9 @@ export class Camera implements ITransformable {
     this.configureCamera();
   }
 
+  /////
+  /// Camera
+  /////
   getCameraMatrix() {
     return this.cameraMatrix;
   }
@@ -110,6 +119,10 @@ export class Camera implements ITransformable {
         this.lerpScale = undefined;
       }
     }
+  }
+
+  draw() {
+    this.viewport.draw();
   }
 
   private configureCamera() {

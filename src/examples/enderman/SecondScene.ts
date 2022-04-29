@@ -22,20 +22,13 @@ export class SecondScene extends BasicScene {
   phoenix: SpriteRenderable | undefined;
 
   constructor() {
-    super(
-      new Camera(new Vec2d(0, 0), new Vec2d(2, 1)),
-      Color.FromColorDef({
-        red: 20,
-        green: 100,
-        blue: 200,
-      })
-    );
-
-    this.viewport = new Viewport(
-      new Vec2d(40, 40),
-      new Vec2d(800, 400),
-      Color.LightGray()
-    );
+    super([
+      new Camera(
+        new Vec2d(0, 0),
+        new Vec2d(2, 1),
+        new Viewport(new Vec2d(40, 40), new Vec2d(800, 400), Color.LightGray())
+      ),
+    ]);
 
     this.buildEnderman();
 
