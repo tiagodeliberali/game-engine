@@ -1,5 +1,5 @@
 import { mat4, vec3 } from "gl-matrix";
-import { LerpVec2 } from "../behaviors";
+import { Lerp2d } from "../behaviors";
 import { Vec2d } from "../DataStructures";
 import { ITransformable } from "./ITransformable";
 import { Transform, TransformDef } from "./Transform";
@@ -8,8 +8,8 @@ export class Camera implements ITransformable {
   private center: Vec2d;
   private size: Vec2d;
   private cameraMatrix: mat4;
-  lerpPosition: LerpVec2 | undefined;
-  lerpScale: LerpVec2 | undefined;
+  lerpPosition: Lerp2d | undefined;
+  lerpScale: Lerp2d | undefined;
 
   constructor(center: Vec2d, size: Vec2d) {
     this.center = center;
@@ -69,18 +69,18 @@ export class Camera implements ITransformable {
   }
 
   panBy(vector: Vec2d) {
-    this.lerpPosition = new LerpVec2(this.center, 50, 0.1);
+    this.lerpPosition = new Lerp2d(this.center, 50, 0.1);
     this.lerpPosition.setFinal(this.center.add(vector));
   }
 
   panTo(point: Vec2d) {
-    this.lerpPosition = new LerpVec2(this.center, 50, 0.1);
+    this.lerpPosition = new Lerp2d(this.center, 50, 0.1);
     this.lerpPosition.setFinal(point);
   }
 
   zoomBy(zoom: number) {
     if (zoom > 0) {
-      this.lerpScale = new LerpVec2(this.size, 50, 0.1);
+      this.lerpScale = new Lerp2d(this.size, 50, 0.1);
       this.lerpScale.setFinal(Vec2d.from(zoom, zoom).multiply(this.size));
     }
   }

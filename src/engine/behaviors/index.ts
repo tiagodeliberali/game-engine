@@ -3,8 +3,11 @@ import { Behavior } from "./Behavior";
 import { walk2d, rotate, moveTowardsCurrentDirection } from "./Walking";
 import { BoundingBox, ColisionStatus } from "./BoundingBox";
 import { GameObjectHelper } from "./GameObjectHelper";
-import { LerpVec2 } from "./LerpVec2";
+import { Lerp2d } from "./Lerp2d";
 import { Lerp } from "./Lerp";
+import { Oscillate } from "./Oscillate";
+import { Shake } from "./Shake";
+import { Shake2d } from "./Shake2d";
 
 export {
   GameObject,
@@ -15,6 +18,9 @@ export {
   moveTowardsCurrentDirection,
   BoundingBox,
   ColisionStatus,
-  LerpVec2,
+  Lerp2d,
   Lerp,
+  Oscillate,
+  Shake,
+  Shake2d,
 };

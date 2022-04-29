@@ -14,13 +14,46 @@ import {
   Vec2d,
   walk2d,
 } from "../../engine";
+import { Oscillate, Shake, Shake2d } from "../../engine/behaviors";
 
 export function findEggs() {
   const camera = new Camera(Vec2d.from(0, 0), Vec2d.from(16, 8));
   const scene = new BasicScene(camera, Color.Black());
 
   const characterGameObject = character(camera);
+  const tiles = createScenario(characterGameObject);
 
+  const egg = new GameObject();
+  let oscillateObject: Shake2d;
+  egg
+    .add(
+      TextureRenderable.build("./find_eggs/textures/red_egg.png").setTransform({
+        scale: Vec2d.from(0.6, 0.6),
+      })
+    )
+    .withBehavior(() => {
+      if (oscillateObject === undefined) {
+        oscillateObject = new Shake2d(
+          Vec2d.from(0.05, 0.05),
+          Vec2d.from(5, 5),
+          1200
+        );
+      } else {
+        egg.addToPosition(oscillateObject.getNext());
+      }
+    });
+  egg.setTransform({
+    position: Vec2d.from(10, 5),
+  });
+
+  scene.add(tiles);
+  scene.add(characterGameObject);
+  scene.add(egg);
+
+  return scene;
+}
+
+const createScenario = (characterGameObject: GameObject) => {
   const tiles = new GameObject();
   tiles
     .add(
@@ -42,12 +75,8 @@ export function findEggs() {
 
       clampAtBoundary(tileBoundingBox, characterBoundingBox);
     });
-
-  scene.add(tiles);
-  scene.add(characterGameObject);
-
-  return scene;
-}
+  return tiles;
+};
 
 const character = (camera: Camera) => {
   const gameObject = new GameObject();

@@ -1,6 +1,6 @@
 import { Vec2d } from "..";
 
-export class LerpVec2 {
+export class Lerp2d {
   currentValue: Vec2d;
   finalValue: Vec2d;
   cycles: number;
