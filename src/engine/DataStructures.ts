@@ -98,6 +98,25 @@ export class Vec2d {
   }
 }
 
+export class Vec3d {
+  readonly x: number;
+  readonly y: number;
+  readonly z: number;
+  constructor(x: number, y: number, z: number) {
+    this.x = x;
+    this.y = y;
+    this.z = z;
+  }
+
+  static from(x: number, y: number, z: number) {
+    return new Vec3d(x, y, z);
+  }
+
+  toVec3(): Iterable<number> {
+    return [this.x, this.y, this.z];
+  }
+}
+
 export class Box {
   readonly top: number;
   readonly bottom: number;

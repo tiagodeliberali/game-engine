@@ -56,7 +56,7 @@ export abstract class AbstractShader {
     );
     this.gl.uniform4fv(
       this.globalAmbientColorLocation,
-      getGlobalAmbientColor()
+      getGlobalAmbientColor().getNormalizedArray()
     );
     this.gl.uniform1f(
       this.globalAmbientIntensityLocation,

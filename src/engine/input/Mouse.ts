@@ -56,36 +56,11 @@ export function isButtonClicked(button: MouseButton) {
 }
 
 export function getMousePosition(camera: Camera): Vec2d {
-  const mouseDC = mousePosition.sub(camera.getViewportOrigin());
-
-  const cameraCenter = camera.getTransform().getPosition();
-  const cameraSize = camera.getTransform().getScale();
-
-  const minWC = cameraCenter.sub(cameraSize.scale(0.5));
-
-  const viewportSize = camera.getViewportSize();
-
-  return Vec2d.from(
-    minWC.x + mouseDC.x * (cameraSize.x / viewportSize.x),
-    minWC.y + mouseDC.y * (cameraSize.y / viewportSize.y)
-  );
+  return camera.convertDCtoWC(mousePosition);
 }
 
 export const isMouseInViewport = (camera: Camera) => {
-  if (!insideCanvas) {
-    return false;
-  }
-
-  const viewportSize = camera.getViewportSize();
-
-  const mouseDC = mousePosition.sub(camera.getViewportOrigin());
-
-  return (
-    mouseDC.x >= 0 &&
-    mouseDC.x < viewportSize.x &&
-    mouseDC.y >= 0 &&
-    mouseDC.y < viewportSize.y
-  );
+  return insideCanvas && camera.isInViewportDC(mousePosition);
 };
 
 export function initMouse() {

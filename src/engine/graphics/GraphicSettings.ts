@@ -1,6 +1,11 @@
-import { vec4 } from "gl-matrix";
+import { Color } from "../core";
 
-let mGlobalAmbientColor: vec4 = [1, 1, 1, 1];
+let mGlobalAmbientColor: Color = Color.FromColorDef({
+  red: 100,
+  green: 100,
+  blue: 100,
+  alpha: 1,
+});
 let mGlobalAmbientIntensity = 1;
 
 export function getGlobalAmbientIntensity() {
@@ -15,6 +20,6 @@ export function getGlobalAmbientColor() {
   return mGlobalAmbientColor;
 }
 
-export function setGlobalAmbientColor(value: number[]) {
-  mGlobalAmbientColor = vec4.fromValues(value[0], value[1], value[2], value[3]);
+export function setGlobalAmbientColor(color: Color) {
+  mGlobalAmbientColor = color;
 }

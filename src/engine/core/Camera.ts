@@ -1,6 +1,6 @@
 import { mat4, vec3 } from "gl-matrix";
 import { Lerp2d } from "../behaviors";
-import { Vec2d } from "../DataStructures";
+import { Vec2d, Vec3d } from "../DataStructures";
 import { Viewport } from "../graphics";
 import { ITransformable } from "./ITransformable";
 import { Transform, TransformDef } from "./Transform";
@@ -139,11 +139,64 @@ export class Camera implements ITransformable {
     );
   }
 
-  getViewportOrigin() {
-    return this.viewport.bottomLeftCorner;
+  /////
+  /// Coordinate system
+  /////
+  convertDCtoWC(position: Vec2d) {
+    const positionDC = this.getViewportPositionDC(position);
+
+    const positionWC = positionDC.multiply(this.getWCunitsPerPixel());
+    return this.getOriginWC().add(positionWC);
   }
 
-  getViewportSize() {
-    return this.viewport.size;
+  isInViewportDC(position: Vec2d) {
+    const viewportSize = this.viewport.size;
+    const positionDC = this.getViewportPositionDC(position);
+
+    return (
+      positionDC.x >= 0 &&
+      positionDC.x < viewportSize.x &&
+      positionDC.y >= 0 &&
+      positionDC.y < viewportSize.y
+    );
+  }
+
+  private getOriginWC() {
+    return this.center.sub(this.size.scale(0.5));
+  }
+
+  private getWCunitsPerPixel() {
+    return Vec2d.from(
+      this.size.x / this.viewport.size.x,
+      this.size.y / this.viewport.size.y
+    );
+  }
+
+  private getViewportPositionDC(position: Vec2d) {
+    return position.sub(this.viewport.bottomLeftCorner);
+  }
+
+  convertWCtoDC(position: Vec3d) {
+    const position2d = Vec2d.from(position.x, position.y);
+    const wcPositionOnCamera = position2d.sub(this.getOriginWC());
+    const positionOnPixels = wcPositionOnCamera.multiply(
+      this.getPixelsPerWCunits()
+    );
+    const result2d = this.viewport.bottomLeftCorner
+      .add(positionOnPixels)
+      .add(Vec2d.from(0.5, 0.5));
+
+    return Vec3d.from(
+      result2d.x,
+      result2d.y,
+      position.z * this.getPixelsPerWCunits().x
+    );
+  }
+
+  getPixelsPerWCunits() {
+    return Vec2d.from(
+      this.size.x / this.viewport.size.x,
+      this.size.y / this.viewport.size.y
+    );
   }
 }
