@@ -1,5 +1,5 @@
 import { Vec2d } from "../DataStructures";
-import { GameObject, isDebugMode, ITransformable, Renderable } from "..";
+import { GameObject, isDebugMode, Renderable } from "..";
 import { DrawingResources, IComponent } from "../core";
 
 export enum ColisionStatus {
@@ -13,18 +13,18 @@ export enum ColisionStatus {
 
 export type ColisionActions = {
   onCollideStarted?: (
-    other: ITransformable,
+    other: GameObject,
     tag: string,
     status: ColisionStatus
   ) => void;
-  onColliding?: (other: ITransformable, tag: string) => void;
-  onCollideEnded?: (other: ITransformable, tag: string) => void;
+  onColliding?: (other: GameObject, tag: string) => void;
+  onCollideEnded?: (other: GameObject, tag: string) => void;
 };
 
 export class BoundingBox implements IComponent {
   private scale: Vec2d = Vec2d.from(1, 1);
   private debugBox: Renderable;
-  owner: ITransformable;
+  owner: GameObject;
   tag: string;
   actions?: ColisionActions;
 
