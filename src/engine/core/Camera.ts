@@ -12,6 +12,9 @@ export class Camera implements ITransformable {
   private viewport: Viewport;
   lerpPosition: Lerp2d | undefined;
   lerpScale: Lerp2d | undefined;
+  pixelsPerWCunits: Vec2d = Vec2d.from(0, 0);
+  WCunitsPerPixel: Vec2d = Vec2d.from(0, 0);
+  originWC: Vec2d = Vec2d.from(0, 0);
 
   constructor(center: Vec2d, size: Vec2d, viewport: Viewport) {
     this.center = center;
@@ -137,6 +140,18 @@ export class Camera implements ITransformable {
       this.cameraMatrix,
       vec3.fromValues(-this.center.x, -this.center.y, 0)
     );
+
+    this.pixelsPerWCunits = Vec2d.from(
+      this.viewport.size.x / this.size.x,
+      this.viewport.size.y / this.size.y
+    );
+
+    this.WCunitsPerPixel = Vec2d.from(
+      this.size.x / this.viewport.size.x,
+      this.size.y / this.viewport.size.y
+    );
+
+    this.originWC = this.center.sub(this.size.scale(0.5));
   }
 
   /////
@@ -145,8 +160,8 @@ export class Camera implements ITransformable {
   convertDCtoWC(position: Vec2d) {
     const positionDC = this.getViewportPositionDC(position);
 
-    const positionWC = positionDC.multiply(this.getWCunitsPerPixel());
-    return this.getOriginWC().add(positionWC);
+    const positionWC = positionDC.multiply(this.WCunitsPerPixel);
+    return this.originWC.add(positionWC);
   }
 
   isInViewportDC(position: Vec2d) {
@@ -161,27 +176,14 @@ export class Camera implements ITransformable {
     );
   }
 
-  private getOriginWC() {
-    return this.center.sub(this.size.scale(0.5));
-  }
-
-  private getWCunitsPerPixel() {
-    return Vec2d.from(
-      this.size.x / this.viewport.size.x,
-      this.size.y / this.viewport.size.y
-    );
-  }
-
   private getViewportPositionDC(position: Vec2d) {
     return position.sub(this.viewport.bottomLeftCorner);
   }
 
   convertWCtoDC(position: Vec3d) {
     const position2d = Vec2d.from(position.x, position.y);
-    const wcPositionOnCamera = position2d.sub(this.getOriginWC());
-    const positionOnPixels = wcPositionOnCamera.multiply(
-      this.getPixelsPerWCunits()
-    );
+    const wcPositionOnCamera = position2d.sub(this.originWC);
+    const positionOnPixels = wcPositionOnCamera.multiply(this.pixelsPerWCunits);
     const result2d = this.viewport.bottomLeftCorner
       .add(positionOnPixels)
       .add(Vec2d.from(0.5, 0.5));
@@ -189,14 +191,11 @@ export class Camera implements ITransformable {
     return Vec3d.from(
       result2d.x,
       result2d.y,
-      position.z * this.getPixelsPerWCunits().x
+      position.z * this.pixelsPerWCunits.x
     );
   }
 
   getPixelsPerWCunits() {
-    return Vec2d.from(
-      this.viewport.size.x / this.size.x,
-      this.viewport.size.y / this.size.y
-    );
+    return this.pixelsPerWCunits;
   }
 }
