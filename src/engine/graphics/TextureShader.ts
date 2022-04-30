@@ -1,23 +1,27 @@
-import { Light, Texture, VertexBuffer } from ".";
+import { getMaxLightSourceNumber, Light, Texture, VertexBuffer } from ".";
 import { Camera } from "../core";
 import { EngineError } from "../EngineError";
 import { AbstractShader } from "./AbstractShader";
+import { ShaderLightInfo } from "./ShaderLightInfo";
 
 export class TextureShader extends AbstractShader {
   private texture: Texture | undefined;
   private textureCoordinateBuffer: VertexBuffer;
   private samplerLocation: WebGLUniformLocation;
 
-  private light: Light | undefined;
+  private lights: Light[] = [];
   private camera: Camera | undefined;
 
-  lightColorLocation: WebGLUniformLocation;
-  lightPositionLocation: WebGLUniformLocation;
-  lightRadiusLocation: WebGLUniformLocation;
-  lightIsOnLocation: WebGLUniformLocation;
+  shaderLightInfoList: ShaderLightInfo[] = [];
 
   constructor(vertexShaderSource: string, fragmentShaderSource: string) {
-    super(vertexShaderSource, fragmentShaderSource);
+    super(
+      vertexShaderSource,
+      fragmentShaderSource.replace(
+        "#LIGHT_ARRAY_SIZE",
+        getMaxLightSourceNumber().toString()
+      )
+    );
 
     this.textureCoordinateBuffer = new VertexBuffer(
       this.getAttribLocation("aTextureCoordinate"),
@@ -25,10 +29,10 @@ export class TextureShader extends AbstractShader {
     );
     this.samplerLocation = this.getUniformLocation("uSampler");
 
-    this.lightColorLocation = this.getUniformLocation("uLightColor");
-    this.lightPositionLocation = this.getUniformLocation("uLightPosition");
-    this.lightRadiusLocation = this.getUniformLocation("uLightRadius");
-    this.lightIsOnLocation = this.getUniformLocation("uLightOn");
+    for (let i = 0; i < getMaxLightSourceNumber(); i++) {
+      const info = new ShaderLightInfo(this, i);
+      this.shaderLightInfoList.push(info);
+    }
   }
 
   initBuffers(
@@ -46,40 +50,31 @@ export class TextureShader extends AbstractShader {
     this.vertexPositionBuffer.clearVertexArray();
   }
 
-  setCameraAndLight(camera: Camera, light: Light) {
+  setCameraAndLight(camera: Camera, light: Light[]) {
     this.camera = camera;
-    this.light = light;
+    this.lights = light;
   }
 
   drawExtension(): void {
-    if (this.light !== null) {
-      this.loadLightInformation();
+    if (this.camera !== undefined) {
+      for (let i = 0; i < this.lights.length; i++) {
+        this.shaderLightInfoList[i].loadToShader(this.camera, this.lights[i]);
+      }
+      for (
+        let i = this.lights.length;
+        i < this.shaderLightInfoList.length;
+        i++
+      ) {
+        this.shaderLightInfoList[i].switchOffLight();
+      }
     } else {
-      this.gl.uniform1i(this.lightIsOnLocation, 0); // switch off light!
+      // turn off all lights
+      for (let i = 0; i < this.shaderLightInfoList.length; i++) {
+        this.shaderLightInfoList[i].switchOffLight();
+      }
     }
 
     this.texture?.activate(this.samplerLocation);
-  }
-
-  loadLightInformation() {
-    if (this.light === undefined || this.camera == undefined) {
-      return;
-    }
-
-    this.gl.uniform1i(this.lightIsOnLocation, this.light.isOn ? 1 : 0);
-
-    if (this.light.isOn) {
-      this.gl.uniform4fv(
-        this.lightColorLocation,
-        this.light.color.getNormalizedArray()
-      );
-
-      const lightPosition = this.camera.convertWCtoDC(this.light.position);
-      this.gl.uniform3fv(this.lightPositionLocation, lightPosition.toVec3());
-
-      const radius = this.light.radius * this.camera.getPixelsPerWCunits().x;
-      this.gl.uniform1f(this.lightRadiusLocation, radius);
-    }
   }
 
   setSpritePosition(rows: number, columns: number, position: number) {

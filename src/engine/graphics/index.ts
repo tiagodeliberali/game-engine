@@ -10,6 +10,8 @@ import {
   getGlobalAmbientIntensity,
   setGlobalAmbientColor,
   setGlobalAmbientIntensity,
+  getMaxLightSourceNumber,
+  setMaxLightSourceNumber,
 } from "./GraphicSettings";
 
 import { Light } from "./Light";
@@ -28,7 +30,9 @@ export {
   DefaultGlName,
   getGlobalAmbientColor,
   getGlobalAmbientIntensity,
+  getMaxLightSourceNumber,
   setGlobalAmbientIntensity,
   setGlobalAmbientColor,
+  setMaxLightSourceNumber,
   Light,
 };

@@ -43,9 +43,7 @@ export class TextureRenderable extends AbstractRenderable<TextureShader> {
       );
     }
 
-    if (resources.lights.length > 0) {
-      this.shader.setCameraAndLight(resources.camera, resources.lights[0]);
-    }
+    this.shader.setCameraAndLight(resources.camera, resources.lights);
 
     this.shader.draw(
       this.color,

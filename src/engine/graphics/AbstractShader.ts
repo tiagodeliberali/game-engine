@@ -71,7 +71,7 @@ export abstract class AbstractShader {
     this.vertexPositionBuffer.drawSquare();
   }
 
-  protected getUniformLocation(parameter: string) {
+  public getUniformLocation(parameter: string) {
     const parameterLocation = this.gl.getUniformLocation(
       this.program,
       parameter

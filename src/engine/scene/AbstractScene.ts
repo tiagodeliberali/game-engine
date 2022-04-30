@@ -3,7 +3,7 @@ import { BoundingBox, GameObject } from "../behaviors";
 import { DrawingResources } from "../core";
 import { EngineError } from "../EngineError";
 import { GameEngine } from "../GameEngine";
-import { Light } from "../graphics";
+import { Light, setMaxLightSourceNumber } from "../graphics";
 import { getResourceManager } from "../resources";
 
 export abstract class AbstractScene {
@@ -43,6 +43,7 @@ export abstract class AbstractScene {
     this.gameObjects.load();
     this.boundingBoxes = this.gameObjects.getAll<BoundingBox>(BoundingBox.name);
     this.lights = this.gameObjects.getAll<Light>(Light.name);
+    setMaxLightSourceNumber(this.lights.length);
   }
 
   init() {
