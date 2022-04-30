@@ -195,8 +195,8 @@ export class Camera implements ITransformable {
 
   getPixelsPerWCunits() {
     return Vec2d.from(
-      this.size.x / this.viewport.size.x,
-      this.size.y / this.viewport.size.y
+      this.viewport.size.x / this.size.x,
+      this.viewport.size.y / this.size.y
     );
   }
 }
