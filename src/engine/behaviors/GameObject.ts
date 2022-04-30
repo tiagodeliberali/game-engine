@@ -1,13 +1,12 @@
 import { Camera, Transform, Vec2d, IComponent } from "..";
 import { getResourceManager } from "../resources";
-import { BoundingBox, GameObjectHelper } from ".";
+import { GameObjectHelper } from ".";
 import { ITransformable, TransformDef } from "..";
 
 export class GameObject implements IComponent, ITransformable {
   private transform: Transform;
   private components: IComponent[] = [];
   private currentDirection: Vec2d = new Vec2d(1, 0);
-  private boundingBoxes: BoundingBox[] = [];
   private index: Map<string, IComponent[]>;
   paused: boolean;
   visible: boolean;
@@ -146,10 +145,6 @@ export class GameObject implements IComponent, ITransformable {
   }
 
   add(component: IComponent) {
-    if ((component as BoundingBox).boundCollideStatus !== undefined) {
-      this.boundingBoxes.push(component as BoundingBox);
-    }
-
     const items = this.index.get(component.constructor.name);
     this.index.set(
       component.constructor.name,
@@ -171,13 +166,12 @@ export class GameObject implements IComponent, ITransformable {
     return typeArray[typeArray.length - 1] as unknown as T;
   }
 
-  popBoundingBoxes() {
-    let boxes = [...this.boundingBoxes];
-    this.boundingBoxes = [];
+  getAll<T extends IComponent>(name: string): T[] {
+    let boxes = this.index.get(name)?.map((x) => x as T) || [];
 
     this.components.forEach((item) => {
-      if ((item as GameObject).popBoundingBoxes !== undefined) {
-        boxes = boxes.concat((item as GameObject).popBoundingBoxes());
+      if ((item as GameObject).getAll !== undefined) {
+        boxes = boxes.concat((item as GameObject).getAll<T>(name));
       }
     });
 

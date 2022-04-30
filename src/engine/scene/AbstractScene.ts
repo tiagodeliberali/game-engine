@@ -38,7 +38,7 @@ export abstract class AbstractScene {
 
   load() {
     this.gameObjects.load();
-    this.boundingBoxes = this.gameObjects.popBoundingBoxes();
+    this.boundingBoxes = this.gameObjects.getAll<BoundingBox>(BoundingBox.name);
   }
 
   init() {
@@ -46,9 +46,9 @@ export abstract class AbstractScene {
   }
 
   draw() {
-    this.cameras.forEach((c) => {
-      c.draw();
-      this.gameObjects.draw(c);
+    this.cameras.forEach((camera) => {
+      camera.draw();
+      this.gameObjects.draw(camera);
     });
   }
 
