@@ -1,5 +1,5 @@
 import { BoundingBox, GameObject } from ".";
-import { IComponent, ITransformable, Vec2d } from "..";
+import { IComponent, ITransformable, TransformDef, Vec2d } from "..";
 import { Behavior } from "./Behavior";
 import { ColisionActions } from "./BoundingBox";
 
@@ -50,6 +50,12 @@ export class GameObjectHelper {
         action(this.component as unknown as T);
       })
     );
+
+    return this;
+  }
+
+  setTransform(def: TransformDef) {
+    this.gameObject.setTransform(def);
 
     return this;
   }

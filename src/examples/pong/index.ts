@@ -46,44 +46,43 @@ export function pong() {
 }
 
 const buildLimits = () => {
+  const top = GameObject.build()
+    .add(Renderable.build())
+    .withBoundingBox("limit")
+    .setTransform({
+      position: Vec2d.from(50, 45),
+      scale: Vec2d.from(90, 1),
+    });
+
+  const bottom = GameObject.build()
+    .add(Renderable.build())
+    .withBoundingBox("limit")
+    .setTransform({
+      position: Vec2d.from(50, 5),
+      scale: Vec2d.from(90, 1),
+    });
+
+  const left = GameObject.build()
+    .add(Renderable.build())
+    .withBoundingBox("point1")
+    .setTransform({
+      position: Vec2d.from(5, 25),
+      scale: Vec2d.from(1, 41),
+    });
+
+  const right = GameObject.build()
+    .add(Renderable.build())
+    .withBoundingBox("point2")
+    .setTransform({
+      position: Vec2d.from(95, 25),
+      scale: Vec2d.from(1, 41),
+    });
+
   const limits = new GameObject();
-
-  limits
-    .add(
-      Renderable.build().setTransform({
-        position: Vec2d.from(50, 45),
-        scale: Vec2d.from(90, 1),
-      })
-    )
-    .withBoundingBox("limit");
-
-  limits
-    .add(
-      Renderable.build().setTransform({
-        position: Vec2d.from(50, 5),
-        scale: Vec2d.from(90, 1),
-      })
-    )
-    .withBoundingBox("limit");
-
-  limits
-    .add(
-      Renderable.build().setTransform({
-        position: Vec2d.from(5, 25),
-        scale: Vec2d.from(1, 41),
-      })
-    )
-    .withBoundingBox("point1");
-
-  limits
-    .add(
-      Renderable.build().setTransform({
-        position: Vec2d.from(95, 25),
-        scale: Vec2d.from(1, 41),
-      })
-    )
-    .withBoundingBox("point2");
-
+  limits.add(top.gameObject);
+  limits.add(bottom.gameObject);
+  limits.add(left.gameObject);
+  limits.add(right.gameObject);
   return limits;
 };
 
@@ -112,22 +111,25 @@ const createPaddle = (
   gameObject
     .add(
       TextureRenderable.build(texturePath).setTransform({
-        position: Vec2d.from(x, 25),
         scale: Vec2d.from(13, 5),
         rotationInDegree: rotation,
       })
     )
     .withBoundingBox("paddle", Vec2d.from(0.2, 2.2))
-    .withBehavior<IRenderable>((paddle) => {
-      if (isKeyPressed(upKey) && paddle.getTransform().getPosition().y < 39) {
-        paddle.addToPosition(Vec2d.from(0, 2));
+    .withBehavior<IRenderable>(() => {
+      if (
+        isKeyPressed(upKey) &&
+        gameObject.getTransform().getPosition().y < 39
+      ) {
+        gameObject.addToPosition(Vec2d.from(0, 2));
       } else if (
         isKeyPressed(downKey) &&
-        paddle.getTransform().getPosition().y > 11
+        gameObject.getTransform().getPosition().y > 11
       ) {
-        paddle.addToPosition(Vec2d.from(0, -2));
+        gameObject.addToPosition(Vec2d.from(0, -2));
       }
-    });
+    })
+    .setTransform({ position: Vec2d.from(x, 25) });
 
   return gameObject;
 };
@@ -206,9 +208,7 @@ const createBall = (hud: HUD) => {
     .add(
       SpriteRenderable.build(ballPath, 4, 6, 0)
         .setTransform({
-          position: Vec2d.from(50, 25),
           scale: Vec2d.from(5, 5),
-          rotationInDegree: getRandomAngle(),
         })
         .setAnimator({
           initialPosition: 0,
@@ -218,14 +218,18 @@ const createBall = (hud: HUD) => {
         })
         .runInLoop()
     )
-    .withBehavior<IRenderable>((ball) => {
-      moveTowardsCurrentDirection(ball, 0.1);
+    .setTransform({
+      rotationInDegree: getRandomAngle(),
+      position: Vec2d.from(50, 25),
     })
-    .withBoundingBox<IRenderable>("ball", Vec2d.from(0.5, 0.5), (ball) => {
+    .withBehavior<IRenderable>(() => {
+      moveTowardsCurrentDirection(gameObject, 0.5);
+    })
+    .withBoundingBox<IRenderable>("ball", Vec2d.from(0.5, 0.5), () => {
       const startAgain = () => {
         hud.hideMessage();
         gameObject.paused = false;
-        ball.setTransform({
+        gameObject.setTransform({
           position: Vec2d.from(50, 25),
           rotationInDegree: getRandomAngle(),
         });
@@ -265,16 +269,19 @@ const createBall = (hud: HUD) => {
             !(status & ColisionStatus.collideLeft) ||
             !(status & ColisionStatus.collideRight)
           ) {
-            ball.setTransform({
-              rotationInDegree: 180 - ball.getTransform().getRotationInDegree(),
+            gameObject.setTransform({
+              rotationInDegree:
+                180 - gameObject.getTransform().getRotationInDegree(),
             });
             pongCue.get<Audio>().playOnce();
           } else if (
             !(status & ColisionStatus.collideTop) ||
             !(status & ColisionStatus.collideBottom)
           ) {
-            ball.setTransform({
-              rotationInDegree: -ball.getTransform().getRotationInDegree(),
+            gameObject.setTransform({
+              rotationInDegree: -gameObject
+                .getTransform()
+                .getRotationInDegree(),
             });
             pongCue.get<Audio>().playOnce();
           }

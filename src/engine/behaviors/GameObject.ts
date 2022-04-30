@@ -29,6 +29,10 @@ export class GameObject implements IComponent, ITransformable {
     this.getAll<Light>(Light.name).forEach((light) => (light.isOn = value));
   }
 
+  static build() {
+    return new GameObject();
+  }
+
   ///
   // ITransformable
   ///

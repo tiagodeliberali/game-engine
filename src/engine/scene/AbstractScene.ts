@@ -43,7 +43,7 @@ export abstract class AbstractScene {
     this.gameObjects.load();
     this.boundingBoxes = this.gameObjects.getAll<BoundingBox>(BoundingBox.name);
     this.lights = this.gameObjects.getAll<Light>(Light.name);
-    setMaxLightSourceNumber(this.lights.length);
+    setMaxLightSourceNumber(Math.max(this.lights.length, 1));
   }
 
   init() {
