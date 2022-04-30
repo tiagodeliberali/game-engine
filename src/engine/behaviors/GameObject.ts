@@ -3,6 +3,7 @@ import { getResourceManager } from "../resources";
 import { GameObjectHelper } from ".";
 import { ITransformable, TransformDef } from "..";
 import { DrawingResources } from "../core";
+import { Light } from "../graphics";
 
 export class GameObject implements IComponent, ITransformable {
   private transform: Transform;
@@ -10,13 +11,22 @@ export class GameObject implements IComponent, ITransformable {
   private currentDirection: Vec2d = new Vec2d(1, 0);
   private index: Map<string, IComponent[]>;
   paused: boolean;
-  visible: boolean;
+  _visible: boolean;
 
   constructor() {
     this.transform = Transform.BuldDefault();
     this.paused = false;
-    this.visible = true;
+    this._visible = true;
     this.index = new Map();
+  }
+
+  public get visible() {
+    return this._visible;
+  }
+
+  public set visible(value: boolean) {
+    this._visible = value;
+    this.getAll<Light>(Light.name).forEach((light) => (light.isOn = value));
   }
 
   ///
