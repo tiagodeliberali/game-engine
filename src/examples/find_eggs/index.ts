@@ -5,6 +5,7 @@ import {
   Camera,
   clampAtBoundary,
   Color,
+  FontRenderable,
   GameObject,
   isKeyClicked,
   Keys,
@@ -25,6 +26,9 @@ import {
   isMouseInViewport,
   MouseButton,
 } from "../../engine/input";
+
+const totalEggs = 10;
+const eggs: GameObject[] = [];
 
 export function findEggs() {
   setGlobalAmbientColor(
@@ -48,16 +52,34 @@ export function findEggs() {
   );
   const scene = new BasicScene([mainCamera, mapCamera]);
 
-  const click = createMouseClick(mainCamera);
+  const messageText = FontRenderable.getDefaultFont("Find the eggs!")
+    .setColor({ red: 200, green: 200, blue: 200, alpha: 1 })
+    .setTransform({
+      position: Vec2d.from(-7.3, 3.4),
+      scale: Vec2d.from(0.3, 0.3),
+    });
+  const gameText = new GameObject();
+  gameText.add(messageText).withBehavior(() => {
+    gameText.setTransform({
+      position: mainCamera.getTransform().getPosition().add(Vec2d.from(0, 0)),
+    });
+  });
 
-  const characterGameObject = createCharacter(mainCamera);
-  const tiles = createScenario(characterGameObject);
-  const egg = createEgg();
+  const characterGameObject = createCharacter(mainCamera, messageText);
 
-  scene.add(tiles);
+  scene.add(createScenario(characterGameObject));
   scene.add(characterGameObject);
-  scene.add(egg);
-  scene.add(click);
+
+  for (let i = 0; i < totalEggs; i++) {
+    const x = Math.random() * 2 * 19 - 19;
+    const y = Math.random() * 2 * 9 - 9;
+    const eggGameObject = createEgg(Vec2d.from(x, y));
+    eggs.push(eggGameObject);
+    scene.add(eggGameObject);
+  }
+
+  scene.add(createMouseClick(mainCamera));
+  scene.add(gameText);
 
   return scene;
 }
@@ -87,10 +109,11 @@ const createScenario = (characterGameObject: GameObject) => {
   return tiles;
 };
 
-const createCharacter = (camera: Camera) => {
+const createCharacter = (camera: Camera, messageText: FontRenderable) => {
   const gameObject = new GameObject();
 
   let lastMovement = Movement.idle;
+  let collectedEggs = 0;
 
   gameObject
     .add(
@@ -104,7 +127,34 @@ const createCharacter = (camera: Camera) => {
         })
         .runInLoop()
     )
-    .withBoundingBox("character")
+    .withBoundingBox("character", Vec2d.from(1, 1), () => {
+      return {
+        onCollideStarted: (other, tag) => {
+          if (tag === "egg") {
+            other.visible = false;
+            collectedEggs++;
+            messageText.setText(
+              collectedEggs === 1
+                ? "You found your first egg!"
+                : `Found ${collectedEggs} eggs`
+            );
+          }
+
+          if (collectedEggs === totalEggs) {
+            eggs.forEach((egg) => {
+              egg.visible = true;
+
+              const x = Math.random() * 2 * 19 - 19;
+              const y = Math.random() * 2 * 9 - 9;
+              egg.setTransform({ position: Vec2d.from(x, y) });
+
+              collectedEggs = 0;
+              messageText.setText(`You win!`);
+            });
+          }
+        },
+      };
+    })
     .withBehavior(() => {
       // Camera follow user
       if (
@@ -192,7 +242,7 @@ const createCharacter = (camera: Camera) => {
   return gameObject;
 };
 
-const createEgg = () => {
+const createEgg = (position: Vec2d) => {
   const egg = new GameObject();
   let oscillateObject: Shake2d;
   egg
@@ -211,10 +261,18 @@ const createEgg = () => {
       } else {
         egg.addToPosition(oscillateObject.getNext());
       }
-    });
+    })
+    .withBoundingBox("egg", Vec2d.from(1.5, 1.5));
   egg.setTransform({
-    position: Vec2d.from(10, 5),
+    position: position,
   });
+
+  egg.add(Light.buildDefault()).withBehavior<Light>((light) => {
+    light.nearRadius = 0.1;
+    light.farRadius = 1;
+    light.position = egg.getTransform().getPosition().toVec3(0);
+  });
+
   return egg;
 };
 

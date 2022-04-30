@@ -11,7 +11,7 @@ export class GameObject implements IComponent, ITransformable {
   private currentDirection: Vec2d = new Vec2d(1, 0);
   private index: Map<string, IComponent[]>;
   paused: boolean;
-  _visible: boolean;
+  private _visible: boolean;
 
   constructor() {
     this.transform = Transform.BuldDefault();
