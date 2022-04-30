@@ -1,5 +1,14 @@
 import { Vec2d } from "./DataStructures";
-import { Viewport, initGL, clearCanvas, getGL } from "./graphics";
+import {
+  Viewport,
+  initGL,
+  clearCanvas,
+  getGL,
+  getGlobalAmbientColor,
+  getGlobalAmbientIntensity,
+  setGlobalAmbientColor,
+  setGlobalAmbientIntensity,
+} from "./graphics";
 import {
   Camera,
   Color,
@@ -70,6 +79,10 @@ export {
   ColisionStatus,
   isDebugMode,
   GameObjectHelper,
+  getGlobalAmbientColor,
+  getGlobalAmbientIntensity,
+  setGlobalAmbientIntensity,
+  setGlobalAmbientColor,
 };
 
 export type { IRenderable, TransformDef, IComponent, ITransformable, ColorDef };

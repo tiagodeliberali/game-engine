@@ -8,7 +8,11 @@ import { initGL, getGL, clearCanvas, getCanvasSize, DefaultGlName } from "./GL";
 import {
   getGlobalAmbientColor,
   getGlobalAmbientIntensity,
+  setGlobalAmbientColor,
+  setGlobalAmbientIntensity,
 } from "./GraphicSettings";
+
+import { Light } from "./Light";
 
 export {
   ShaderLib,
@@ -24,4 +28,7 @@ export {
   DefaultGlName,
   getGlobalAmbientColor,
   getGlobalAmbientIntensity,
+  setGlobalAmbientIntensity,
+  setGlobalAmbientColor,
+  Light,
 };

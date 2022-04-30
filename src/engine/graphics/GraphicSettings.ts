@@ -1,11 +1,6 @@
 import { Color } from "../core";
 
-let mGlobalAmbientColor: Color = Color.FromColorDef({
-  red: 100,
-  green: 100,
-  blue: 100,
-  alpha: 1,
-});
+let mGlobalAmbientColor: Color = Color.White();
 let mGlobalAmbientIntensity = 1;
 
 export function getGlobalAmbientIntensity() {

@@ -96,6 +96,10 @@ export class Vec2d {
   private static fromVec2(vector: vec2) {
     return new Vec2d(vector[0], vector[1]);
   }
+
+  toVec3(z: number): Vec3d {
+    return Vec3d.from(this.x, this.y, z);
+  }
 }
 
 export class Vec3d {
