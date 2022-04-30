@@ -1,7 +1,7 @@
 import { EngineError } from "../EngineError";
 import { SimpleShader, ShaderLib } from "../graphics";
-import { Camera } from "..";
 import { AbstractRenderable } from "./AbstractRenderable";
+import { DrawingResources } from "../core";
 
 export class Renderable extends AbstractRenderable<SimpleShader> {
   constructor() {
@@ -27,7 +27,7 @@ export class Renderable extends AbstractRenderable<SimpleShader> {
     //
   }
 
-  draw(camera: Camera) {
+  draw(resources: DrawingResources) {
     if (this.shader === undefined) {
       throw new EngineError(
         Renderable.name,
@@ -38,7 +38,7 @@ export class Renderable extends AbstractRenderable<SimpleShader> {
     this.shader.draw(
       this.color,
       this.trsMatrix.getTrsMatrix(),
-      camera.getCameraMatrix()
+      resources.camera.getCameraMatrix()
     );
   }
 }

@@ -1,6 +1,6 @@
 import { Vec2d } from "../DataStructures";
 import { GameObject, isDebugMode, ITransformable, Renderable } from "..";
-import { Camera, IComponent } from "../core";
+import { DrawingResources, IComponent } from "../core";
 
 export enum ColisionStatus {
   collideLeft = 1,
@@ -150,8 +150,8 @@ export class BoundingBox implements IComponent {
       });
   }
 
-  draw(camera: Camera) {
-    isDebugMode() && this.debugBox.draw(camera);
+  draw(resources: DrawingResources) {
+    isDebugMode() && this.debugBox.draw(resources);
   }
 
   unload() {

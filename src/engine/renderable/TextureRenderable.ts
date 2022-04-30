@@ -1,4 +1,5 @@
-import { Camera, Color, EngineError } from "..";
+import { Color, EngineError } from "..";
+import { DrawingResources } from "../core";
 import { ShaderLib, TextureShader, Texture } from "../graphics";
 import { getResourceManager } from "../resources";
 import { AbstractRenderable } from "./AbstractRenderable";
@@ -34,7 +35,7 @@ export class TextureRenderable extends AbstractRenderable<TextureShader> {
     //
   }
 
-  draw(camera: Camera) {
+  draw(resources: DrawingResources) {
     if (this.shader === undefined) {
       throw new EngineError(
         TextureRenderable.name,
@@ -42,10 +43,14 @@ export class TextureRenderable extends AbstractRenderable<TextureShader> {
       );
     }
 
+    if (resources.lights.length > 0) {
+      this.shader.setCameraAndLight(resources.camera, resources.lights[0]);
+    }
+
     this.shader.draw(
       this.color,
       this.trsMatrix.getTrsMatrix(),
-      camera.getCameraMatrix()
+      resources.camera.getCameraMatrix()
     );
   }
 }

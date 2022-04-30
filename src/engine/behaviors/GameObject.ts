@@ -1,7 +1,8 @@
-import { Camera, Transform, Vec2d, IComponent } from "..";
+import { Transform, Vec2d, IComponent } from "..";
 import { getResourceManager } from "../resources";
 import { GameObjectHelper } from ".";
 import { ITransformable, TransformDef } from "..";
+import { DrawingResources } from "../core";
 
 export class GameObject implements IComponent, ITransformable {
   private transform: Transform;
@@ -125,8 +126,8 @@ export class GameObject implements IComponent, ITransformable {
     !this.paused && this.components.forEach((item) => item.update());
   }
 
-  draw(camera: Camera) {
-    this.visible && this.components.forEach((item) => item.draw(camera));
+  draw(resources: DrawingResources) {
+    this.visible && this.components.forEach((item) => item.draw(resources));
   }
 
   unload() {

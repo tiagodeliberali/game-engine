@@ -1,10 +1,11 @@
 import { ShaderLib, TextureShader, Texture } from "../graphics";
-import { Camera, Color } from "..";
+import { Color } from "..";
 import { getResourceManager } from "../resources";
 import { RenderableAnimator } from ".";
 import { AbstractRenderable } from "./AbstractRenderable";
 import { EngineError } from "../EngineError";
 import { AnimationSettings } from "./animator";
+import { DrawingResources } from "../core";
 
 export class SpriteRenderable extends AbstractRenderable<TextureShader> {
   texturePath: string;
@@ -111,7 +112,7 @@ export class SpriteRenderable extends AbstractRenderable<TextureShader> {
     return this;
   }
 
-  draw(camera: Camera) {
+  draw(resources: DrawingResources) {
     if (this.shader === undefined) {
       throw new EngineError(
         SpriteRenderable.name,
@@ -119,10 +120,14 @@ export class SpriteRenderable extends AbstractRenderable<TextureShader> {
       );
     }
 
+    if (resources.lights.length > 0) {
+      this.shader.setCameraAndLight(resources.camera, resources.lights[0]);
+    }
+
     this.shader.draw(
       this.color,
       this.trsMatrix.getTrsMatrix(),
-      camera.getCameraMatrix()
+      resources.camera.getCameraMatrix()
     );
   }
 }

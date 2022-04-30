@@ -1,12 +1,15 @@
 import { Camera, IComponent, ITransformable } from "..";
 import { BoundingBox, GameObject } from "../behaviors";
+import { DrawingResources } from "../core";
 import { EngineError } from "../EngineError";
 import { GameEngine } from "../GameEngine";
+import { Light } from "../graphics";
 import { getResourceManager } from "../resources";
 
 export abstract class AbstractScene {
   private gameEngine: GameEngine | undefined;
   private boundingBoxes: BoundingBox[] = [];
+  private lights: Light[] = [];
   private colisionList: ITransformable[] = [];
   protected gameObjects: GameObject;
   protected cameras: Camera[];
@@ -39,6 +42,7 @@ export abstract class AbstractScene {
   load() {
     this.gameObjects.load();
     this.boundingBoxes = this.gameObjects.getAll<BoundingBox>(BoundingBox.name);
+    this.lights = this.gameObjects.getAll<Light>(Light.name);
   }
 
   init() {
@@ -48,7 +52,7 @@ export abstract class AbstractScene {
   draw() {
     this.cameras.forEach((camera) => {
       camera.draw();
-      this.gameObjects.draw(camera);
+      this.gameObjects.draw(new DrawingResources(camera, this.lights));
     });
   }
 

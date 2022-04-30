@@ -1,7 +1,7 @@
-import { Color } from "../core";
+import { Color, IComponent } from "../core";
 import { Vec3d } from "../DataStructures";
 
-export class Light {
+export class Light implements IComponent {
   color: Color;
   position: Vec3d;
   radius: number;
@@ -12,6 +12,25 @@ export class Light {
     this.position = position;
     this.radius = radius;
     this.isOn = isOn;
+  }
+  load() {
+    //
+  }
+
+  init() {
+    //
+  }
+
+  update() {
+    //
+  }
+
+  draw() {
+    //
+  }
+
+  unload() {
+    //
   }
 
   static buildDefault() {

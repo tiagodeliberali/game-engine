@@ -10,6 +10,7 @@ import {
   Keys,
   Movement,
   Renderable,
+  setGlobalAmbientColor,
   SpriteRenderable,
   TextureRenderable,
   Vec2d,
@@ -17,6 +18,7 @@ import {
   walk2d,
 } from "../../engine";
 import { Shake2d } from "../../engine/behaviors";
+import { Light } from "../../engine/graphics";
 import {
   getMousePosition,
   isButtonPressed,
@@ -25,6 +27,14 @@ import {
 } from "../../engine/input";
 
 export function findEggs() {
+  setGlobalAmbientColor(
+    Color.FromColorDef({
+      red: 100,
+      green: 100,
+      blue: 100,
+      alpha: 1,
+    })
+  );
   const mainCamera = new Camera(
     Vec2d.from(0, 0),
     Vec2d.from(16, 8),
@@ -174,6 +184,10 @@ const createCharacter = (camera: Camera) => {
         }
       });
     });
+
+  gameObject.add(Light.buildDefault()).withBehavior<Light>((light) => {
+    light.position = gameObject.getTransform().getPosition().toVec3(0);
+  });
 
   return gameObject;
 };

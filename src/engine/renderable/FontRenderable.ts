@@ -1,8 +1,9 @@
 import { ShaderLib, TextureShader, Texture } from "../graphics";
-import { Camera, Color } from "..";
+import { Color } from "..";
 import { Vec2d } from "../DataStructures";
 import { getResourceManager } from "../resources";
 import { AbstractRenderable } from "./AbstractRenderable";
+import { DrawingResources } from "../core";
 
 export const defaultFontPath = "/textures/default_font.png";
 
@@ -45,7 +46,7 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
     //
   }
 
-  draw(camera: Camera) {
+  draw(resources: DrawingResources) {
     const initialTrsPosition = this.trsMatrix.getPosition().x;
 
     if (this.shader === undefined) {
@@ -62,7 +63,7 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
       shader.draw(
         this.color,
         this.trsMatrix.getTrsMatrix(),
-        camera.getCameraMatrix()
+        resources.camera.getCameraMatrix()
       );
 
       this.addToPosition(new Vec2d(this.trsMatrix.getHorizontalScale(), 0));

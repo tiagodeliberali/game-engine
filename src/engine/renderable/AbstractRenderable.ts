@@ -1,7 +1,7 @@
-import { Camera, Color, ColorDef, Transform, TransformDef } from "..";
+import { Vec2d, Color, ColorDef, Transform, TransformDef } from "..";
 import { IRenderable } from ".";
 import { AbstractShader } from "../graphics/AbstractShader";
-import { Vec2d } from "..";
+import { DrawingResources } from "../core";
 
 export abstract class AbstractRenderable<T extends AbstractShader>
   implements IRenderable
@@ -19,7 +19,7 @@ export abstract class AbstractRenderable<T extends AbstractShader>
   abstract update(): void;
   abstract load(): void;
   abstract init(): void;
-  abstract draw(_camera: Camera): void;
+  abstract draw(resources: DrawingResources): void;
 
   getTransform() {
     return this.trsMatrix;
