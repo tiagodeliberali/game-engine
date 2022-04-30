@@ -1,9 +1,22 @@
-import { getGL } from "..";
+import { mat4 } from "gl-matrix";
+import {
+  getGlobalAmbientColor,
+  getGlobalAmbientIntensity,
+  VertexBuffer,
+} from ".";
+import { Color, getGL } from "..";
 import { EngineError } from "../EngineError";
 
 export abstract class AbstractShader {
   gl: WebGL2RenderingContext;
   program: WebGLProgram;
+
+  vertexPositionBuffer: VertexBuffer;
+  pixelColorLocation: WebGLUniformLocation;
+  globalAmbientColorLocation: WebGLUniformLocation;
+  globalAmbientIntensityLocation: WebGLUniformLocation;
+  modelMatrixLocation: WebGLUniformLocation;
+  cameraXformMatrix: WebGLUniformLocation;
 
   constructor(vertexShaderSource: string, fragmentShaderSource: string) {
     this.gl = getGL();
@@ -12,6 +25,50 @@ export abstract class AbstractShader {
       vertexShaderSource,
       fragmentShaderSource
     );
+
+    this.vertexPositionBuffer = new VertexBuffer(
+      this.getAttribLocation("aVertexPosition"),
+      3
+    );
+
+    this.pixelColorLocation = this.getUniformLocation("uPixelColor");
+    this.globalAmbientColorLocation = this.getUniformLocation(
+      "uGlobalAmbientColor"
+    );
+    this.globalAmbientIntensityLocation = this.getUniformLocation(
+      "uGlobalAmbientIntensity"
+    );
+
+    this.modelMatrixLocation = this.getUniformLocation("uModelXformMatrix");
+    this.cameraXformMatrix = this.getUniformLocation("uCameraXformMatrix");
+  }
+
+  drawExtension() {
+    //virtual method
+  }
+
+  draw(pixelColor: Color, trsMatrix: mat4, cameraMatrix: mat4) {
+    this.gl.useProgram(this.program);
+
+    this.gl.uniform4fv(
+      this.pixelColorLocation,
+      pixelColor.getNormalizedArray()
+    );
+    this.gl.uniform4fv(
+      this.globalAmbientColorLocation,
+      getGlobalAmbientColor()
+    );
+    this.gl.uniform1f(
+      this.globalAmbientIntensityLocation,
+      getGlobalAmbientIntensity()
+    );
+    this.gl.uniformMatrix4fv(this.modelMatrixLocation, false, trsMatrix);
+    this.gl.uniformMatrix4fv(this.cameraXformMatrix, false, cameraMatrix);
+
+    this.drawExtension();
+
+    this.vertexPositionBuffer.activate();
+    this.vertexPositionBuffer.drawSquare();
   }
 
   protected getUniformLocation(parameter: string) {

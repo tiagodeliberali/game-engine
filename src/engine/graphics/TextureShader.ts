@@ -1,47 +1,19 @@
-import { mat4 } from "gl-matrix";
-import {
-  getGlobalAmbientColor,
-  getGlobalAmbientIntensity,
-  Texture,
-  VertexBuffer,
-} from ".";
-import { Color } from "..";
+import { Texture, VertexBuffer } from ".";
 import { EngineError } from "../EngineError";
 import { AbstractShader } from "./AbstractShader";
 
 export class TextureShader extends AbstractShader {
   private texture: Texture | undefined;
-  private vertexPositionBuffer: VertexBuffer;
-  private pixelColorLocation: WebGLUniformLocation;
-  private globalAmbientColorLocation: WebGLUniformLocation;
-  private globalAmbientIntensityLocation: WebGLUniformLocation;
-  private modelMatrixLocation: WebGLUniformLocation;
-  private cameraXformMatrix: WebGLUniformLocation;
   private textureCoordinateBuffer: VertexBuffer;
   private samplerLocation: WebGLUniformLocation;
 
   constructor(vertexShaderSource: string, fragmentShaderSource: string) {
     super(vertexShaderSource, fragmentShaderSource);
 
-    this.vertexPositionBuffer = new VertexBuffer(
-      this.getAttribLocation("aVertexPosition"),
-      3
-    );
-
     this.textureCoordinateBuffer = new VertexBuffer(
       this.getAttribLocation("aTextureCoordinate"),
       2
     );
-
-    this.pixelColorLocation = this.getUniformLocation("uPixelColor");
-    this.globalAmbientColorLocation = this.getUniformLocation(
-      "uGlobalAmbientColor"
-    );
-    this.globalAmbientIntensityLocation = this.getUniformLocation(
-      "uGlobalAmbientIntensity"
-    );
-    this.modelMatrixLocation = this.getUniformLocation("uModelXformMatrix");
-    this.cameraXformMatrix = this.getUniformLocation("uCameraXformMatrix");
 
     this.samplerLocation = this.getUniformLocation("uSampler");
   }
@@ -59,6 +31,10 @@ export class TextureShader extends AbstractShader {
       this.gl.STATIC_DRAW
     );
     this.vertexPositionBuffer.clearVertexArray();
+  }
+
+  drawExtension(): void {
+    this.texture?.activate(this.samplerLocation);
   }
 
   setSpritePosition(rows: number, columns: number, position: number) {
@@ -143,29 +119,5 @@ export class TextureShader extends AbstractShader {
 
   private setTextureCoordinate(vertices: number[]) {
     this.textureCoordinateBuffer.setTextureCoordinate(vertices);
-  }
-
-  draw(pixelColor: Color, trsMatrix: mat4, cameraMatrix: mat4) {
-    this.gl.useProgram(this.program);
-
-    this.gl.uniform4fv(
-      this.pixelColorLocation,
-      pixelColor.getNormalizedArray()
-    );
-    this.gl.uniform4fv(
-      this.globalAmbientColorLocation,
-      getGlobalAmbientColor()
-    );
-    this.gl.uniform1f(
-      this.globalAmbientIntensityLocation,
-      getGlobalAmbientIntensity()
-    );
-    this.gl.uniformMatrix4fv(this.modelMatrixLocation, false, trsMatrix);
-    this.gl.uniformMatrix4fv(this.cameraXformMatrix, false, cameraMatrix);
-
-    this.texture?.activate(this.samplerLocation);
-
-    this.vertexPositionBuffer.activate();
-    this.vertexPositionBuffer.drawSquare();
   }
 }
