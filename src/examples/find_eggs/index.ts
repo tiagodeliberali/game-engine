@@ -149,7 +149,7 @@ const createCharacter = (camera: Camera, messageText: FontRenderable) => {
               egg.setTransform({ position: Vec2d.from(x, y) });
 
               collectedEggs = 0;
-              messageText.setText(`You win!`);
+              messageText.setText(`You won!`);
             });
           }
         },

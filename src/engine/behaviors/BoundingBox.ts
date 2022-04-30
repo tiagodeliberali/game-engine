@@ -27,6 +27,7 @@ export class BoundingBox implements IComponent {
   owner: GameObject;
   tag: string;
   actions?: ColisionActions;
+  active: boolean;
 
   private constructor(
     owner: GameObject,
@@ -36,6 +37,7 @@ export class BoundingBox implements IComponent {
     this.owner = owner;
     this.tag = tag;
     this.actions = actions;
+    this.active = true;
     this.debugBox = Renderable.build().setColor({
       red: 255,
       green: 255,

@@ -58,7 +58,7 @@ export abstract class AbstractScene {
   }
 
   update() {
-    this.cameras.forEach((c) => c.update());
+    this.cameras.forEach((camera) => camera.update());
     this.gameObjects.update();
     this.processBoudingBoxes();
   }
@@ -76,8 +76,8 @@ export abstract class AbstractScene {
       return;
     }
 
-    const actionableBoudingBoxes = this.boundingBoxes.filter((x) =>
-      x.hasAction()
+    const actionableBoudingBoxes = this.boundingBoxes.filter(
+      (x) => x.hasAction() && x.active
     );
 
     if (actionableBoudingBoxes.length === 0) {
@@ -85,7 +85,7 @@ export abstract class AbstractScene {
     }
 
     const nonActionableBoudingBoxes = this.boundingBoxes.filter(
-      (x) => !x.hasAction()
+      (x) => !x.hasAction() && x.active
     );
 
     // interact each actionable with each non-actionable

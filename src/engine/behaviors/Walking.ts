@@ -18,18 +18,18 @@ export function walk2d(
   const scaledSpeed = speed * gameObject.getTransform().getHorizontalScale();
   let movement = Movement.idle;
 
-  if (isKeyPressed(Keys.A)) {
+  if (isKeyPressed(Keys.Left)) {
     gameObject.addToPosition(new Vec2d(-scaledSpeed, 0));
     movement |= Movement.left;
-  } else if (isKeyPressed(Keys.D)) {
+  } else if (isKeyPressed(Keys.Right)) {
     gameObject.addToPosition(new Vec2d(scaledSpeed, 0));
     movement |= Movement.right;
   }
 
-  if (isKeyPressed(Keys.W)) {
+  if (isKeyPressed(Keys.Up)) {
     gameObject.addToPosition(new Vec2d(0, scaledSpeed));
     movement |= Movement.up;
-  } else if (isKeyPressed(Keys.S)) {
+  } else if (isKeyPressed(Keys.Down)) {
     gameObject.addToPosition(new Vec2d(0, -scaledSpeed));
     movement |= Movement.down;
   }

@@ -1,6 +1,6 @@
 import { Transform, Vec2d, IComponent } from "..";
 import { getResourceManager } from "../resources";
-import { GameObjectHelper } from ".";
+import { BoundingBox, GameObjectHelper } from ".";
 import { ITransformable, TransformDef } from "..";
 import { DrawingResources } from "../core";
 import { Light } from "../graphics";
@@ -27,6 +27,9 @@ export class GameObject implements IComponent, ITransformable {
   public set visible(value: boolean) {
     this._visible = value;
     this.getAll<Light>(Light.name).forEach((light) => (light.isOn = value));
+    this.getAll<BoundingBox>(BoundingBox.name).forEach(
+      (box) => (box.active = value)
+    );
   }
 
   static build() {
