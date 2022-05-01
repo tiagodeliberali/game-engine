@@ -23,6 +23,8 @@ import {
   TextureRenderable,
   FontRenderable,
   Renderable,
+  LineRenderable,
+  LineRenderableFormats,
   IRenderable,
   AnimationType,
 } from "./renderable";
@@ -49,6 +51,8 @@ export {
   initGL,
   clearCanvas,
   Renderable,
+  LineRenderable,
+  LineRenderableFormats,
   TextureRenderable,
   FontRenderable,
   Camera,

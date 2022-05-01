@@ -60,11 +60,12 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
       const position = charCode - 33;
       shader.setSpritePosition(this.rows, this.columns, position);
 
-      shader.draw(
+      shader.activate(
         this.color,
         this.trsMatrix.getTrsMatrix(),
         resources.camera.getCameraMatrix()
       );
+      shader.drawSquare();
 
       this.addToPosition(new Vec2d(this.trsMatrix.getHorizontalScale(), 0));
     });

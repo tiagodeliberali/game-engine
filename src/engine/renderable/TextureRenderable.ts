@@ -45,10 +45,11 @@ export class TextureRenderable extends AbstractRenderable<TextureShader> {
 
     this.shader.setCameraAndLight(resources.camera, resources.lights);
 
-    this.shader.draw(
+    this.shader.activate(
       this.color,
       this.trsMatrix.getTrsMatrix(),
       resources.camera.getCameraMatrix()
     );
+    this.shader.drawSquare();
   }
 }

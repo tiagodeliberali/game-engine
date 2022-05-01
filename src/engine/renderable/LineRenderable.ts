@@ -3,13 +3,25 @@ import { SimpleShader, ShaderLib } from "../graphics";
 import { AbstractRenderable } from "./AbstractRenderable";
 import { DrawingResources } from "../core";
 
-export class Renderable extends AbstractRenderable<SimpleShader> {
-  constructor() {
+export class LineRenderableFormats {
+  static box() {
+    return [
+      0.5, 0.5, 0.0, 0.5, -0.5, 0.0, -0.5, -0.5, 0.0, -0.5, 0.5, 0.0, 0.5, 0.5,
+      0.0,
+    ];
+  }
+}
+
+export class LineRenderable extends AbstractRenderable<SimpleShader> {
+  vertices: number[];
+
+  constructor(vertices: number[]) {
     super();
+    this.vertices = vertices;
   }
 
-  static build() {
-    return new Renderable();
+  static build(vertices: number[]) {
+    return new LineRenderable(vertices);
   }
 
   load() {
@@ -18,9 +30,7 @@ export class Renderable extends AbstractRenderable<SimpleShader> {
 
   init() {
     this.shader = ShaderLib.getConstColorShader();
-    this.shader.initBuffer([
-      0.5, 0.5, 0.0, -0.5, 0.5, 0.0, 0.5, -0.5, 0.0, -0.5, -0.5, 0.0,
-    ]);
+    this.shader.initBuffer(this.vertices);
   }
 
   update() {
@@ -30,7 +40,7 @@ export class Renderable extends AbstractRenderable<SimpleShader> {
   draw(resources: DrawingResources) {
     if (this.shader === undefined) {
       throw new EngineError(
-        Renderable.name,
+        LineRenderable.name,
         "Cannot run draw with undefined shader"
       );
     }
@@ -42,6 +52,6 @@ export class Renderable extends AbstractRenderable<SimpleShader> {
       this.trsMatrix.getTrsMatrix(),
       resources.camera.getCameraMatrix()
     );
-    this.shader.drawSquare();
+    this.shader.drawLines(this.vertices.length / 3);
   }
 }

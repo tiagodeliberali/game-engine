@@ -27,7 +27,7 @@ export class TextureShader extends AbstractShader {
     this.vertexPositionBuffer.initBuffer(positionVertices, this.gl.STATIC_DRAW);
     this.textureCoordinateBuffer.initBuffer(
       textureVertices,
-      this.gl.STATIC_DRAW
+      this.gl.DYNAMIC_DRAW
     );
     this.vertexPositionBuffer.clearVertexArray();
   }

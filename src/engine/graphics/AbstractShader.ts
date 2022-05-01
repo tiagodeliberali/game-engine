@@ -68,7 +68,7 @@ export abstract class AbstractShader {
     //virtual method
   }
 
-  draw(pixelColor: Color, trsMatrix: mat4, cameraMatrix: mat4) {
+  activate(pixelColor: Color, trsMatrix: mat4, cameraMatrix: mat4) {
     this.gl.useProgram(this.program);
 
     this.gl.uniform4fv(
@@ -111,7 +111,14 @@ export abstract class AbstractShader {
     this.drawExtension();
 
     this.vertexPositionBuffer.activate();
+  }
+
+  drawSquare() {
     this.vertexPositionBuffer.drawSquare();
+  }
+
+  drawLines(size: number) {
+    this.vertexPositionBuffer.drawLines(size);
   }
 
   public getUniformLocation(parameter: string) {

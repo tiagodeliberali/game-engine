@@ -1,5 +1,10 @@
 import { Vec2d } from "../DataStructures";
-import { GameObject, isDebugMode, Renderable } from "..";
+import {
+  GameObject,
+  isDebugMode,
+  LineRenderable,
+  LineRenderableFormats,
+} from "..";
 import { DrawingResources, IComponent } from "../core";
 
 export enum ColisionStatus {
@@ -23,7 +28,7 @@ export type ColisionActions = {
 
 export class BoundingBox implements IComponent {
   private scale: Vec2d = Vec2d.from(1, 1);
-  private debugBox: Renderable;
+  private debugBox: LineRenderable;
   owner: GameObject;
   tag: string;
   actions?: ColisionActions;
@@ -38,11 +43,11 @@ export class BoundingBox implements IComponent {
     this.tag = tag;
     this.actions = actions;
     this.active = true;
-    this.debugBox = Renderable.build().setColor({
+    this.debugBox = LineRenderable.build(LineRenderableFormats.box()).setColor({
       red: 255,
       green: 255,
       blue: 255,
-      alpha: 0.2,
+      alpha: 0.3,
     });
   }
 

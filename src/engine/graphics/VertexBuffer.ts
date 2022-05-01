@@ -84,4 +84,11 @@ export class VertexBuffer {
     this.gl.bindVertexArray(null);
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
   }
+
+  drawLines(size: number) {
+    this.gl.drawArrays(this.gl.LINE_STRIP, 0, size);
+
+    this.gl.bindVertexArray(null);
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
+  }
 }
