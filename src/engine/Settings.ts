@@ -1,3 +1,3 @@
 export function isDebugMode() {
-  return true;
+  return false;
 }

@@ -35,6 +35,8 @@ export class Renderable extends AbstractRenderable<SimpleShader> {
       );
     }
 
+    this.shader.setCameraAndLight(resources.camera, resources.lights);
+
     this.shader.draw(
       this.color,
       this.trsMatrix.getTrsMatrix(),

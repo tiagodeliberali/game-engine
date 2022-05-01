@@ -2,10 +2,13 @@ import { mat4 } from "gl-matrix";
 import {
   getGlobalAmbientColor,
   getGlobalAmbientIntensity,
+  getMaxLightSourceNumber,
+  Light,
   VertexBuffer,
 } from ".";
-import { Color, getGL } from "..";
+import { Camera, Color, getGL } from "..";
 import { EngineError } from "../EngineError";
+import { ShaderLightInfo } from "./ShaderLightInfo";
 
 export abstract class AbstractShader {
   gl: WebGL2RenderingContext;
@@ -16,14 +19,21 @@ export abstract class AbstractShader {
   globalAmbientColorLocation: WebGLUniformLocation;
   globalAmbientIntensityLocation: WebGLUniformLocation;
   modelMatrixLocation: WebGLUniformLocation;
-  cameraXformMatrix: WebGLUniformLocation;
+  cameraXformMatrixLocation: WebGLUniformLocation;
+
+  private camera: Camera | undefined;
+  private lights: Light[] = [];
+  shaderLightInfoList: ShaderLightInfo[] = [];
 
   constructor(vertexShaderSource: string, fragmentShaderSource: string) {
     this.gl = getGL();
 
     this.program = this.compileProgram(
       vertexShaderSource,
-      fragmentShaderSource
+      fragmentShaderSource.replace(
+        "#LIGHT_ARRAY_SIZE",
+        getMaxLightSourceNumber().toString()
+      )
     );
 
     this.vertexPositionBuffer = new VertexBuffer(
@@ -40,7 +50,18 @@ export abstract class AbstractShader {
     );
 
     this.modelMatrixLocation = this.getUniformLocation("uModelXformMatrix");
-    this.cameraXformMatrix = this.getUniformLocation("uCameraXformMatrix");
+    this.cameraXformMatrixLocation =
+      this.getUniformLocation("uCameraXformMatrix");
+
+    for (let i = 0; i < getMaxLightSourceNumber(); i++) {
+      const info = new ShaderLightInfo(this, i);
+      this.shaderLightInfoList.push(info);
+    }
+  }
+
+  setCameraAndLight(camera: Camera, light: Light[]) {
+    this.camera = camera;
+    this.lights = light;
   }
 
   drawExtension() {
@@ -63,7 +84,29 @@ export abstract class AbstractShader {
       getGlobalAmbientIntensity()
     );
     this.gl.uniformMatrix4fv(this.modelMatrixLocation, false, trsMatrix);
-    this.gl.uniformMatrix4fv(this.cameraXformMatrix, false, cameraMatrix);
+    this.gl.uniformMatrix4fv(
+      this.cameraXformMatrixLocation,
+      false,
+      cameraMatrix
+    );
+
+    if (this.camera !== undefined) {
+      for (let i = 0; i < this.lights.length; i++) {
+        this.shaderLightInfoList[i].loadToShader(this.camera, this.lights[i]);
+      }
+      for (
+        let i = this.lights.length;
+        i < this.shaderLightInfoList.length;
+        i++
+      ) {
+        this.shaderLightInfoList[i].switchOffLight();
+      }
+    } else {
+      // turn off all lights
+      for (let i = 0; i < this.shaderLightInfoList.length; i++) {
+        this.shaderLightInfoList[i].switchOffLight();
+      }
+    }
 
     this.drawExtension();
 
