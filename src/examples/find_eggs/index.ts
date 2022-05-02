@@ -30,15 +30,20 @@ import {
 const totalEggs = 10;
 const eggs: GameObject[] = [];
 
+type HUD = {
+  updateText: (message: string) => void;
+  gameObject: GameObject;
+};
+
 export function findEggs() {
   setGlobalAmbientColor(
     Color.FromColorDef({
       red: 100,
       green: 100,
       blue: 100,
-      alpha: 1,
     })
   );
+
   const mainCamera = new Camera(
     Vec2d.from(0, 0),
     Vec2d.from(16, 8),
@@ -50,20 +55,11 @@ export function findEggs() {
     Vec2d.from(51, 25),
     Viewport.build(Vec2d.from(5, 5), Vec2d.from(150, 75), Color.Black(), 1)
   );
+
   const scene = new BasicScene([mainCamera, mapCamera]);
 
-  const messageText = FontRenderable.getDefaultFont("Find the eggs!")
-    .setColor({ red: 200, green: 200, blue: 200, alpha: 1 })
-    .setTransform({
-      position: Vec2d.from(-7.3, 3.4),
-      scale: Vec2d.from(0.3, 0.3),
-    })
-    .setFrozenCamera(true);
-  const gameText = new GameObject();
-  gameText.add(messageText);
-
-  const characterGameObject = createCharacter(mainCamera, messageText);
-
+  const hud = createHUD();
+  const characterGameObject = createCharacter(mainCamera, hud);
   scene.add(createScenario(characterGameObject));
   scene.add(characterGameObject);
 
@@ -76,10 +72,27 @@ export function findEggs() {
   }
 
   scene.add(createMouseClick(mainCamera));
-  scene.add(gameText);
+  scene.add(hud.gameObject);
 
   return scene;
 }
+
+const createHUD = (): HUD => {
+  const messageText = FontRenderable.getDefaultFont("Find the eggs!")
+    .setColor({ red: 200, green: 200, blue: 200 })
+    .setTransform({
+      position: Vec2d.from(-7.3, 3.4),
+      scale: Vec2d.from(0.3, 0.3),
+    })
+    .setFrozenCamera(true);
+  const gameText = new GameObject();
+  gameText.add(messageText);
+
+  return {
+    updateText: (message: string) => messageText.setText(message),
+    gameObject: gameText,
+  };
+};
 
 const createScenario = (characterGameObject: GameObject) => {
   const tiles = new GameObject();
@@ -106,7 +119,7 @@ const createScenario = (characterGameObject: GameObject) => {
   return tiles;
 };
 
-const createCharacter = (camera: Camera, messageText: FontRenderable) => {
+const createCharacter = (camera: Camera, hud: HUD) => {
   const gameObject = new GameObject();
 
   let lastMovement = Movement.idle;
@@ -130,7 +143,7 @@ const createCharacter = (camera: Camera, messageText: FontRenderable) => {
           if (tag === "egg") {
             other.visible = false;
             collectedEggs++;
-            messageText.setText(
+            hud.updateText(
               collectedEggs === 1
                 ? "You found your first egg!"
                 : `Found ${collectedEggs} eggs`
@@ -146,7 +159,7 @@ const createCharacter = (camera: Camera, messageText: FontRenderable) => {
               egg.setTransform({ position: Vec2d.from(x, y) });
 
               collectedEggs = 0;
-              messageText.setText(`You won!`);
+              hud.updateText(`You won!`);
             });
           }
         },
