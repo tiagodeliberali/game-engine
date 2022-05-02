@@ -28,7 +28,7 @@ export type ColisionActions = {
 
 export class BoundingBox implements IComponent {
   private scale: Vec2d = Vec2d.from(1, 1);
-  private debugBox: LineRenderable;
+  private debugBox: LineRenderable | undefined;
   owner: GameObject;
   tag: string;
   actions?: ColisionActions;
@@ -43,12 +43,17 @@ export class BoundingBox implements IComponent {
     this.tag = tag;
     this.actions = actions;
     this.active = true;
-    this.debugBox = LineRenderable.build(LineRenderableFormats.box()).setColor({
-      red: 255,
-      green: 255,
-      blue: 255,
-      alpha: 0.3,
-    });
+
+    if (isDebugMode()) {
+      this.debugBox = LineRenderable.build(
+        LineRenderableFormats.box()
+      ).setColor({
+        red: 255,
+        green: 255,
+        blue: 255,
+        alpha: 0.3,
+      });
+    }
   }
 
   setScale(vector: Vec2d) {
@@ -142,15 +147,16 @@ export class BoundingBox implements IComponent {
   }
 
   load() {
-    this.debugBox.load();
+    this.debugBox && this.debugBox.load();
   }
 
   init() {
-    this.debugBox.init();
+    this.debugBox && this.debugBox.init();
   }
 
   update() {
     isDebugMode() &&
+      this.debugBox &&
       this.debugBox.setTransform({
         position: this.getPosition(),
         scale: this.getScale(),
@@ -158,7 +164,7 @@ export class BoundingBox implements IComponent {
   }
 
   draw(resources: DrawingResources) {
-    isDebugMode() && this.debugBox.draw(resources);
+    isDebugMode() && this.debugBox && this.debugBox.draw(resources);
   }
 
   unload() {
