@@ -36,6 +36,15 @@ export class Viewport {
     return new Viewport(bottomLeftCorner, size, color, border);
   }
 
+  clone(): Viewport {
+    return new Viewport(
+      this.bottomLeftCorner,
+      this.size,
+      this.background,
+      this.border
+    );
+  }
+
   draw() {
     this.gl.viewport(
       this.bottomLeftCorner.x + this.border,

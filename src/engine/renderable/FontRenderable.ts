@@ -58,14 +58,9 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
     this.text.split("").forEach((character) => {
       const charCode = character.charCodeAt(0);
       const position = charCode - 33;
-      shader.setSpritePosition(this.rows, this.columns, position);
 
-      shader.activate(
-        this.color,
-        this.trsMatrix.getTrsMatrix(),
-        resources.camera.getCameraMatrix()
-      );
-      shader.drawSquare();
+      shader.setSpritePosition(this.rows, this.columns, position);
+      this.getActivatedShader(resources).drawSquare();
 
       this.addToPosition(new Vec2d(this.trsMatrix.getHorizontalScale(), 0));
     });

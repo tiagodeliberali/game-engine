@@ -57,13 +57,10 @@ export function findEggs() {
     .setTransform({
       position: Vec2d.from(-7.3, 3.4),
       scale: Vec2d.from(0.3, 0.3),
-    });
+    })
+    .setFrozenCamera(true);
   const gameText = new GameObject();
-  gameText.add(messageText).withBehavior(() => {
-    gameText.setTransform({
-      position: mainCamera.getTransform().getPosition().add(Vec2d.from(0, 0)),
-    });
-  });
+  gameText.add(messageText);
 
   const characterGameObject = createCharacter(mainCamera, messageText);
 

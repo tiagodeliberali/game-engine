@@ -66,6 +66,10 @@ export class Camera implements ITransformable {
   /////
   /// Camera
   /////
+  clone(): Camera {
+    return new Camera(this.center, this.size, this.viewport.clone());
+  }
+
   getCameraMatrix() {
     return this.cameraMatrix;
   }

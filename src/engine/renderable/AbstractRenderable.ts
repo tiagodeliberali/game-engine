@@ -1,7 +1,14 @@
-import { Vec2d, Color, ColorDef, Transform, TransformDef } from "..";
+import {
+  Vec2d,
+  Color,
+  ColorDef,
+  Transform,
+  TransformDef,
+  EngineError,
+} from "..";
 import { IRenderable } from ".";
 import { AbstractShader } from "../graphics/AbstractShader";
-import { DrawingResources } from "../core";
+import { Camera, DrawingResources } from "../core";
 
 export abstract class AbstractRenderable<T extends AbstractShader>
   implements IRenderable
@@ -10,16 +17,58 @@ export abstract class AbstractRenderable<T extends AbstractShader>
   color: Color;
   trsMatrix: Transform;
   currentDirection: Vec2d = new Vec2d(1, 0);
+  freezeCamera: boolean;
+  protected frozenCamera: Camera | undefined;
 
   constructor() {
     this.color = Color.White();
     this.trsMatrix = Transform.BuldDefault();
+    this.freezeCamera = false;
   }
 
   abstract update(): void;
   abstract load(): void;
   abstract init(): void;
   abstract draw(resources: DrawingResources): void;
+
+  getActivatedShader(resources: DrawingResources) {
+    if (this.shader === undefined) {
+      throw new EngineError(
+        AbstractRenderable.name,
+        "Cannot run draw with undefined shader"
+      );
+    }
+
+    const camera = this.getCamera(resources.camera);
+
+    this.shader.setCameraAndLight(camera, resources.lights);
+
+    this.shader.activate(
+      this.color,
+      this.trsMatrix.getTrsMatrix(),
+      camera.getCameraMatrix()
+    );
+
+    return this.shader;
+  }
+
+  getCamera(camera: Camera): Camera {
+    if (!this.freezeCamera) {
+      this.frozenCamera = undefined;
+      return camera;
+    }
+
+    if (this.frozenCamera === undefined) {
+      this.frozenCamera = camera.clone();
+    }
+
+    return this.frozenCamera;
+  }
+
+  setFrozenCamera(value: boolean) {
+    this.freezeCamera = value;
+    return this;
+  }
 
   getTransform() {
     return this.trsMatrix;
@@ -55,7 +104,7 @@ export abstract class AbstractRenderable<T extends AbstractShader>
   }
 
   setColor(colorDef: ColorDef) {
-    this.color.set(colorDef);
+    this.color = Color.FromColorDef(colorDef);
 
     return this;
   }

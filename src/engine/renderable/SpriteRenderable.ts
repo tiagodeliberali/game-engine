@@ -113,20 +113,6 @@ export class SpriteRenderable extends AbstractRenderable<TextureShader> {
   }
 
   draw(resources: DrawingResources) {
-    if (this.shader === undefined) {
-      throw new EngineError(
-        SpriteRenderable.name,
-        "Cannot run draw with undefined shader"
-      );
-    }
-
-    this.shader.setCameraAndLight(resources.camera, resources.lights);
-
-    this.shader.activate(
-      this.color,
-      this.trsMatrix.getTrsMatrix(),
-      resources.camera.getCameraMatrix()
-    );
-    this.shader.drawSquare();
+    this.getActivatedShader(resources).drawSquare();
   }
 }

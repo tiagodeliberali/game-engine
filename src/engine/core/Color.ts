@@ -6,26 +6,25 @@ export type ColorDef = {
 };
 
 export class Color {
-  red: number;
-  green: number;
-  blue: number;
-  alpha: number;
+  readonly red: number;
+  readonly green: number;
+  readonly blue: number;
+  readonly alpha: number;
 
-  private constructor() {
-    this.red = 0;
-    this.green = 0;
-    this.blue = 0;
-    this.alpha = 1;
+  private constructor(red: number, green: number, blue: number, alpha: number) {
+    this.red = red;
+    this.green = green;
+    this.blue = blue;
+    this.alpha = alpha;
   }
 
   static FromColorDef(colorDef: ColorDef) {
-    const color = new Color();
-    color.red = colorDef.red;
-    color.green = colorDef.green;
-    color.blue = colorDef.blue;
-    color.alpha = colorDef.alpha === undefined ? 1 : colorDef.alpha;
-
-    return color;
+    return new Color(
+      colorDef.red,
+      colorDef.green,
+      colorDef.blue,
+      colorDef.alpha === undefined ? 1 : colorDef.alpha
+    );
   }
 
   static Transparent(): Color {
@@ -38,7 +37,11 @@ export class Color {
   }
 
   static Black() {
-    return new Color();
+    return Color.FromColorDef({
+      red: 0,
+      green: 0,
+      blue: 0,
+    });
   }
 
   static LightGray() {
@@ -55,13 +58,6 @@ export class Color {
       green: 255,
       blue: 255,
     });
-  }
-
-  set(colorDef: ColorDef) {
-    this.red = colorDef.red;
-    this.green = colorDef.green;
-    this.blue = colorDef.blue;
-    this.alpha = colorDef.alpha === undefined ? this.alpha : colorDef.alpha;
   }
 
   getRedNormalized() {
