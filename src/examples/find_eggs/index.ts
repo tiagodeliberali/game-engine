@@ -26,6 +26,7 @@ import {
   isMouseInViewport,
   MouseButton,
 } from "../../engine/input";
+import { RigidCircle, RigidRectangle } from "../../engine/physics";
 
 const totalEggs = 10;
 const eggs: GameObject[] = [];
@@ -73,6 +74,8 @@ export function findEggs() {
 
   scene.add(createMouseClick(mainCamera));
   scene.add(hud.gameObject);
+
+  scene.add(createTree());
 
   return scene;
 }
@@ -250,6 +253,26 @@ const createCharacter = (camera: Camera, hud: HUD) => {
   });
 
   return gameObject;
+};
+
+const createTree = () => {
+  const tree = GameObject.build()
+    .add(
+      TextureRenderable.build("./find_eggs/textures/tree.png").setTransform({
+        scale: Vec2d.from(1, 1),
+        position: Vec2d.from(0, 0),
+      })
+    )
+    .setTransform({
+      position: Vec2d.from(4, 0),
+      rotationInDegree: 45,
+    }).gameObject;
+
+  tree.add(new RigidCircle(tree, 2));
+
+  tree.add(new RigidRectangle(tree, Vec2d.from(2, 2)));
+
+  return tree;
 };
 
 const createEgg = (position: Vec2d) => {

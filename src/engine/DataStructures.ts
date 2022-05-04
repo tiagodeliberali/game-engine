@@ -89,6 +89,10 @@ export class Vec2d {
     return result[2];
   }
 
+  rotateWRT(angle: number, reference: Vec2d) {
+    return this.sub(reference).rotate(angle).add(reference);
+  }
+
   private toVec2(): vec2 {
     return [this.x, this.y];
   }

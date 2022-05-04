@@ -9,6 +9,22 @@ export class LineRenderableFormats {
       0.0,
     ];
   }
+
+  static circle(points: number) {
+    const result: number[] = [];
+
+    const deltaTheta = (Math.PI * 2.0) / points;
+    let theta = deltaTheta;
+
+    for (let i = 1; i <= points; i++) {
+      result.push(0.5 * Math.cos(theta), 0.5 * Math.sin(theta), 0);
+      theta += deltaTheta;
+    }
+
+    result.push(result[0], result[1], 0);
+
+    return result;
+  }
 }
 
 export class LineRenderable extends AbstractRenderable<SimpleShader> {
@@ -21,6 +37,13 @@ export class LineRenderable extends AbstractRenderable<SimpleShader> {
 
   static build(vertices: number[]) {
     return new LineRenderable(vertices);
+  }
+
+  updateVertices(vertices: number[]) {
+    this.vertices = vertices;
+    if (this.shader !== undefined) {
+      this.shader.initBuffer(this.vertices);
+    }
   }
 
   load() {

@@ -50,6 +50,10 @@ export class Transform {
     return this.rotationInDegree;
   }
 
+  getRotationInRads() {
+    return convertDegreeToRads(this.rotationInDegree);
+  }
+
   addToRotationInDegree(rotationInDegree: number) {
     const newRotation = this.rotationInDegree + rotationInDegree;
 
