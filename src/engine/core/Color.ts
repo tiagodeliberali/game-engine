@@ -27,6 +27,15 @@ export class Color {
     );
   }
 
+  static random(): Color {
+    return new Color(
+      Math.floor(Math.random() * 255),
+      Math.floor(Math.random() * 255),
+      Math.floor(Math.random() * 255),
+      1
+    );
+  }
+
   static Transparent(): Color {
     return Color.FromColorDef({
       red: 0,

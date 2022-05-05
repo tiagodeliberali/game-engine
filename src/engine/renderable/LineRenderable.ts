@@ -17,7 +17,7 @@ export class LineRenderableFormats {
     let theta = deltaTheta;
 
     for (let i = 1; i <= points; i++) {
-      result.push(0.5 * Math.cos(theta), 0.5 * Math.sin(theta), 0);
+      result.push(Math.cos(theta), Math.sin(theta), 0);
       theta += deltaTheta;
     }
 

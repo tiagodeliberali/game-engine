@@ -1,6 +1,6 @@
+import { CollisionInfo, RigidCircle, RigidShape } from ".";
 import { GameObject, isDebugMode, LineRenderable, Vec2d } from "..";
 import { DrawingResources } from "../core";
-import { RigidShape } from "./RigidShape";
 
 export class RigidRectangle extends RigidShape {
   vertex: Vec2d[] = [];
@@ -17,6 +17,7 @@ export class RigidRectangle extends RigidShape {
     if (isDebugMode()) {
       this.setVertices();
       this.debugBox = LineRenderable.build(this.buildPoints());
+      this.debugBox.color = this.color;
     }
   }
 
@@ -41,8 +42,8 @@ export class RigidRectangle extends RigidShape {
   }
 
   private setVertices() {
-    // this.radius =
-    //   Math.sqrt(this.scale.x * this.scale.x + this.scale.y * this.scale.y) / 2;
+    this.radius =
+      Math.sqrt(this.scale.x * this.scale.x + this.scale.y * this.scale.y) / 2;
     const center = this.getCenter();
 
     const halfWidth = this.scale.x / 2;
@@ -77,5 +78,13 @@ export class RigidRectangle extends RigidShape {
     }
 
     this.computeFaceNormals();
+  }
+
+  collisionTest(otherShape: RigidShape) {
+    if (otherShape.constructor.name === RigidCircle.name) {
+      return CollisionInfo.notColided();
+    }
+
+    return CollisionInfo.notColided();
   }
 }

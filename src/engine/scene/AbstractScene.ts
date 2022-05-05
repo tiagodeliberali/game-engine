@@ -4,6 +4,12 @@ import { DrawingResources } from "../core";
 import { EngineError } from "../EngineError";
 import { GameEngine } from "../GameEngine";
 import { Light, setMaxLightSourceNumber } from "../graphics";
+import {
+  PhysicsEngine,
+  RigidCircle,
+  RigidRectangle,
+  RigidShape,
+} from "../physics";
 import { getResourceManager } from "../resources";
 
 export abstract class AbstractScene {
@@ -13,6 +19,7 @@ export abstract class AbstractScene {
   private colisionList: ITransformable[] = [];
   protected gameObjects: GameObject;
   protected cameras: Camera[];
+  protected rigidShapes: RigidShape[] = [];
 
   constructor(camera: Camera[]) {
     this.gameObjects = new GameObject();
@@ -43,6 +50,14 @@ export abstract class AbstractScene {
     this.gameObjects.load();
     this.boundingBoxes = this.gameObjects.getAll<BoundingBox>(BoundingBox.name);
     this.lights = this.gameObjects.getAll<Light>(Light.name);
+    this.rigidShapes = this.gameObjects
+      .getAll<RigidCircle>(RigidCircle.name)
+      .map((x) => x as RigidShape)
+      .concat(
+        this.gameObjects
+          .getAll<RigidRectangle>(RigidRectangle.name)
+          .map((x) => x as RigidShape)
+      );
     setMaxLightSourceNumber(Math.max(this.lights.length, 1));
   }
 
@@ -61,6 +76,7 @@ export abstract class AbstractScene {
     this.cameras.forEach((camera) => camera.update());
     this.gameObjects.update();
     this.processBoudingBoxes();
+    this.processPhysics();
   }
 
   unload() {
@@ -134,6 +150,14 @@ export abstract class AbstractScene {
 
         origin.actions.onCollideEnded &&
           origin.actions.onCollideEnded(target.owner, target.tag);
+      }
+    }
+  }
+
+  private processPhysics() {
+    for (let i = 0; i < this.rigidShapes.length - 1; i++) {
+      for (let j = i + 1; j < this.rigidShapes.length; j++) {
+        PhysicsEngine.collideShape(this.rigidShapes[i], this.rigidShapes[j]);
       }
     }
   }

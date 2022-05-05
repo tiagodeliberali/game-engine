@@ -252,6 +252,8 @@ const createCharacter = (camera: Camera, hud: HUD) => {
     light.position = gameObject.getTransform().getPosition().toVec3(0);
   });
 
+  gameObject.add(new RigidCircle(gameObject, 2));
+
   return gameObject;
 };
 
@@ -268,9 +270,8 @@ const createTree = () => {
       rotationInDegree: 45,
     }).gameObject;
 
+  // tree.add(new RigidRectangle(tree, Vec2d.from(2, 2)));
   tree.add(new RigidCircle(tree, 2));
-
-  tree.add(new RigidRectangle(tree, Vec2d.from(2, 2)));
 
   return tree;
 };
