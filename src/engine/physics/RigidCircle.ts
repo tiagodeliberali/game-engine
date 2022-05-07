@@ -5,7 +5,7 @@ import {
   LineRenderableFormats,
   Vec2d,
 } from "..";
-import { CollisionInfo, RigidShape } from ".";
+import { CollisionInfo, RigidRectangle, RigidShape } from ".";
 
 export class RigidCircle extends RigidShape {
   constructor(owner: GameObject, radius: number) {
@@ -37,7 +37,7 @@ export class RigidCircle extends RigidShape {
       return this.collideCircCirc(otherShape as RigidCircle);
     }
 
-    return CollisionInfo.notColided();
+    return (otherShape as RigidRectangle).collideRectCirc(this);
   }
 
   collideCircCirc(other: RigidCircle) {

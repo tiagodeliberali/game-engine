@@ -83,7 +83,7 @@ export class RigidRectangle extends RigidShape {
 
   collisionTest(otherShape: RigidShape): CollisionInfo {
     if (otherShape.constructor.name === RigidCircle.name) {
-      return CollisionInfo.notColided();
+      return this.collideRectCirc(otherShape as RigidCircle);
     }
 
     return this.collideRectRect(otherShape as RigidRectangle);
@@ -168,6 +168,113 @@ export class RigidRectangle extends RigidShape {
     }
 
     return supportPoint;
+  }
+
+  collideRectCirc(otherCir: RigidCircle): CollisionInfo {
+    let outside = false;
+    let bestDistance = -Number.MAX_VALUE;
+    let nearestEdge = 0;
+    let verticeToCenter = Vec2d.from(0, 0);
+    let projection = 0;
+    let i = 0;
+    const cirCenter = otherCir.getCenter();
+
+    // Step A: Compute the nearest edge
+    // Actually, computes the first outside edge. Doesn't matter if it is the nearest one.
+    // It will be the best distance only if the circle is inside the rectangle
+    while (!outside && i < this.vertex.length) {
+      verticeToCenter = cirCenter.sub(this.vertex[i]);
+      projection = verticeToCenter.dot(this.faceNormal[i]);
+
+      if (projection > bestDistance) {
+        outside = projection > 0; // if projection < 0, inside
+        bestDistance = projection;
+        nearestEdge = i;
+      }
+      i++;
+    }
+
+    if (!outside) {
+      // inside
+      // Step B: The center of circle is inside of rectangle
+      const radiusVec = this.faceNormal[nearestEdge].scale(otherCir.radius);
+      const ptAtCirc = cirCenter.sub(radiusVec);
+
+      this.collisionInfo = CollisionInfo.colided(
+        otherCir.radius - bestDistance,
+        this.faceNormal[nearestEdge],
+        ptAtCirc
+      );
+
+      return this.collisionInfo;
+    }
+
+    let v1 = cirCenter.sub(this.vertex[nearestEdge]);
+    let v2 = this.vertex[(nearestEdge + 1) % 4].sub(this.vertex[nearestEdge]);
+    let dot = v1.dot(v2);
+
+    if (dot < 0) {
+      // Step C1: In Region RG1
+      this.collisionInfo = this.checkCircRectVertex(
+        v1,
+        cirCenter,
+        otherCir.radius
+      );
+    } else {
+      // Either in Region RG2 or RG3
+      // v1 is from right vertex of face to center of circle
+      // v2 is from right vertex of face to left vertex of face
+      v1 = cirCenter.sub(this.vertex[(nearestEdge + 1) % 4]);
+      v2 = v2.scale(-1);
+      dot = v1.dot(v2);
+
+      if (dot < 0) {
+        // Step C2: In Region RG2
+        this.collisionInfo = this.checkCircRectVertex(
+          v1,
+          cirCenter,
+          otherCir.radius
+        );
+      } else {
+        // Step C3: In Region RG3
+        if (bestDistance < otherCir.radius) {
+          const radiusVec = this.faceNormal[nearestEdge].scale(otherCir.radius);
+          const dist = otherCir.radius - bestDistance;
+          const ptAtCirc = cirCenter.sub(radiusVec);
+
+          this.collisionInfo = CollisionInfo.colided(
+            dist,
+            this.faceNormal[nearestEdge],
+            ptAtCirc
+          );
+        } else {
+          this.collisionInfo = CollisionInfo.notColided();
+        }
+      }
+    }
+
+    return this.collisionInfo;
+  }
+
+  private checkCircRectVertex(
+    v1: Vec2d,
+    cirCenter: Vec2d,
+    r: number
+  ): CollisionInfo {
+    // the center of circle is in corner region of vertex[nearestEdge]
+    const dist = v1.length();
+
+    // compare the distance with radius to decide collision
+    if (dist > r) {
+      return CollisionInfo.notColided();
+    }
+
+    v1 = v1.normalize();
+
+    const radiusVector = v1.scale(-r);
+    const startPosition = cirCenter.add(radiusVector);
+
+    return CollisionInfo.colided(r - dist, v1, startPosition);
   }
 }
 
