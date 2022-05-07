@@ -1,17 +1,17 @@
 import { Vec2d } from "..";
 
 export class CollisionInfo {
-  colided: boolean;
-  mDepth: number;
-  mNormal: Vec2d;
-  mStart: Vec2d;
+  collided: boolean;
+  depth: number;
+  normal: Vec2d;
+  start: Vec2d;
   mEnd: Vec2d;
 
   constructor(colided: boolean, depth: number, normal: Vec2d, start: Vec2d) {
-    this.colided = colided;
-    this.mDepth = depth;
-    this.mNormal = normal;
-    this.mStart = start;
+    this.collided = colided;
+    this.depth = depth;
+    this.normal = normal;
+    this.start = start;
     this.mEnd = start.add(normal.scale(depth));
   }
 
@@ -24,9 +24,9 @@ export class CollisionInfo {
   }
 
   changeDir() {
-    this.mNormal = this.mNormal.scale(-1);
-    const n = this.mStart;
-    this.mStart = this.mEnd;
+    this.normal = this.normal.scale(-1);
+    const n = this.start;
+    this.start = this.mEnd;
     this.mEnd = n;
   }
 }

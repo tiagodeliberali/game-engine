@@ -41,33 +41,43 @@ export class RigidCircle extends RigidShape {
   }
 
   collideCircCirc(other: RigidCircle) {
-    const rSum = this.radius + other.radius;
-    let vFrom1to2 = other.getCenter().sub(this.getCenter());
-    const dist = vFrom1to2.length();
+    const radiusSum = this.radius + other.radius;
+    let vectorThisToOther = other.getCenter().sub(this.getCenter());
+    const dist = vectorThisToOther.length();
 
-    if (dist > Math.sqrt(rSum * rSum)) {
+    if (dist > Math.sqrt(radiusSum * radiusSum)) {
       // not overlapping
       this.collisionInfo = CollisionInfo.notColided();
       return this.collisionInfo;
     }
 
     if (dist !== 0) {
-      // Step 2: Colliding circle centers are at different positions
-      vFrom1to2 = vFrom1to2.normalize();
-      const vToC2 = vFrom1to2.scale(-other.radius).add(other.getCenter());
-      this.collisionInfo = CollisionInfo.colided(rSum - dist, vFrom1to2, vToC2);
+      vectorThisToOther = vectorThisToOther.normalize();
+      const startPosition = vectorThisToOther
+        .scale(-other.radius)
+        .add(other.getCenter());
+      this.collisionInfo = CollisionInfo.colided(
+        radiusSum - dist,
+        vectorThisToOther,
+        startPosition
+      );
     } else {
-      const n = Vec2d.from(0, -1);
-      // Step 3: Colliding circle centers are at exactly the same position
+      const normal = Vec2d.from(0, -1);
+      let startPosition: Vec2d;
+
       if (this.radius > other.radius) {
-        const pC1 = this.getCenter();
-        const ptOnC1 = Vec2d.from(pC1.x, pC1.y + this.radius);
-        this.collisionInfo = CollisionInfo.colided(rSum, n, ptOnC1);
+        const position = this.getCenter();
+        startPosition = Vec2d.from(position.x, position.y + this.radius);
       } else {
-        const pC2 = other.getCenter();
-        const ptOnC2 = Vec2d.from(pC2.x, pC2.y + other.radius);
-        this.collisionInfo = CollisionInfo.colided(rSum, n, ptOnC2);
+        const position = other.getCenter();
+        startPosition = Vec2d.from(position.x, position.y + other.radius);
       }
+
+      this.collisionInfo = CollisionInfo.colided(
+        radiusSum,
+        normal,
+        startPosition
+      );
     }
 
     return this.collisionInfo;

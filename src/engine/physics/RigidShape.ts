@@ -70,11 +70,11 @@ export abstract class RigidShape implements IComponent {
       isDebugMode() &&
       this.collisionDebugBox &&
       this.collisionInfo &&
-      this.collisionInfo.colided
+      this.collisionInfo.collided
     ) {
       const collisionLine = [
-        this.collisionInfo.mStart.x,
-        this.collisionInfo.mStart.y,
+        this.collisionInfo.start.x,
+        this.collisionInfo.start.y,
         0,
         this.collisionInfo.mEnd.x,
         this.collisionInfo.mEnd.y,
