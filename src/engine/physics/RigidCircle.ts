@@ -12,6 +12,7 @@ export class RigidCircle extends RigidShape {
     super(owner);
     this.radius = radius;
     this.setDebugBox();
+    this.updateInertia();
   }
 
   setDebugBox() {
@@ -81,5 +82,15 @@ export class RigidCircle extends RigidShape {
     }
 
     return this.collisionInfo;
+  }
+
+  updateInertia() {
+    if (this.mInvMass === 0) {
+      this.mInertia = 0;
+    } else {
+      // this.mInvMass is inverted!!
+      // Inertia=mass * radius^2
+      this.mInertia = ((1 / this.mInvMass) * (this.radius * this.radius)) / 12;
+    }
   }
 }

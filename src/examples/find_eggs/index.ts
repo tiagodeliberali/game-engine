@@ -128,6 +128,9 @@ const createCharacter = (camera: Camera, hud: HUD) => {
   let lastMovement = Movement.idle;
   let collectedEggs = 0;
 
+  const rigidBox = new RigidRectangle(gameObject, Vec2d.from(2, 2));
+  gameObject.add(rigidBox);
+
   gameObject
     .add(
       SpriteRenderable.build("./find_eggs/textures/character.png", 8, 4, 0)
@@ -192,7 +195,7 @@ const createCharacter = (camera: Camera, hud: HUD) => {
     })
     .withBehavior<SpriteRenderable>((character) => {
       // walk 2d + sprite animation
-      walk2d(gameObject, 0.08, (movement) => {
+      walk2d(rigidBox, 5, (movement) => {
         if (movement === lastMovement) {
           return;
         }
@@ -251,8 +254,6 @@ const createCharacter = (camera: Camera, hud: HUD) => {
   gameObject.add(Light.buildDefault()).withBehavior<Light>((light) => {
     light.position = gameObject.getTransform().getPosition().toVec3(0);
   });
-
-  gameObject.add(new RigidCircle(gameObject, 2));
 
   return gameObject;
 };

@@ -1,5 +1,6 @@
 const kUPS = 60; // Updates per second
 const kMPF = 1000 / kUPS; // Milliseconds per update.
+const kSPU = 1 / kUPS; // seconds per update
 
 let prevTime: number;
 let lagTime: number;
@@ -14,6 +15,10 @@ let loopDrawAction = () => {
 let loopUpdateAction = () => {
   // virtual method
 };
+
+export function getUpdateIntervalInSeconds() {
+  return kSPU;
+}
 
 export function initLoop(drawAction?: () => void, updateAction?: () => void) {
   if (loopRunning) {

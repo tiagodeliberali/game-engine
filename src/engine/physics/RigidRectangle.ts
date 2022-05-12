@@ -5,12 +5,21 @@ import { DrawingResources } from "../core";
 export class RigidRectangle extends RigidShape {
   vertex: Vec2d[] = [];
   faceNormal: Vec2d[] = [];
-  scale: Vec2d;
+  private _scale: Vec2d;
+
+  public get scale(): Vec2d {
+    return this._scale;
+  }
+  public set scale(value: Vec2d) {
+    this._scale = value;
+    this.updateInertia();
+  }
 
   constructor(owner: GameObject, scale: Vec2d) {
     super(owner);
-    this.scale = scale;
+    this._scale = scale;
     this.setDebugBox();
+    this.updateInertia();
   }
 
   setDebugBox() {
@@ -275,6 +284,19 @@ export class RigidRectangle extends RigidShape {
     const startPosition = cirCenter.add(radiusVector);
 
     return CollisionInfo.colided(r - dist, v1, startPosition);
+  }
+
+  updateInertia() {
+    // Expect this.mInvMass to be already inverted!
+    if (this.mInvMass === 0) this.mInertia = 0;
+    else {
+      // inertia=mass*width^2+height^2
+      this.mInertia =
+        ((1 / this.mInvMass) *
+          (this.scale.x * this.scale.x + this.scale.y * this.scale.y)) /
+        12;
+      this.mInertia = 1 / this.mInertia;
+    }
   }
 }
 

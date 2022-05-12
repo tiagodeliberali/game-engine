@@ -1,4 +1,5 @@
 import { CollisionInfo, RigidShape } from ".";
+import { Vec2d } from "..";
 
 export class PhysicsEngine {
   static collideShape(s1: RigidShape, s2: RigidShape) {
@@ -17,5 +18,9 @@ export class PhysicsEngine {
       }
     }
     return CollisionInfo.notColided();
+  }
+
+  static getSystemAcceleration(): Vec2d {
+    return Vec2d.from(0, 0);
   }
 }

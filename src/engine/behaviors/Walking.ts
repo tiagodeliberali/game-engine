@@ -1,6 +1,7 @@
 import { Vec2d } from "../DataStructures";
-import { BoundingBox, ColisionStatus, GameObject, ITransformable } from "..";
+import { BoundingBox, ColisionStatus, ITransformable } from "..";
 import { isKeyPressed, Keys } from "../input";
+import { RigidShape } from "../physics";
 
 export enum Movement {
   up = 1,
@@ -11,26 +12,26 @@ export enum Movement {
 }
 
 export function walk2d(
-  gameObject: GameObject,
+  gameObject: RigidShape,
   speed: number,
   onUpdate?: (isWalking: Movement) => void
 ) {
-  const scaledSpeed = speed * gameObject.getTransform().getHorizontalScale();
   let movement = Movement.idle;
+  gameObject.mVelocity = Vec2d.from(0, 0);
 
   if (isKeyPressed(Keys.Left)) {
-    gameObject.addToPosition(new Vec2d(-scaledSpeed, 0));
+    gameObject.mVelocity = Vec2d.from(-speed, 0);
     movement |= Movement.left;
   } else if (isKeyPressed(Keys.Right)) {
-    gameObject.addToPosition(new Vec2d(scaledSpeed, 0));
+    gameObject.mVelocity = Vec2d.from(speed, 0);
     movement |= Movement.right;
   }
 
   if (isKeyPressed(Keys.Up)) {
-    gameObject.addToPosition(new Vec2d(0, scaledSpeed));
+    gameObject.mVelocity = gameObject.mVelocity.add(Vec2d.from(0, speed));
     movement |= Movement.up;
   } else if (isKeyPressed(Keys.Down)) {
-    gameObject.addToPosition(new Vec2d(0, -scaledSpeed));
+    gameObject.mVelocity = gameObject.mVelocity.add(Vec2d.from(0, -speed));
     movement |= Movement.down;
   }
 

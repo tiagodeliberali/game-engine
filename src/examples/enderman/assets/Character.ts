@@ -19,21 +19,18 @@ export function buildCharacter(characterTransform: TransformDef) {
   characterGameObject.add(footCue);
 
   // add the sprite!
-  const characterHelper = characterGameObject
-    .add(
-      TextureRenderable.build(pokemonTexturePath).setTransform(
-        characterTransform
-      )
-    )
-    .withBehavior<ITransformable>(() =>
-      walk2d(characterGameObject, 0.08, (isWalking) => {
-        if (isWalking) {
-          footCue.get<Audio>().playLoop();
-        } else {
-          footCue.get<Audio>().stop();
-        }
-      })
-    );
+  const characterHelper = characterGameObject.add(
+    TextureRenderable.build(pokemonTexturePath).setTransform(characterTransform)
+  );
+  // .withBehavior<ITransformable>(() =>
+  //   walk2d(characterGameObject, 0.08, (isWalking) => {
+  //     if (isWalking) {
+  //       footCue.get<Audio>().playLoop();
+  //     } else {
+  //       footCue.get<Audio>().stop();
+  //     }
+  //   })
+  // );
 
   return { characterGameObject, characterHelper };
 }
