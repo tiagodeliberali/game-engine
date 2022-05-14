@@ -3,8 +3,8 @@ import { GameObject, isDebugMode, LineRenderable, Vec2d } from "..";
 import { DrawingResources } from "../core";
 
 export class RigidRectangle extends RigidShape {
-  vertex: Vec2d[] = [];
-  faceNormal: Vec2d[] = [];
+  private vertex: Vec2d[] = [];
+  private faceNormal: Vec2d[] = [];
   private _scale: Vec2d;
 
   public get scale(): Vec2d {
