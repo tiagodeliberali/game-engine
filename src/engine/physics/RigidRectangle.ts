@@ -298,6 +298,12 @@ export class RigidRectangle extends RigidShape {
       this.mInertia = 1 / this.mInertia;
     }
   }
+
+  addToOwnerPosition(value: Vec2d) {
+    super.addToOwnerPosition(value);
+    this.setVertices();
+    this.rotateVertices();
+  }
 }
 
 class SupportStruct {

@@ -153,4 +153,8 @@ export abstract class RigidShape implements IComponent {
 
     this.owner.addToRotationInDegree(this.mAngularVelocity * dt);
   }
+
+  addToOwnerPosition(value: Vec2d) {
+    this.owner.addToPosition(value);
+  }
 }

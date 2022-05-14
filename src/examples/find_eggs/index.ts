@@ -271,7 +271,7 @@ const createTree = () => {
       rotationInDegree: 45,
     }).gameObject;
 
-  tree.add(new RigidRectangle(tree, Vec2d.from(3, 3)));
+  tree.add(new RigidCircle(tree, 2));
 
   return tree;
 };

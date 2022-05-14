@@ -155,9 +155,11 @@ export abstract class AbstractScene {
   }
 
   private processPhysics() {
-    for (let i = 0; i < this.rigidShapes.length - 1; i++) {
-      for (let j = i + 1; j < this.rigidShapes.length; j++) {
-        PhysicsEngine.collideShape(this.rigidShapes[i], this.rigidShapes[j]);
+    for (let r = 0; r < PhysicsEngine.getRelaxationCount(); r++) {
+      for (let i = 0; i < this.rigidShapes.length - 1; i++) {
+        for (let j = i + 1; j < this.rigidShapes.length; j++) {
+          PhysicsEngine.collideShape(this.rigidShapes[i], this.rigidShapes[j]);
+        }
       }
     }
   }
