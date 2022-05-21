@@ -1,4 +1,4 @@
-import { CollisionInfo, PhysicsEngine } from ".";
+import { CollisionInfo, PhysicsEngine, PhysicsSettings } from ".";
 import { GameObject, IComponent, isDebugMode, LineRenderable, Vec2d } from "..";
 import { Color, DrawingResources } from "../core";
 import { getUpdateIntervalInSeconds } from "../Loop";
@@ -36,8 +36,8 @@ export abstract class RigidShape implements IComponent {
     this.mVelocity = Vec2d.from(0, 0);
     this.mInvMass = 1;
     this.mInertia = 0;
-    this.mFriction = 0.8;
-    this.mRestitution = 0.2;
+    this.mFriction = 0;
+    this.mRestitution = 1;
     this.mAngularVelocity = 0;
 
     if (isDebugMode()) {
@@ -60,6 +60,18 @@ export abstract class RigidShape implements IComponent {
     }
 
     return true;
+  }
+
+  setPhysics(physicsSettings: PhysicsSettings) {
+    physicsSettings.mass !== undefined && this.setMass(physicsSettings.mass);
+    physicsSettings.velocity !== undefined &&
+      this.setVelocity(physicsSettings.velocity);
+    return this;
+  }
+
+  setVelocity(velocity: Vec2d) {
+    this.mVelocity = velocity;
+    return this;
   }
 
   abstract collisionTest(otherShape: RigidShape): CollisionInfo;
@@ -120,6 +132,8 @@ export abstract class RigidShape implements IComponent {
       this.mAcceleration = Vec2d.from(0, 0); // to ensure object does not move
     }
     this.updateInertia();
+
+    return this;
   }
 
   getCurrentState() {

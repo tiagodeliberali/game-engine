@@ -193,7 +193,9 @@ const createCharacter = (camera: Camera, hud: HUD) => {
         camera.zoomTowards(gameObject, 2);
       }
     })
-    .withBehavior<SpriteRenderable>((character) => {
+    .withBehavior((helper) => {
+      const character = helper as unknown as SpriteRenderable;
+
       // walk 2d + sprite animation
       walk2d(rigidBox, 5, (movement) => {
         if (movement === lastMovement) {
@@ -251,7 +253,8 @@ const createCharacter = (camera: Camera, hud: HUD) => {
       });
     });
 
-  gameObject.add(Light.buildDefault()).withBehavior<Light>((light) => {
+  gameObject.add(Light.buildDefault()).withBehavior((helper) => {
+    const light = helper.component as unknown as Light;
     light.position = gameObject.getTransform().getPosition().toVec3(0);
   });
 
@@ -301,7 +304,8 @@ const createEgg = (position: Vec2d) => {
     position: position,
   });
 
-  egg.add(Light.buildDefault()).withBehavior<Light>((light) => {
+  egg.add(Light.buildDefault()).withBehavior((helper) => {
+    const light = helper.component as unknown as Light;
     light.nearRadius = 0.1;
     light.farRadius = 1;
     light.position = egg.getTransform().getPosition().toVec3(0);

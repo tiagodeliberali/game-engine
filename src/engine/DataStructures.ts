@@ -67,6 +67,10 @@ export class Vec2d {
   }
 
   normalize() {
+    if (this.length() === 0) {
+      return Vec2d.from(this.x, this.y);
+    }
+
     const result = [0, 0] as vec2;
     vec2.scale(result, this.toVec2(), 1 / this.length());
     return Vec2d.fromVec2(result);

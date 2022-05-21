@@ -25,8 +25,6 @@ module.exports = {
     new CopyPlugin({
       patterns: [
         { from: "./src/shaders", to: "./shaders" },
-        { from: "./src/examples/enderman/sounds", to: "./sounds" },
-        { from: "./src/examples/enderman/textures", to: "./textures" },
         { from: "./src/examples/pong/textures", to: "./textures" },
         { from: "./src/examples/pong/sounds", to: "./sounds" },
         {

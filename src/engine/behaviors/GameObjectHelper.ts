@@ -1,11 +1,18 @@
 import { BoundingBox, GameObject } from ".";
 import { IComponent, ITransformable, TransformDef, Vec2d } from "..";
+import {
+  PhysicsSettings,
+  RigidCircle,
+  RigidRectangle,
+  RigidShape,
+} from "../physics";
 import { Behavior } from "./Behavior";
 import { ColisionActions } from "./BoundingBox";
 
 export class GameObjectHelper {
   gameObject: GameObject;
   component: IComponent;
+  lastRigidShape?: RigidShape;
 
   constructor(gameObject: GameObject, component: IComponent) {
     this.gameObject = gameObject;
@@ -16,16 +23,34 @@ export class GameObjectHelper {
     return this.component as unknown as T;
   }
 
-  withBoundingBox<T>(
+  withRigidRectangle(scale: Vec2d, phisicsSettings: PhysicsSettings) {
+    this.lastRigidShape = new RigidRectangle(this.gameObject, scale).setPhysics(
+      phisicsSettings
+    );
+    this.gameObject.add(this.lastRigidShape);
+
+    return this;
+  }
+
+  withRigidCircle(radius: number, phisicsSettings: PhysicsSettings) {
+    this.lastRigidShape = new RigidCircle(this.gameObject, radius).setPhysics(
+      phisicsSettings
+    );
+    this.gameObject.add(this.lastRigidShape);
+
+    return this;
+  }
+
+  withBoundingBox(
     tag: string,
     scale?: Vec2d,
-    actions?: (component: T) => ColisionActions
+    actions?: (helper: GameObjectHelper) => ColisionActions
   ) {
     const box = BoundingBox.withAction(
       this.gameObject,
       tag,
       scale,
-      actions && actions(this.component as unknown as T)
+      actions && actions(this)
     );
 
     const transformable = this.component as unknown as ITransformable;
@@ -44,10 +69,10 @@ export class GameObjectHelper {
     return this;
   }
 
-  withBehavior<T>(action: (component: T) => void) {
+  withBehavior(action: (helper: GameObjectHelper) => void) {
     this.gameObject.add(
       new Behavior(() => {
-        action(this.component as unknown as T);
+        action(this);
       })
     );
 

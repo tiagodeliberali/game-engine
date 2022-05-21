@@ -25,6 +25,7 @@ export class RigidCircle extends RigidShape {
   update() {
     // due to the mathematical model, we don't need to store the actual vertices' positions
     // so we just draw the circle based on the owner
+    super.update();
     isDebugMode() &&
       this.debugBox &&
       this.debugBox.setTransform({
