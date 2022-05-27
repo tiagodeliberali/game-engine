@@ -219,7 +219,9 @@ export abstract class RigidShape implements IComponent {
     this.mVelocity = this.mVelocity.add(this.mAcceleration.scale(dt));
 
     // add global friction
-    this.mVelocity = this.mVelocity.scale(PhysicsEngine.getGlobalFriction());
+    this.mVelocity = this.mVelocity.scale(
+      1 - PhysicsEngine.getGlobalFriction()
+    );
 
     // p  = p + v*dt  with new velocity
     this.owner.addToPosition(this.mVelocity.scale(dt));
@@ -227,7 +229,7 @@ export abstract class RigidShape implements IComponent {
     if (!this.disableRotation)
       this.owner.addToRotationInRad(this.mAngularVelocity * dt);
 
-    this.mAngularVelocity *= PhysicsEngine.getGlobalAngularFriction();
+    this.mAngularVelocity *= 1 - PhysicsEngine.getGlobalAngularFriction();
   }
 
   addToOwnerPosition(value: Vec2d) {

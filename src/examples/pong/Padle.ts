@@ -42,7 +42,7 @@ const createPaddle = (
         rotationInDegree: rotation,
       })
     )
-    .withRigidRectangle(Vec2d.from(3, 11), { mass: 100 })
+    .withRigidRectangle(Vec2d.from(3, 11), { mass: 100, disableRotation: true })
     .withBehavior((helper) => {
       const body = helper.lastRigidShape;
       const speed = 60;

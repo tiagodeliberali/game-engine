@@ -11,8 +11,15 @@ import {
 import { createHUD, HUD } from "./HUD";
 import { createIcePaddle, createSlimePaddle } from "./Padle";
 import { createBall } from "./Ball";
+import { PhysicsEngine } from "../../engine/physics";
 
 export function pong() {
+  PhysicsEngine.setPhysics({
+    globalAcceleration: Vec2d.from(0, 0),
+    globalFriction: 0,
+    globalAngularFriction: 0,
+  });
+
   const scene = new SimplifiedScene(100, 50);
 
   const gameComponents = new GameObject();

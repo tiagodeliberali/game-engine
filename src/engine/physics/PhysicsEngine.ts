@@ -1,10 +1,54 @@
 import { CollisionInfo, RigidShape } from ".";
 import { Vec2d } from "..";
 
-const mPosCorrectionRate = 0.8; // % separation to project objects
+let globalAcceleration = Vec2d.from(0, 0);
+let globalFriction = 0;
+let globalAngularFriction = 0;
+let mPosCorrectionRate = 0.8; // % separation to project objects
 let mRelaxationCount = 15; // number of relaxation iterations
 
+export type PhysicsSettings = {
+  globalAcceleration?: Vec2d;
+  globalFriction?: number;
+  globalAngularFriction?: number;
+  relaxationCount?: number;
+  posCorrectionRate?: number;
+};
+
 export class PhysicsEngine {
+  static setPhysics(settings: PhysicsSettings) {
+    if (settings.globalAcceleration !== undefined)
+      globalAcceleration = settings.globalAcceleration;
+
+    if (settings.globalFriction !== undefined)
+      globalFriction = settings.globalFriction;
+
+    if (settings.globalAngularFriction !== undefined)
+      globalAngularFriction = settings.globalAngularFriction;
+
+    if (settings.relaxationCount !== undefined)
+      mRelaxationCount = settings.relaxationCount;
+
+    if (settings.posCorrectionRate !== undefined)
+      mPosCorrectionRate = settings.posCorrectionRate;
+  }
+
+  static getGlobalAcceleration(): Vec2d {
+    return globalAcceleration;
+  }
+
+  static getGlobalFriction(): number {
+    return globalFriction;
+  }
+
+  static getGlobalAngularFriction(): number {
+    return globalAngularFriction;
+  }
+
+  static getRelaxationCount() {
+    return mRelaxationCount;
+  }
+
   static collideShape(s1: RigidShape, s2: RigidShape): void {
     if (s1 !== s2) {
       if (s1.boundTest(s2) && (s1.mInvMass !== 0 || s2.mInvMass !== 0)) {
@@ -33,26 +77,6 @@ export class PhysicsEngine {
 
     s1.addToOwnerPosition(correctionAmount.scale(-s1.mInvMass));
     s2.addToOwnerPosition(correctionAmount.scale(s2.mInvMass));
-  }
-
-  static getGlobalAcceleration(): Vec2d {
-    return Vec2d.from(0, 0);
-  }
-
-  static getGlobalFriction(): number {
-    return 1;
-  }
-
-  static getGlobalAngularFriction(): number {
-    return 1;
-  }
-
-  static getRelaxationCount() {
-    return mRelaxationCount;
-  }
-
-  static incRelaxationCount(dc: number) {
-    mRelaxationCount += dc;
   }
 
   static resolveCollision(
