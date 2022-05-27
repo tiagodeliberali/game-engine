@@ -1,4 +1,4 @@
-import { Color, getGL, TextureRenderable } from "..";
+import { Color, TextureRenderable } from "..";
 import { DrawingResources, IComponent } from "../core";
 import { Vec2d } from "../DataStructures";
 import { getUpdateIntervalInSeconds } from "../Loop";

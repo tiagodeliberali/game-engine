@@ -78,7 +78,7 @@ export function findEggs() {
 
   scene.add(createTree());
 
-  scene.add(new ParticleSet(Vec2d.from(0, 0), 100, 10, 50));
+  scene.add(new ParticleSet(Vec2d.from(0, 0), 30, 10, 25));
 
   return scene;
 }
