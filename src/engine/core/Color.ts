@@ -53,6 +53,14 @@ export class Color {
     });
   }
 
+  static Red() {
+    return Color.FromColorDef({
+      red: 255,
+      green: 0,
+      blue: 0,
+    });
+  }
+
   static LightGray() {
     return Color.FromColorDef({
       red: 230,
@@ -67,6 +75,33 @@ export class Color {
       green: 255,
       blue: 255,
     });
+  }
+
+  add(delta: Color): Color {
+    return new Color(
+      this.red + delta.red,
+      this.green + delta.green,
+      this.blue + delta.blue,
+      this.alpha + delta.alpha
+    );
+  }
+
+  sub(delta: Color): Color {
+    return new Color(
+      this.red - delta.red,
+      this.green - delta.green,
+      this.blue - delta.blue,
+      this.alpha - delta.alpha
+    );
+  }
+
+  scale(factor: number): Color {
+    return new Color(
+      this.red * factor,
+      this.green * factor,
+      this.blue * factor,
+      this.alpha * factor
+    );
   }
 
   getRedNormalized() {

@@ -40,11 +40,11 @@ export class PhysicsEngine {
   }
 
   static getGlobalFriction(): number {
-    return 0.9;
+    return 1;
   }
 
   static getGlobalAngularFriction(): number {
-    return 0.9;
+    return 1;
   }
 
   static getRelaxationCount() {

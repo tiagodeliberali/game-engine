@@ -10,6 +10,7 @@ import {
   isKeyClicked,
   Keys,
   Movement,
+  ParticleSet,
   Renderable,
   setGlobalAmbientColor,
   SpriteRenderable,
@@ -76,6 +77,8 @@ export function findEggs() {
   scene.add(hud.gameObject);
 
   scene.add(createTree());
+
+  scene.add(new ParticleSet(Vec2d.from(0, 0), 100, 10, 50));
 
   return scene;
 }
@@ -200,7 +203,7 @@ const createCharacter = (camera: Camera, hud: HUD) => {
       }
     })
     .withBehavior((helper) => {
-      const character = helper as unknown as SpriteRenderable;
+      const character = helper.component as unknown as SpriteRenderable;
 
       // walk 2d + sprite animation
       walk2d(rigidBox, 5, (movement) => {

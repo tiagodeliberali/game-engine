@@ -45,6 +45,7 @@ import {
 } from "./behaviors";
 import { isDebugMode } from "./Settings";
 import { clampAtBoundary, panWith, Movement } from "./behaviors/Walking";
+import { Particle, ParticleSet } from "./particles";
 
 export {
   getGL,
@@ -87,6 +88,8 @@ export {
   getGlobalAmbientIntensity,
   setGlobalAmbientIntensity,
   setGlobalAmbientColor,
+  Particle,
+  ParticleSet,
 };
 
 export type { IRenderable, TransformDef, IComponent, ITransformable, ColorDef };
