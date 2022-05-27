@@ -4,6 +4,7 @@ import { BoundingBox, GameObjectHelper } from ".";
 import { ITransformable, TransformDef } from "..";
 import { DrawingResources } from "../core";
 import { Light } from "../graphics";
+import { convertRadsToDegree } from "../DataStructures";
 
 export class GameObject implements IComponent, ITransformable {
   private transform: Transform;
@@ -116,6 +117,10 @@ export class GameObject implements IComponent, ITransformable {
     });
     this.currentDirection = this.currentDirection.rotateInDegree(value);
     this.transform = this.transform.addToRotationInDegree(value);
+  }
+
+  addToRotationInRad(value: number) {
+    this.addToRotationInDegree(convertRadsToDegree(value));
   }
 
   factorToScale(vector: Vec2d) {

@@ -19,6 +19,9 @@ export const simplifyRotationInDegree = (rotation: number) => {
 export const convertDegreeToRads = (rotation: number) =>
   simplifyRotationInRads((rotation * Math.PI) / 180.0);
 
+export const convertRadsToDegree = (rotation: number) =>
+  simplifyRotationInDegree((rotation * 180.0) / Math.PI);
+
 export class Vec2d {
   readonly x: number;
   readonly y: number;

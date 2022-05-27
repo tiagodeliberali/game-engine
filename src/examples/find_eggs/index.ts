@@ -128,7 +128,13 @@ const createCharacter = (camera: Camera, hud: HUD) => {
   let lastMovement = Movement.idle;
   let collectedEggs = 0;
 
-  const rigidBox = new RigidRectangle(gameObject, Vec2d.from(2, 2));
+  const rigidBox = new RigidCircle(gameObject, 1).setPhysics({
+    friction: 0.5,
+    inertia: 0.5,
+    mass: 10,
+    restitution: 0.5,
+    disableRotation: true,
+  });
   gameObject.add(rigidBox);
 
   gameObject
@@ -274,7 +280,14 @@ const createTree = () => {
       rotationInDegree: 45,
     }).gameObject;
 
-  tree.add(new RigidCircle(tree, 2));
+  tree.add(
+    new RigidRectangle(tree, Vec2d.from(4, 4)).setPhysics({
+      friction: 0.5,
+      inertia: 0.5,
+      mass: 10,
+      restitution: 0.5,
+    })
+  );
 
   return tree;
 };

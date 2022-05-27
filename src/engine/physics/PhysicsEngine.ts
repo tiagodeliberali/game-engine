@@ -35,8 +35,16 @@ export class PhysicsEngine {
     s2.addToOwnerPosition(correctionAmount.scale(s2.mInvMass));
   }
 
-  static getSystemAcceleration(): Vec2d {
+  static getGlobalAcceleration(): Vec2d {
     return Vec2d.from(0, 0);
+  }
+
+  static getGlobalFriction(): number {
+    return 0.9;
+  }
+
+  static getGlobalAngularFriction(): number {
+    return 0.9;
   }
 
   static getRelaxationCount() {
@@ -48,6 +56,108 @@ export class PhysicsEngine {
   }
 
   static resolveCollision(
+    b: RigidShape,
+    a: RigidShape,
+    collisionInfo: CollisionInfo
+  ) {
+    const n = collisionInfo.normal;
+    // Step A: Compute relative velocity
+    const va = a.mVelocity;
+    const vb = b.mVelocity;
+
+    // Step A1: Compute the intersection position p
+    // the direction of collisionInfo is always from b to a
+    // but the Mass is inverse, so start scale with a and end scale with b
+    const invSum = 1 / (b.mInvMass + a.mInvMass);
+    const start = collisionInfo.start.scale(a.mInvMass * invSum);
+    const end = collisionInfo.mEnd.scale(b.mInvMass * invSum);
+    const p = start.add(end);
+
+    // Step A2: Compute relative velocity with rotation components
+    //    Vectors from center to P
+    //    r is vector from center of object to collision point
+    const rAP = p.sub(a.getCenter());
+    const rBP = p.sub(b.getCenter());
+
+    // newV = V + mAngularVelocity cross R
+    const vAP1 = Vec2d.from(
+      -1 * a.mAngularVelocity * rAP.y,
+      a.mAngularVelocity * rAP.x
+    ).add(va);
+
+    const vBP1 = Vec2d.from(
+      -1 * b.mAngularVelocity * rBP.y,
+      b.mAngularVelocity * rBP.x
+    ).add(vb);
+
+    const relativeVelocity = vAP1.sub(vBP1);
+
+    // Step B: Determine relative velocity in normal direction
+    const rVelocityInNormal = relativeVelocity.dot(n);
+
+    // if objects moving apart ignore
+    if (rVelocityInNormal > 0) {
+      return;
+    }
+
+    // Step C: Compute collision tangent direction
+    const tangent = n
+      .scale(rVelocityInNormal)
+      .sub(relativeVelocity)
+      .normalize();
+
+    // Relative velocity in tangent direction
+    const rVelocityInTangent = relativeVelocity.dot(tangent);
+
+    // Step D: Determine the effective coefficients
+    const newRestituion = (a.mRestitution + b.mRestitution) * 0.5;
+    const newFriction = 1 - (a.mFriction + b.mFriction) * 0.5;
+
+    // Step E: Impulse in the normal and tangent directions
+    // R cross N
+    const rBPcrossN = rBP.x * n.y - rBP.y * n.x; // rBP cross n
+    const rAPcrossN = rAP.x * n.y - rAP.y * n.x; // rAP cross n
+
+    // Calc impulse scalar, formula of jN
+    // can be found in http://www.myphysicslab.com/collision.html
+    let jN = -(1 + newRestituion) * rVelocityInNormal;
+    jN =
+      jN /
+      (b.mInvMass +
+        a.mInvMass +
+        rBPcrossN * rBPcrossN * b.mInertia +
+        rAPcrossN * rAPcrossN * a.mInertia);
+
+    const rBPcrossT = rBP.x * tangent.y - rBP.y * tangent.x;
+    const rAPcrossT = rAP.x * tangent.y - rAP.y * tangent.x;
+
+    let jT = (newFriction - 1) * rVelocityInTangent;
+    jT =
+      jT /
+      (b.mInvMass +
+        a.mInvMass +
+        rBPcrossT * rBPcrossT * b.mInertia +
+        rAPcrossT * rAPcrossT * a.mInertia);
+
+    // Update linear and angular velocities
+    a.mVelocity = va
+      .add(n.scale(jN * a.mInvMass))
+      .add(tangent.scale(jT * a.mInvMass));
+
+    a.setAngularVelocityDelta(
+      rAPcrossN * jN * a.mInertia + rAPcrossT * jT * a.mInertia
+    );
+
+    b.mVelocity = vb
+      .add(n.scale(-(jN * b.mInvMass)))
+      .add(tangent.scale(-(jT * b.mInvMass)));
+
+    b.setAngularVelocityDelta(
+      -(rBPcrossN * jN * b.mInertia + rBPcrossT * jT * b.mInertia)
+    );
+  }
+
+  static resolveCollisionSimplified(
     b: RigidShape,
     a: RigidShape,
     collisionInfo: CollisionInfo

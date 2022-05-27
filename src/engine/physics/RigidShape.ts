@@ -26,19 +26,21 @@ export abstract class RigidShape implements IComponent {
   mFriction: number;
   mRestitution: number;
   mAngularVelocity: number;
+  disableRotation: boolean;
 
   constructor(owner: GameObject) {
     this.owner = owner;
     this._radius = 0;
     this.color = Color.random();
 
-    this.mAcceleration = PhysicsEngine.getSystemAcceleration();
+    this.mAcceleration = PhysicsEngine.getGlobalAcceleration();
     this.mVelocity = Vec2d.from(0, 0);
     this.mInvMass = 1;
     this.mInertia = 0;
     this.mFriction = 0;
     this.mRestitution = 1;
     this.mAngularVelocity = 0;
+    this.disableRotation = false;
 
     if (isDebugMode()) {
       this.collisionDebugBox = LineRenderable.build([0, 0, 0]);
@@ -63,9 +65,59 @@ export abstract class RigidShape implements IComponent {
   }
 
   setPhysics(physicsSettings: PhysicsSettings) {
-    physicsSettings.mass !== undefined && this.setMass(physicsSettings.mass);
     physicsSettings.velocity !== undefined &&
       this.setVelocity(physicsSettings.velocity);
+
+    physicsSettings.acceleration !== undefined &&
+      this.setAcceleration(physicsSettings.acceleration);
+
+    physicsSettings.mass !== undefined && this.setMass(physicsSettings.mass);
+
+    physicsSettings.inertia !== undefined &&
+      this.setInertia(physicsSettings.inertia);
+
+    physicsSettings.friction !== undefined &&
+      this.setFriction(physicsSettings.friction);
+
+    physicsSettings.restitution !== undefined &&
+      this.setRestitution(physicsSettings.restitution);
+
+    physicsSettings.angularVelocity !== undefined &&
+      this.setAngularVelocity(physicsSettings.angularVelocity);
+
+    physicsSettings.disableRotation !== undefined &&
+      this.setDisableRotation(physicsSettings.disableRotation);
+
+    return this;
+  }
+
+  setDisableRotation(disableRotation: boolean) {
+    this.disableRotation = disableRotation;
+    return this;
+  }
+
+  setAngularVelocity(angularVelocity: number) {
+    this.mAngularVelocity = this.disableRotation ? 0 : angularVelocity;
+    return this;
+  }
+
+  setRestitution(restitution: number) {
+    this.mRestitution = restitution;
+    return this;
+  }
+
+  setInertia(inertia: number) {
+    this.mInertia = inertia;
+    return this;
+  }
+
+  setAcceleration(acceleration: Vec2d) {
+    this.mAcceleration = acceleration;
+    return this;
+  }
+
+  setFriction(friction: number) {
+    this.mFriction = friction;
     return this;
   }
 
@@ -123,10 +175,14 @@ export abstract class RigidShape implements IComponent {
     }
   }
 
+  setAngularVelocityDelta(dw: number) {
+    this.mAngularVelocity += dw;
+  }
+
   setMass(mass: number) {
     if (mass > 0) {
       this.mInvMass = 1 / mass;
-      this.mAcceleration = PhysicsEngine.getSystemAcceleration();
+      this.mAcceleration = PhysicsEngine.getGlobalAcceleration();
     } else {
       this.mInvMass = 0;
       this.mAcceleration = Vec2d.from(0, 0); // to ensure object does not move
@@ -162,10 +218,16 @@ export abstract class RigidShape implements IComponent {
     // update velocity by acceleration
     this.mVelocity = this.mVelocity.add(this.mAcceleration.scale(dt));
 
+    // add global friction
+    this.mVelocity = this.mVelocity.scale(PhysicsEngine.getGlobalFriction());
+
     // p  = p + v*dt  with new velocity
     this.owner.addToPosition(this.mVelocity.scale(dt));
 
-    this.owner.addToRotationInDegree(this.mAngularVelocity * dt);
+    if (!this.disableRotation)
+      this.owner.addToRotationInRad(this.mAngularVelocity * dt);
+
+    this.mAngularVelocity *= PhysicsEngine.getGlobalAngularFriction();
   }
 
   addToOwnerPosition(value: Vec2d) {
