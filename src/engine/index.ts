@@ -27,6 +27,7 @@ import {
   LineRenderableFormats,
   IRenderable,
   AnimationType,
+  TileMap,
 } from "./renderable";
 import { BasicScene, SimplifiedScene } from "./scene";
 import { GameEngine } from "./GameEngine";
@@ -55,6 +56,7 @@ export {
   LineRenderable,
   LineRenderableFormats,
   TextureRenderable,
+  TileMap,
   FontRenderable,
   Camera,
   Color,

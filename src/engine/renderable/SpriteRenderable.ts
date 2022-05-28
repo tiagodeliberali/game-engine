@@ -1,5 +1,5 @@
 import { ShaderLib, TextureShader, Texture } from "../graphics";
-import { Color } from "..";
+import { Color, Vec2d } from "..";
 import { getResourceManager } from "../resources";
 import { RenderableAnimator } from ".";
 import { AbstractRenderable } from "./AbstractRenderable";
@@ -110,6 +110,17 @@ export class SpriteRenderable extends AbstractRenderable<TextureShader> {
       this.shader.setSpriteByRowColumn(this.rows, this.columns, row, column);
     }
     return this;
+  }
+
+  getCellSize(): Vec2d {
+    if (this.shader === undefined) {
+      throw new EngineError(
+        SpriteRenderable.name,
+        "getCellSize requested before defining the shader."
+      );
+    }
+
+    return this.shader.getCellSize(this.rows, this.columns);
   }
 
   draw(resources: DrawingResources) {

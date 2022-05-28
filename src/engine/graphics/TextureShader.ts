@@ -1,4 +1,5 @@
 import { Texture, VertexBuffer } from ".";
+import { Vec2d } from "../DataStructures";
 import { EngineError } from "../EngineError";
 import { AbstractShader } from "./AbstractShader";
 
@@ -114,6 +115,17 @@ export class TextureShader extends AbstractShader {
     }
 
     return spritePosition;
+  }
+
+  getCellSize(rows: number, columns: number): Vec2d {
+    if (this.texture === undefined) {
+      throw new EngineError(
+        TextureShader.name,
+        "Trying to use getCellSize before defining a texture."
+      );
+    }
+
+    return Vec2d.from(this.texture.width / columns, this.texture.height / rows);
   }
 
   private setTextureCoordinate(vertices: number[]) {

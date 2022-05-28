@@ -2,19 +2,15 @@ import {
   BoundingBox,
   clampAtBoundary,
   GameObject,
-  TextureRenderable,
+  TileMap,
   Vec2d,
 } from "../../engine";
 
 export const createScenario = (characterGameObject: GameObject) => {
   const tiles = new GameObject();
   tiles
-    .add(
-      TextureRenderable.build("./find_eggs/textures/map.png").setTransform({
-        scale: Vec2d.from(51, 25),
-      })
-    )
-    .withBoundingBox("scenario", Vec2d.from(0.8, 0.8))
+    .add(new TileMap("./find_eggs/textures/tileset.png", 15, 28, 28 + 5))
+    .withBoundingBox("scenario", Vec2d.from(45, 20))
     .withBehavior(() => {
       const tileBoundingBox = tiles.getLastComponent<BoundingBox>(
         BoundingBox.name
