@@ -68,6 +68,12 @@ export abstract class AbstractShader {
     //virtual method
   }
 
+  updatePosition(trsMatrix: mat4) {
+    this.gl.uniformMatrix4fv(this.modelMatrixLocation, false, trsMatrix);
+    //this.drawExtension();
+    this.vertexPositionBuffer.activate();
+  }
+
   activate(pixelColor: Color, trsMatrix: mat4, cameraMatrix: mat4) {
     this.gl.useProgram(this.program);
 

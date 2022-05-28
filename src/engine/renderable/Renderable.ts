@@ -27,6 +27,10 @@ export class Renderable extends AbstractRenderable<SimpleShader> {
   }
 
   draw(resources: DrawingResources) {
-    this.getActivatedShader(resources).drawSquare();
+    if (
+      this.forceDraw ||
+      resources.camera.isVisibleOnWC(this.getTransform().getPosition())
+    )
+      this.getActivatedShader(resources).drawSquare();
   }
 }

@@ -19,11 +19,13 @@ export abstract class AbstractRenderable<T extends AbstractShader>
   currentDirection: Vec2d = new Vec2d(1, 0);
   freezeCamera: boolean;
   protected frozenCamera: Camera | undefined;
+  forceDraw: boolean;
 
   constructor() {
     this.color = Color.White();
     this.trsMatrix = Transform.BuldDefault();
     this.freezeCamera = false;
+    this.forceDraw = false;
   }
 
   abstract update(): void;

@@ -124,6 +124,17 @@ export class SpriteRenderable extends AbstractRenderable<TextureShader> {
   }
 
   draw(resources: DrawingResources) {
-    this.getActivatedShader(resources).drawSquare();
+    if (
+      this.forceDraw ||
+      resources.camera.isVisibleOnWC(this.getTransform().getPosition())
+    )
+      this.getActivatedShader(resources).drawSquare();
+  }
+
+  fastDraw(position: Vec2d) {
+    this.shader?.updatePosition(
+      this.trsMatrix.addToPosition(position).getTrsMatrix()
+    );
+    this.shader?.drawSquare();
   }
 }

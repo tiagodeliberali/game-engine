@@ -5,7 +5,7 @@ import { IRenderable } from "./IRenderable";
 import { SpriteRenderable } from "./SpriteRenderable";
 import { FontRenderable } from "./FontRenderable";
 import { RenderableAnimator, AnimationType } from "./animator";
-import { TileMap } from "./TileMap";
+import { TileMap } from "../tiles/TileMap";
 
 export {
   Renderable,

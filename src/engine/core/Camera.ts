@@ -158,6 +158,16 @@ export class Camera implements ITransformable {
     this.originWC = this.center.sub(this.size.scale(0.5));
   }
 
+  isVisibleOnWC(position: Vec2d) {
+    const tolerance = 0.1;
+    return (
+      this.originWC.x - this.size.x * tolerance < position.x &&
+      this.originWC.y - this.size.y * tolerance < position.y &&
+      this.originWC.x + this.size.x + this.size.x * tolerance > position.x &&
+      this.originWC.y + this.size.y + this.size.y * tolerance > position.y
+    );
+  }
+
   /////
   /// Coordinate system
   /////

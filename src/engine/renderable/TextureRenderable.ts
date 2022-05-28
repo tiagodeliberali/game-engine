@@ -36,6 +36,10 @@ export class TextureRenderable extends AbstractRenderable<TextureShader> {
   }
 
   draw(resources: DrawingResources) {
-    this.getActivatedShader(resources).drawSquare();
+    if (
+      this.forceDraw ||
+      resources.camera.isVisibleOnWC(this.getTransform().getPosition())
+    )
+      this.getActivatedShader(resources).drawSquare();
   }
 }

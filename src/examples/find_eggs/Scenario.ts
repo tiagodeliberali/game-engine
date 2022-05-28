@@ -8,8 +8,18 @@ import {
 
 export const createScenario = (characterGameObject: GameObject) => {
   const tiles = new GameObject();
+
+  const tileMap = new TileMap(
+    "./find_eggs/textures/tileset.png",
+    15,
+    28,
+    Vec2d.from(-1, -2)
+  );
+  tileMap.defineBox("island", 6 * 28);
+  tileMap.addBox("island", 0, Vec2d.from(-22, 12), 47, 22);
+
   tiles
-    .add(new TileMap("./find_eggs/textures/tileset.png", 15, 28, 28 + 5))
+    .add(tileMap)
     .withBoundingBox("scenario", Vec2d.from(45, 20))
     .withBehavior(() => {
       const tileBoundingBox = tiles.getLastComponent<BoundingBox>(
