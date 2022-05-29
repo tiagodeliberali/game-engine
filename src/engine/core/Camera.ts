@@ -15,6 +15,7 @@ export class Camera implements ITransformable {
   pixelsPerWCunits: Vec2d = Vec2d.from(0, 0);
   WCunitsPerPixel: Vec2d = Vec2d.from(0, 0);
   originWC: Vec2d = Vec2d.from(0, 0);
+  tag: number;
 
   constructor(center: Vec2d, size: Vec2d, viewport: Viewport) {
     this.center = center;
@@ -23,6 +24,7 @@ export class Camera implements ITransformable {
     this.viewport = viewport;
 
     this.configureCamera();
+    this.tag = 0;
   }
 
   /////
@@ -166,6 +168,12 @@ export class Camera implements ITransformable {
       this.originWC.x + this.size.x + this.size.x * tolerance > position.x &&
       this.originWC.y + this.size.y + this.size.y * tolerance > position.y
     );
+  }
+
+  includeTag(cameraTag: number): boolean {
+    if (this.tag === 0) return true;
+    if (cameraTag === 0) return false;
+    return (this.tag & cameraTag) > 0;
   }
 
   /////

@@ -31,7 +31,8 @@ const createSingleEgg = (position: Vec2d) => {
         egg.addToPosition(oscillateObject.getNext());
       }
     })
-    .withBoundingBox("egg", Vec2d.from(1.5, 1.5));
+    .withBoundingBox("egg", Vec2d.from(1.5, 1.5))
+    .onCameras(1);
   egg.setTransform({
     position: position,
   });

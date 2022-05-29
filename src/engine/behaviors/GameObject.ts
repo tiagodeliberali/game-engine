@@ -13,12 +13,14 @@ export class GameObject implements IComponent, ITransformable {
   private index: Map<string, IComponent[]>;
   paused: boolean;
   private _visible: boolean;
+  cameraTag: number;
 
   constructor() {
     this.transform = Transform.BuldDefault();
     this.paused = false;
     this._visible = true;
     this.index = new Map();
+    this.cameraTag = 0;
   }
 
   public get visible() {
@@ -35,6 +37,10 @@ export class GameObject implements IComponent, ITransformable {
 
   static build() {
     return new GameObject();
+  }
+
+  displayOnCamera(tag: number) {
+    this.cameraTag = tag;
   }
 
   ///
@@ -149,7 +155,9 @@ export class GameObject implements IComponent, ITransformable {
   }
 
   draw(resources: DrawingResources) {
-    this.visible && this.components.forEach((item) => item.draw(resources));
+    this.visible &&
+      resources.camera.includeTag(this.cameraTag) &&
+      this.components.forEach((item) => item.draw(resources));
   }
 
   unload() {

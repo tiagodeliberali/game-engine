@@ -163,4 +163,8 @@ export abstract class AbstractScene {
       }
     }
   }
+
+  displayOnCamera(tag: number) {
+    this.gameObjects.cameraTag = tag;
+  }
 }

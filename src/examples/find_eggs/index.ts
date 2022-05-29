@@ -48,8 +48,10 @@ export function findEggs() {
     Vec2d.from(51, 25),
     Viewport.build(Vec2d.from(5, 5), Vec2d.from(150, 75), Color.Black(), 1)
   );
+  mapCamera.tag = 1;
 
   const scene = new BasicScene([mainCamera, mapCamera]);
+  scene.displayOnCamera(1);
 
   const hud = createHUD();
   const eggSet = createEggs();

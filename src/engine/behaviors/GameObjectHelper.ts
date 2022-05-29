@@ -84,4 +84,9 @@ export class GameObjectHelper {
 
     return this;
   }
+
+  onCameras(tag: number) {
+    this.gameObject.displayOnCamera(tag);
+    return this;
+  }
 }

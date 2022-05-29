@@ -41,6 +41,7 @@ export const createCharacter = (camera: Camera, hud: HUD, eggSet: EggSet) => {
         })
         .runInLoop()
     )
+    .onCameras(1)
     .withBoundingBox("character", Vec2d.from(1, 1), () => {
       return {
         onCollideStarted: (other, tag) => {

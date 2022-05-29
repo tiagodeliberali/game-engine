@@ -5,9 +5,11 @@ import { Particle } from "./Particle";
 export class ParticleSet implements IComponent {
   particles: Particle[] = [];
   position: Vec2d;
+  cameraTag: number;
 
   constructor(position: Vec2d, quantity: number, groups: number, life: number) {
     this.position = position;
+    this.cameraTag = 0;
 
     for (let i = 0; i < quantity; i++)
       this.particles.push(
@@ -34,6 +36,9 @@ export class ParticleSet implements IComponent {
   }
 
   draw(resources: DrawingResources) {
+    if (!resources.camera.includeTag(this.cameraTag)) {
+      return;
+    }
     const gl = getGL();
     gl.blendFunc(gl.ONE, gl.ONE); // for additive blending!
     this.particles.forEach((x) => x.draw(resources));
