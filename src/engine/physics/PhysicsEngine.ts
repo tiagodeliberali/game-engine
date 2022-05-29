@@ -51,7 +51,7 @@ export class PhysicsEngine {
 
   static collideShape(s1: RigidShape, s2: RigidShape): void {
     if (s1 !== s2) {
-      if (s1.boundTest(s2) && (s1.mInvMass !== 0 || s2.mInvMass !== 0)) {
+      if (s1.boundTest(s2) && (s1.invMass !== 0 || s2.invMass !== 0)) {
         const collisionInfo = s1.collisionTest(s2);
         if (collisionInfo.collided) {
           // make sure mCInfo is always from s1 towards s2
@@ -72,11 +72,11 @@ export class PhysicsEngine {
     collisionInfo: CollisionInfo
   ) {
     const num =
-      (collisionInfo.depth / (s1.mInvMass + s2.mInvMass)) * mPosCorrectionRate;
+      (collisionInfo.depth / (s1.invMass + s2.invMass)) * mPosCorrectionRate;
     const correctionAmount = collisionInfo.normal.scale(num);
 
-    s1.addToOwnerPosition(correctionAmount.scale(-s1.mInvMass));
-    s2.addToOwnerPosition(correctionAmount.scale(s2.mInvMass));
+    s1.addToOwnerPosition(correctionAmount.scale(-s1.invMass));
+    s2.addToOwnerPosition(correctionAmount.scale(s2.invMass));
   }
 
   static resolveCollision(
@@ -86,15 +86,15 @@ export class PhysicsEngine {
   ) {
     const n = collisionInfo.normal;
     // Step A: Compute relative velocity
-    const va = a.mVelocity;
-    const vb = b.mVelocity;
+    const va = a.velocity;
+    const vb = b.velocity;
 
     // Step A1: Compute the intersection position p
     // the direction of collisionInfo is always from b to a
     // but the Mass is inverse, so start scale with a and end scale with b
-    const invSum = 1 / (b.mInvMass + a.mInvMass);
-    const start = collisionInfo.start.scale(a.mInvMass * invSum);
-    const end = collisionInfo.mEnd.scale(b.mInvMass * invSum);
+    const invSum = 1 / (b.invMass + a.invMass);
+    const start = collisionInfo.start.scale(a.invMass * invSum);
+    const end = collisionInfo.end.scale(b.invMass * invSum);
     const p = start.add(end);
 
     // Step A2: Compute relative velocity with rotation components
@@ -105,13 +105,13 @@ export class PhysicsEngine {
 
     // newV = V + mAngularVelocity cross R
     const vAP1 = Vec2d.from(
-      -1 * a.mAngularVelocity * rAP.y,
-      a.mAngularVelocity * rAP.x
+      -1 * a.angularVelocity * rAP.y,
+      a.angularVelocity * rAP.x
     ).add(va);
 
     const vBP1 = Vec2d.from(
-      -1 * b.mAngularVelocity * rBP.y,
-      b.mAngularVelocity * rBP.x
+      -1 * b.angularVelocity * rBP.y,
+      b.angularVelocity * rBP.x
     ).add(vb);
 
     const relativeVelocity = vAP1.sub(vBP1);
@@ -134,8 +134,8 @@ export class PhysicsEngine {
     const rVelocityInTangent = relativeVelocity.dot(tangent);
 
     // Step D: Determine the effective coefficients
-    const newRestituion = (a.mRestitution + b.mRestitution) * 0.5;
-    const newFriction = 1 - (a.mFriction + b.mFriction) * 0.5;
+    const newRestituion = (a.restitution + b.restitution) * 0.5;
+    const newFriction = 1 - (a.friction + b.friction) * 0.5;
 
     // Step E: Impulse in the normal and tangent directions
     // R cross N
@@ -147,10 +147,10 @@ export class PhysicsEngine {
     let jN = -(1 + newRestituion) * rVelocityInNormal;
     jN =
       jN /
-      (b.mInvMass +
-        a.mInvMass +
-        rBPcrossN * rBPcrossN * b.mInertia +
-        rAPcrossN * rAPcrossN * a.mInertia);
+      (b.invMass +
+        a.invMass +
+        rBPcrossN * rBPcrossN * b.inertia +
+        rAPcrossN * rAPcrossN * a.inertia);
 
     const rBPcrossT = rBP.x * tangent.y - rBP.y * tangent.x;
     const rAPcrossT = rAP.x * tangent.y - rAP.y * tangent.x;
@@ -158,26 +158,26 @@ export class PhysicsEngine {
     let jT = (newFriction - 1) * rVelocityInTangent;
     jT =
       jT /
-      (b.mInvMass +
-        a.mInvMass +
-        rBPcrossT * rBPcrossT * b.mInertia +
-        rAPcrossT * rAPcrossT * a.mInertia);
+      (b.invMass +
+        a.invMass +
+        rBPcrossT * rBPcrossT * b.inertia +
+        rAPcrossT * rAPcrossT * a.inertia);
 
     // Update linear and angular velocities
-    a.mVelocity = va
-      .add(n.scale(jN * a.mInvMass))
-      .add(tangent.scale(jT * a.mInvMass));
+    a.velocity = va
+      .add(n.scale(jN * a.invMass))
+      .add(tangent.scale(jT * a.invMass));
 
     a.setAngularVelocityDelta(
-      rAPcrossN * jN * a.mInertia + rAPcrossT * jT * a.mInertia
+      rAPcrossN * jN * a.inertia + rAPcrossT * jT * a.inertia
     );
 
-    b.mVelocity = vb
-      .add(n.scale(-(jN * b.mInvMass)))
-      .add(tangent.scale(-(jT * b.mInvMass)));
+    b.velocity = vb
+      .add(n.scale(-(jN * b.invMass)))
+      .add(tangent.scale(-(jT * b.invMass)));
 
     b.setAngularVelocityDelta(
-      -(rBPcrossN * jN * b.mInertia + rBPcrossT * jT * b.mInertia)
+      -(rBPcrossN * jN * b.inertia + rBPcrossT * jT * b.inertia)
     );
   }
 
@@ -189,8 +189,8 @@ export class PhysicsEngine {
     const n = collisionInfo.normal;
 
     // Step A: Compute relative velocity
-    const va = a.mVelocity;
-    const vb = b.mVelocity;
+    const va = a.velocity;
+    const vb = b.velocity;
     const relativeVelocity = va.sub(vb);
 
     // Step B: Determine relative velocity in normal direction
@@ -211,22 +211,22 @@ export class PhysicsEngine {
     const rVelocityInTangent = relativeVelocity.dot(tangent);
 
     // Step D: Determine the effective coefficients
-    const newRestituion = (a.mRestitution + b.mRestitution) * 0.5;
-    const newFriction = 1 - (a.mFriction + b.mFriction) * 0.5;
+    const newRestituion = (a.restitution + b.restitution) * 0.5;
+    const newFriction = 1 - (a.friction + b.friction) * 0.5;
 
     // Step E: Impulse in the normal and tangent directions
     let jN = -(1 + newRestituion) * rVelocityInNormal;
-    jN = jN / (a.mInvMass + b.mInvMass);
+    jN = jN / (a.invMass + b.invMass);
     let jT = (newFriction - 1) * rVelocityInTangent;
-    jT = jT / (a.mInvMass + b.mInvMass);
+    jT = jT / (a.invMass + b.invMass);
 
     // Step F: Update velocity in both normal and tangent directions
-    a.mVelocity = va
-      .add(n.scale(jN * a.mInvMass))
-      .add(tangent.scale(jT * a.mInvMass));
+    a.velocity = va
+      .add(n.scale(jN * a.invMass))
+      .add(tangent.scale(jT * a.invMass));
 
-    b.mVelocity = vb
-      .add(n.scale(-jN * b.mInvMass))
-      .add(tangent.scale(-jT * b.mInvMass));
+    b.velocity = vb
+      .add(n.scale(-jN * b.invMass))
+      .add(tangent.scale(-jT * b.invMass));
   }
 }

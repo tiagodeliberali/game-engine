@@ -86,12 +86,10 @@ export class RigidCircle extends RigidShape {
   }
 
   updateInertia() {
-    if (this.mInvMass === 0) {
-      this.mInertia = 0;
+    if (this.invMass === 0) {
+      this.inertia = 0;
     } else {
-      // this.mInvMass is inverted!!
-      // Inertia=mass * radius^2
-      this.mInertia = ((1 / this.mInvMass) * (this.radius * this.radius)) / 12;
+      this.inertia = ((1 / this.invMass) * (this.radius * this.radius)) / 12;
     }
   }
 }

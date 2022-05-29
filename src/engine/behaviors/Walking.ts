@@ -17,21 +17,21 @@ export function walk2d(
   onUpdate?: (isWalking: Movement) => void
 ) {
   let movement = Movement.idle;
-  gameObject.mVelocity = Vec2d.from(0, 0);
+  gameObject.velocity = Vec2d.from(0, 0);
 
   if (isKeyPressed(Keys.Left)) {
-    gameObject.mVelocity = Vec2d.from(-speed, 0);
+    gameObject.velocity = Vec2d.from(-speed, 0);
     movement |= Movement.left;
   } else if (isKeyPressed(Keys.Right)) {
-    gameObject.mVelocity = Vec2d.from(speed, 0);
+    gameObject.velocity = Vec2d.from(speed, 0);
     movement |= Movement.right;
   }
 
   if (isKeyPressed(Keys.Up)) {
-    gameObject.mVelocity = gameObject.mVelocity.add(Vec2d.from(0, speed));
+    gameObject.velocity = gameObject.velocity.add(Vec2d.from(0, speed));
     movement |= Movement.up;
   } else if (isKeyPressed(Keys.Down)) {
-    gameObject.mVelocity = gameObject.mVelocity.add(Vec2d.from(0, -speed));
+    gameObject.velocity = gameObject.velocity.add(Vec2d.from(0, -speed));
     movement |= Movement.down;
   }
 

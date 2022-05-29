@@ -51,18 +51,18 @@ const createPaddle = (
         return;
       }
 
-      body.mVelocity = Vec2d.from(0, 0);
+      body.velocity = Vec2d.from(0, 0);
 
       if (
         isKeyPressed(upKey) &&
         helper.gameObject.getTransform().getPosition().y < 39
       ) {
-        body.mVelocity = Vec2d.from(0, speed);
+        body.velocity = Vec2d.from(0, speed);
       } else if (
         isKeyPressed(downKey) &&
         helper.gameObject.getTransform().getPosition().y > 11
       ) {
-        body.mVelocity = Vec2d.from(0, -speed);
+        body.velocity = Vec2d.from(0, -speed);
       }
     })
     .setTransform({ position: Vec2d.from(x, 25) }).gameObject;

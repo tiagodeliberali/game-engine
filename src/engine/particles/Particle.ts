@@ -9,13 +9,13 @@ export const defaultParticlePath = "/textures/particle.png";
 
 export class Particle implements IComponent {
   texturePath: string;
-  mRenderComponent: TextureRenderable;
-  mVelocity: Vec2d;
-  mAcceleration: Vec2d;
-  mDrag: number;
-  mDeltaColor: Color;
-  mSizeDelta: number;
-  mCyclesToLive: number;
+  renderable: TextureRenderable;
+  velocity: Vec2d;
+  acceleration: Vec2d;
+  drag: number;
+  deltaColor: Color;
+  sizeDelta: number;
+  cyclesToLive: number;
   initialColor: Color;
   finalColor: Color;
   initialSize: Vec2d;
@@ -34,11 +34,11 @@ export class Particle implements IComponent {
   ) {
     // Life control
     this.life = life;
-    this.mCyclesToLive = life;
+    this.cyclesToLive = life;
     this.initialWait = initialWait;
 
     this.texturePath = texturePath;
-    this.mRenderComponent = TextureRenderable.build(texturePath)
+    this.renderable = TextureRenderable.build(texturePath)
       .setTransform({
         position: position,
         scale: initialSize,
@@ -46,19 +46,19 @@ export class Particle implements IComponent {
       .setColor(initialColor);
 
     // position control
-    this.mVelocity = velocity;
-    this.mAcceleration = getSystemAcceleration();
-    this.mDrag = 0.95;
+    this.velocity = velocity;
+    this.acceleration = getSystemAcceleration();
+    this.drag = 0.95;
 
     // Color control
     this.initialColor = initialColor;
     this.finalColor = finalColor;
-    this.mDeltaColor = Color.White();
+    this.deltaColor = Color.White();
     this.setFinalColor(finalColor);
 
     // Size control
     this.initialSize = initialSize;
-    this.mSizeDelta = 0.95;
+    this.sizeDelta = 0.95;
   }
 
   static BuildRandom(position: Vec2d, initialWait: number, life: number) {
@@ -104,7 +104,7 @@ export class Particle implements IComponent {
   }
 
   recycle(position: Vec2d) {
-    this.mCyclesToLive = this.life;
+    this.cyclesToLive = this.life;
 
     // size of the particle
     const partcileSize = 0.2 + Math.random() * 0.5;
@@ -123,11 +123,11 @@ export class Particle implements IComponent {
     // velocity on the particle
     const fx = 10 - 20 * Math.random();
     const fy = 10 * Math.random();
-    this.mVelocity = Vec2d.from(fx, fy);
+    this.velocity = Vec2d.from(fx, fy);
 
     this.setSize(Vec2d.from(partcileSize, partcileSize));
 
-    this.mRenderComponent
+    this.renderable
       .setTransform({
         position: position,
         scale: this.initialSize,
@@ -136,20 +136,20 @@ export class Particle implements IComponent {
   }
 
   setColor(color: Color) {
-    this.mRenderComponent.color = color;
+    this.renderable.color = color;
     return this;
   }
 
   setFinalColor(finalColor: Color) {
-    this.mDeltaColor = finalColor.sub(this.initialColor);
+    this.deltaColor = finalColor.sub(this.initialColor);
 
-    if (this.mCyclesToLive !== 0) {
-      this.mDeltaColor = this.mDeltaColor.scale(1 / this.mCyclesToLive);
+    if (this.cyclesToLive !== 0) {
+      this.deltaColor = this.deltaColor.scale(1 / this.cyclesToLive);
     }
   }
 
   setSize(size: Vec2d) {
-    this.mRenderComponent.setTransform({ scale: size });
+    this.renderable.setTransform({ scale: size });
   }
 
   load() {
@@ -157,7 +157,7 @@ export class Particle implements IComponent {
   }
 
   init() {
-    this.mRenderComponent.init();
+    this.renderable.init();
   }
 
   unload() {
@@ -174,7 +174,7 @@ export class Particle implements IComponent {
     }
 
     // const gl = getGL();
-    this.mRenderComponent.draw(resources);
+    this.renderable.draw(resources);
   }
 
   update() {
@@ -187,31 +187,29 @@ export class Particle implements IComponent {
       return;
     }
 
-    this.mCyclesToLive--;
+    this.cyclesToLive--;
     const dt = getUpdateIntervalInSeconds();
-    const transform = this.mRenderComponent.getTransform();
+    const transform = this.renderable.getTransform();
 
     // Symplectic Euler
     //    v += a * dt
     //    x += v * dt
-    this.mVelocity = this.mVelocity
-      .add(this.mAcceleration.scale(dt))
-      .scale(this.mDrag);
-    const position = transform.getPosition().add(this.mVelocity.scale(dt));
+    this.velocity = this.velocity
+      .add(this.acceleration.scale(dt))
+      .scale(this.drag);
+    const position = transform.getPosition().add(this.velocity.scale(dt));
 
     // update color
-    this.mRenderComponent.color = this.mRenderComponent.color.add(
-      this.mDeltaColor
-    );
+    this.renderable.color = this.renderable.color.add(this.deltaColor);
 
     // update
-    this.mRenderComponent.setTransform({
-      scale: transform.getScale().scale(this.mSizeDelta),
+    this.renderable.setTransform({
+      scale: transform.getScale().scale(this.sizeDelta),
       position: position,
     });
   }
 
   hasExpired() {
-    return this.mCyclesToLive <= 0;
+    return this.cyclesToLive <= 0;
   }
 }

@@ -5,14 +5,14 @@ export class CollisionInfo {
   depth: number;
   normal: Vec2d;
   start: Vec2d;
-  mEnd: Vec2d;
+  end: Vec2d;
 
   constructor(colided: boolean, depth: number, normal: Vec2d, start: Vec2d) {
     this.collided = colided;
     this.depth = depth;
     this.normal = normal;
     this.start = start;
-    this.mEnd = start.add(normal.scale(depth));
+    this.end = start.add(normal.scale(depth));
   }
 
   static colided(depth: number, normal: Vec2d, start: Vec2d) {
@@ -26,7 +26,7 @@ export class CollisionInfo {
   changeDir() {
     this.normal = this.normal.scale(-1);
     const n = this.start;
-    this.start = this.mEnd;
-    this.mEnd = n;
+    this.start = this.end;
+    this.end = n;
   }
 }

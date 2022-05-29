@@ -287,15 +287,15 @@ export class RigidRectangle extends RigidShape {
   }
 
   updateInertia() {
-    // Expect this.mInvMass to be already inverted!
-    if (this.mInvMass === 0) this.mInertia = 0;
+    // Expect this.invMass to be already inverted!
+    if (this.invMass === 0) this.inertia = 0;
     else {
       // inertia=mass*width^2+height^2
-      this.mInertia =
-        ((1 / this.mInvMass) *
+      this.inertia =
+        ((1 / this.invMass) *
           (this.scale.x * this.scale.x + this.scale.y * this.scale.y)) /
         12;
-      this.mInertia = 1 / this.mInertia;
+      this.inertia = 1 / this.inertia;
     }
   }
 

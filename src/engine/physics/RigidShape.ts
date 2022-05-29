@@ -19,13 +19,13 @@ export abstract class RigidShape implements IComponent {
     this.updateInertia();
   }
 
-  mAcceleration: Vec2d;
-  mVelocity: Vec2d;
-  mInvMass: number;
-  mInertia: number;
-  mFriction: number;
-  mRestitution: number;
-  mAngularVelocity: number;
+  acceleration: Vec2d;
+  velocity: Vec2d;
+  invMass: number;
+  inertia: number;
+  friction: number;
+  restitution: number;
+  angularVelocity: number;
   disableRotation: boolean;
 
   constructor(owner: GameObject) {
@@ -33,13 +33,13 @@ export abstract class RigidShape implements IComponent {
     this._radius = 0;
     this.color = Color.random();
 
-    this.mAcceleration = PhysicsEngine.getGlobalAcceleration();
-    this.mVelocity = Vec2d.from(0, 0);
-    this.mInvMass = 1;
-    this.mInertia = 0;
-    this.mFriction = 0;
-    this.mRestitution = 1;
-    this.mAngularVelocity = 0;
+    this.acceleration = PhysicsEngine.getGlobalAcceleration();
+    this.velocity = Vec2d.from(0, 0);
+    this.invMass = 1;
+    this.inertia = 0;
+    this.friction = 0;
+    this.restitution = 1;
+    this.angularVelocity = 0;
     this.disableRotation = false;
 
     if (isDebugMode()) {
@@ -97,32 +97,32 @@ export abstract class RigidShape implements IComponent {
   }
 
   setAngularVelocity(angularVelocity: number) {
-    this.mAngularVelocity = this.disableRotation ? 0 : angularVelocity;
+    this.angularVelocity = this.disableRotation ? 0 : angularVelocity;
     return this;
   }
 
   setRestitution(restitution: number) {
-    this.mRestitution = restitution;
+    this.restitution = restitution;
     return this;
   }
 
   setInertia(inertia: number) {
-    this.mInertia = inertia;
+    this.inertia = inertia;
     return this;
   }
 
   setAcceleration(acceleration: Vec2d) {
-    this.mAcceleration = acceleration;
+    this.acceleration = acceleration;
     return this;
   }
 
   setFriction(friction: number) {
-    this.mFriction = friction;
+    this.friction = friction;
     return this;
   }
 
   setVelocity(velocity: Vec2d) {
-    this.mVelocity = velocity;
+    this.velocity = velocity;
     return this;
   }
 
@@ -142,7 +142,7 @@ export abstract class RigidShape implements IComponent {
   }
 
   update() {
-    if (this.mInvMass === 0) return;
+    if (this.invMass === 0) return;
     this.travel();
   }
 
@@ -166,8 +166,8 @@ export abstract class RigidShape implements IComponent {
         this.collisionInfo.start.x,
         this.collisionInfo.start.y,
         0,
-        this.collisionInfo.mEnd.x,
-        this.collisionInfo.mEnd.y,
+        this.collisionInfo.end.x,
+        this.collisionInfo.end.y,
         0,
       ];
       this.collisionDebugBox.updateVertices(collisionLine);
@@ -176,16 +176,16 @@ export abstract class RigidShape implements IComponent {
   }
 
   setAngularVelocityDelta(dw: number) {
-    this.mAngularVelocity += dw;
+    this.angularVelocity += dw;
   }
 
   setMass(mass: number) {
     if (mass > 0) {
-      this.mInvMass = 1 / mass;
-      this.mAcceleration = PhysicsEngine.getGlobalAcceleration();
+      this.invMass = 1 / mass;
+      this.acceleration = PhysicsEngine.getGlobalAcceleration();
     } else {
-      this.mInvMass = 0;
-      this.mAcceleration = Vec2d.from(0, 0); // to ensure object does not move
+      this.invMass = 0;
+      this.acceleration = Vec2d.from(0, 0); // to ensure object does not move
     }
     this.updateInertia();
 
@@ -193,7 +193,7 @@ export abstract class RigidShape implements IComponent {
   }
 
   getCurrentState() {
-    let m = this.mInvMass;
+    let m = this.invMass;
     const kPrintPrecision = 2;
 
     if (m !== 0) m = 1 / m;
@@ -201,12 +201,12 @@ export abstract class RigidShape implements IComponent {
       "M=" +
       m.toFixed(kPrintPrecision) +
       "(I=" +
-      this.mInertia.toFixed(kPrintPrecision) +
+      this.inertia.toFixed(kPrintPrecision) +
       ")" +
       " F=" +
-      this.mFriction.toFixed(kPrintPrecision) +
+      this.friction.toFixed(kPrintPrecision) +
       " R=" +
-      this.mRestitution.toFixed(kPrintPrecision)
+      this.restitution.toFixed(kPrintPrecision)
     );
   }
 
@@ -216,20 +216,18 @@ export abstract class RigidShape implements IComponent {
     const dt = getUpdateIntervalInSeconds();
 
     // update velocity by acceleration
-    this.mVelocity = this.mVelocity.add(this.mAcceleration.scale(dt));
+    this.velocity = this.velocity.add(this.acceleration.scale(dt));
 
     // add global friction
-    this.mVelocity = this.mVelocity.scale(
-      1 - PhysicsEngine.getGlobalFriction()
-    );
+    this.velocity = this.velocity.scale(1 - PhysicsEngine.getGlobalFriction());
 
     // p  = p + v*dt  with new velocity
-    this.owner.addToPosition(this.mVelocity.scale(dt));
+    this.owner.addToPosition(this.velocity.scale(dt));
 
     if (!this.disableRotation)
-      this.owner.addToRotationInRad(this.mAngularVelocity * dt);
+      this.owner.addToRotationInRad(this.angularVelocity * dt);
 
-    this.mAngularVelocity *= 1 - PhysicsEngine.getGlobalAngularFriction();
+    this.angularVelocity *= 1 - PhysicsEngine.getGlobalAngularFriction();
   }
 
   addToOwnerPosition(value: Vec2d) {
