@@ -13,10 +13,14 @@ export const createScenario = (characterGameObject: GameObject) => {
     "./find_eggs/textures/tileset.png",
     15,
     28,
-    Vec2d.from(-1, -2)
+    Vec2d.from(0, 0),
+    Vec2d.from(15, 8)
   );
   tileMap.defineBox("island", 6 * 28);
-  tileMap.addBox("island", 0, Vec2d.from(-22, 12), 47, 22);
+  tileMap.addBox("island", Vec2d.from(0, 0), 10, 3);
+  tileMap.addBox("island", Vec2d.from(3, 2), 3, 3);
+  tileMap.addBox("island", Vec2d.from(3, 4), 10, 3);
+  tileMap.addBox("island", Vec2d.from(9, 0), 3, 8);
 
   tiles
     .add(tileMap)
