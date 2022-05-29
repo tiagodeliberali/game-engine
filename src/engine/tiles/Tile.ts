@@ -24,8 +24,3 @@ export enum TileType {
   // four walls
   JustWall = 0b1111,
 }
-
-export type Tile = {
-  type: TileType;
-  value: number;
-};

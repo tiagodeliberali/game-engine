@@ -77,29 +77,4 @@ export class TileBox {
 
     return value;
   }
-
-  create(width: number, height: number): TileType[][] {
-    const box: TileType[][] = [];
-
-    for (let row = 0; row < height; row++) {
-      box[row] = [];
-      for (let column = 0; column < width; column++) {
-        if (column === 0) {
-          if (row === 0) box[row][column] = TileType.BottomRightPath;
-          else if (row === height - 1) box[row][column] = TileType.TopRightPath;
-          else box[row][column] = TileType.LeftWall;
-        } else if (column === width - 1) {
-          if (row === 0) box[row][column] = TileType.BottomLeftPath;
-          else if (row === height - 1) box[row][column] = TileType.TopLeftPath;
-          else box[row][column] = TileType.RightWall;
-        } else {
-          if (row === 0) box[row][column] = TileType.TopWall;
-          else if (row === height - 1) box[row][column] = TileType.BottomWall;
-          else box[row][column] = TileType.Path;
-        }
-      }
-    }
-
-    return box;
-  }
 }
