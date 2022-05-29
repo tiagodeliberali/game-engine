@@ -36,7 +36,7 @@ export class ParticleSet implements IComponent {
   }
 
   draw(resources: DrawingResources) {
-    if (!resources.camera.includeTag(this.cameraTag)) {
+    if (!resources.camera.isInTag(this.cameraTag)) {
       return;
     }
     const gl = getGL();

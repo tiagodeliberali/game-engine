@@ -15,6 +15,8 @@ export class Camera implements ITransformable {
   pixelsPerWCunits: Vec2d = Vec2d.from(0, 0);
   WCunitsPerPixel: Vec2d = Vec2d.from(0, 0);
   originWC: Vec2d = Vec2d.from(0, 0);
+
+  //
   tag: number;
 
   constructor(center: Vec2d, size: Vec2d, viewport: Viewport) {
@@ -170,10 +172,8 @@ export class Camera implements ITransformable {
     );
   }
 
-  includeTag(cameraTag: number): boolean {
-    if (this.tag === 0) return true;
-    if (cameraTag === 0) return false;
-    return (this.tag & cameraTag) > 0;
+  isInTag(cameraTag: number): boolean {
+    return this.tag === 0 || (this.tag & cameraTag) > 0;
   }
 
   /////

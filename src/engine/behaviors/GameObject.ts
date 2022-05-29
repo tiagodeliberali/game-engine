@@ -156,7 +156,7 @@ export class GameObject implements IComponent, ITransformable {
 
   draw(resources: DrawingResources) {
     this.visible &&
-      resources.camera.includeTag(this.cameraTag) &&
+      resources.camera.isInTag(this.cameraTag) &&
       this.components.forEach((item) => item.draw(resources));
   }
 
