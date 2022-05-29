@@ -16,7 +16,20 @@ export class Camera implements ITransformable {
   WCunitsPerPixel: Vec2d = Vec2d.from(0, 0);
   originWC: Vec2d = Vec2d.from(0, 0);
 
-  //
+  /**
+   * Define a way to restrict usage of the camera over game elements. Whe the camera is tagged with 0, it means this camera is intended to display
+   * all game objects. When you define a tag to a camera, this camera will only display elements that include its cameraTag.
+   *
+   * The definition of isInTag is bitwise, so cameraTag, in the game objects, can include as many cameras as it want to show.
+   *
+   * Eg:
+   * camera1 = 1 (0b001)
+   * camera2 = 2 (0b010)
+   * camera3 = 4 (ob100)
+   *
+   * So, a game object with cameraTag 6 (0b110) will be displayed at cameras 2 and 3.
+   * If the gameObject wants to be displayed on all cameras, need to define cameraTag as 7 (b111).
+   */
   tag: number;
 
   constructor(center: Vec2d, size: Vec2d, viewport: Viewport) {
@@ -29,9 +42,9 @@ export class Camera implements ITransformable {
     this.tag = 0;
   }
 
-  /////
-  /// ITransformable
-  /////
+  /**
+   * ITransformable
+   */
   getTransform(): Transform {
     return Transform.Build({
       position: this.center,
@@ -67,9 +80,9 @@ export class Camera implements ITransformable {
     this.configureCamera();
   }
 
-  /////
-  /// Camera
-  /////
+  /**
+   * Camera
+   */
   clone(): Camera {
     return new Camera(this.center, this.size, this.viewport.clone());
   }
@@ -176,9 +189,9 @@ export class Camera implements ITransformable {
     return this.tag === 0 || (this.tag & cameraTag) > 0;
   }
 
-  /////
-  /// Coordinate system
-  /////
+  /**
+   * Coordinate system
+   */
   convertDCtoWC(position: Vec2d) {
     const positionDC = this.getViewportPositionDC(position);
 
