@@ -46,6 +46,9 @@ export class ParticleSet implements IComponent {
   }
 
   unload() {
-    this.particles.forEach((x) => x.unload());
+    this.particles.forEach((x) => {
+      const component = x as IComponent;
+      component.unload && component.unload();
+    });
   }
 }

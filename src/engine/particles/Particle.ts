@@ -160,10 +160,6 @@ export class Particle implements IComponent {
     this.renderable.init();
   }
 
-  unload() {
-    //
-  }
-
   draw(resources: DrawingResources) {
     if (this.initialWait > 0) {
       return;

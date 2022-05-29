@@ -31,10 +31,6 @@ export class TextureRenderable extends AbstractRenderable<TextureShader> {
     );
   }
 
-  update() {
-    //
-  }
-
   draw(resources: DrawingResources) {
     if (
       this.forceDraw ||

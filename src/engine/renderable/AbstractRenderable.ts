@@ -28,9 +28,6 @@ export abstract class AbstractRenderable<T extends AbstractShader>
     this.forceDraw = false;
   }
 
-  abstract update(): void;
-  abstract load(): void;
-  abstract init(): void;
   abstract draw(resources: DrawingResources): void;
 
   getActivatedShader(resources: DrawingResources) {
@@ -122,9 +119,5 @@ export abstract class AbstractRenderable<T extends AbstractShader>
 
   factorToScale(vector: Vec2d) {
     this.trsMatrix = this.trsMatrix.factorToScale(vector);
-  }
-
-  unload() {
-    // virtual method
   }
 }

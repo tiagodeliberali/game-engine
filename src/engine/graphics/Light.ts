@@ -24,24 +24,9 @@ export class Light implements IComponent {
     this.farRadius = far;
     this.intensity = 1;
   }
+
   load() {
-    //
-  }
-
-  init() {
-    //
-  }
-
-  update() {
-    //
-  }
-
-  draw() {
-    //
-  }
-
-  unload() {
-    //
+    // Need to add at elast one element from IComponent to accept the interface implementation
   }
 
   static buildDefault() {

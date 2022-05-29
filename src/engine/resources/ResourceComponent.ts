@@ -17,20 +17,4 @@ export class ResourceComponent implements IComponent {
   get<T>(): T {
     return this.resourceManager.get<T>(this.path);
   }
-
-  init() {
-    //
-  }
-
-  update() {
-    //
-  }
-
-  draw() {
-    //
-  }
-
-  unload() {
-    //
-  }
 }

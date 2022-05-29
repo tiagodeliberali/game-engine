@@ -46,17 +46,9 @@ export class LineRenderable extends AbstractRenderable<SimpleShader> {
     }
   }
 
-  load() {
-    //
-  }
-
   init() {
     this.shader = ShaderLib.getConstColorShader();
     this.shader.initBuffer(this.vertices);
-  }
-
-  update() {
-    //
   }
 
   draw(resources: DrawingResources) {

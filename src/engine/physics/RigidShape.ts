@@ -128,12 +128,21 @@ export abstract class RigidShape implements IComponent {
 
   abstract collisionTest(otherShape: RigidShape): CollisionInfo;
 
-  /////
-  /// ICompontent
-  /////
+  /**
+   * ICompontent
+   */
   load() {
-    isDebugMode() && this.debugBox && this.debugBox.load();
-    isDebugMode() && this.collisionDebugBox && this.collisionDebugBox.load();
+    const debugBoxComponent = this.debugBox as IComponent;
+    const collisionDebugBoxComponent = this.collisionDebugBox as IComponent;
+
+    isDebugMode() &&
+      debugBoxComponent &&
+      debugBoxComponent.load &&
+      debugBoxComponent.load();
+    isDebugMode() &&
+      collisionDebugBoxComponent &&
+      collisionDebugBoxComponent.load &&
+      collisionDebugBoxComponent.load();
   }
 
   init() {
@@ -149,10 +158,6 @@ export abstract class RigidShape implements IComponent {
   draw(resources: DrawingResources) {
     isDebugMode() && this.debugBox && this.debugBox.draw(resources);
     this.drawDebugCollisionInfo(resources);
-  }
-
-  unload() {
-    //
   }
 
   drawDebugCollisionInfo(resources: DrawingResources) {

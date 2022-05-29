@@ -7,23 +7,7 @@ export class Behavior implements IComponent {
     this.action = action;
   }
 
-  load() {
-    //
-  }
-
-  init() {
-    //
-  }
-
   update() {
     this.action();
-  }
-
-  draw() {
-    //
-  }
-
-  unload() {
-    //
   }
 }

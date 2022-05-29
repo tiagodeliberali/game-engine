@@ -43,9 +43,9 @@ export class GameObject implements IComponent, ITransformable {
     this.cameraTag = tag;
   }
 
-  ///
-  // ITransformable
-  ///
+  /**
+   * ITransformable
+   */
   getTransform() {
     return this.transform;
   }
@@ -139,34 +139,35 @@ export class GameObject implements IComponent, ITransformable {
     this.transform = this.transform.factorToScale(vector);
   }
 
-  ///
-  // IComponent
-  ///
+  /**
+   * IComponent
+   */
   load() {
-    this.components.forEach((item) => item.load());
+    this.components.forEach((item) => item.load && item.load());
   }
 
   init() {
-    this.components.forEach((item) => item.init());
+    this.components.forEach((item) => item.init && item.init());
   }
 
   update() {
-    !this.paused && this.components.forEach((item) => item.update());
+    !this.paused &&
+      this.components.forEach((item) => item.update && item.update());
   }
 
   draw(resources: DrawingResources) {
     this.visible &&
       resources.camera.isInTag(this.cameraTag) &&
-      this.components.forEach((item) => item.draw(resources));
+      this.components.forEach((item) => item.draw && item.draw(resources));
   }
 
   unload() {
-    this.components.forEach((item) => item.unload());
+    this.components.forEach((item) => item.unload && item.unload());
   }
 
-  ///
-  // GameObject
-  ///
+  /**
+   * GameObject
+   */
   loadResource(path: string, extension?: string) {
     getResourceManager().loadScene(path, extension);
   }

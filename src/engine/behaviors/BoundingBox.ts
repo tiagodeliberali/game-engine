@@ -147,7 +147,8 @@ export class BoundingBox implements IComponent {
   }
 
   load() {
-    this.debugBox && this.debugBox.load();
+    const component = this.debugBox as IComponent;
+    component && component.unload && component.unload();
   }
 
   init() {
@@ -165,10 +166,6 @@ export class BoundingBox implements IComponent {
 
   draw(resources: DrawingResources) {
     isDebugMode() && this.debugBox && this.debugBox.draw(resources);
-  }
-
-  unload() {
-    //
   }
 
   hasAction(): unknown {

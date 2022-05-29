@@ -11,19 +11,11 @@ export class Renderable extends AbstractRenderable<SimpleShader> {
     return new Renderable();
   }
 
-  load() {
-    //
-  }
-
   init() {
     this.shader = ShaderLib.getConstColorShader();
     this.shader.initBuffer([
       0.5, 0.5, 0.0, -0.5, 0.5, 0.0, 0.5, -0.5, 0.0, -0.5, -0.5, 0.0,
     ]);
-  }
-
-  update() {
-    //
   }
 
   draw(resources: DrawingResources) {

@@ -230,6 +230,7 @@ export class TileMap implements IComponent {
   }
 
   unload() {
-    this.spriteMap.unload();
+    const component = this.spriteMap as IComponent;
+    component.unload && component.unload();
   }
 }

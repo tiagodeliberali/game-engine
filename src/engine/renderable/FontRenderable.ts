@@ -42,10 +42,6 @@ export class FontRenderable extends AbstractRenderable<TextureShader> {
     );
   }
 
-  update() {
-    //
-  }
-
   draw(resources: DrawingResources) {
     const initialTrsPosition = this.trsMatrix.getPosition().x;
 
