@@ -13,6 +13,7 @@ export class TileMap implements IComponent {
   spriteMap: SpriteRenderable;
   boxes: Map<string, TileBox> = new Map();
   tileBlocksByBox: Map<string, TileSet[]> = new Map();
+  tileTypes: TileType[][] = [];
   tiles: number[][] = [];
   columns: number;
   size: Vec2d;
@@ -42,12 +43,10 @@ export class TileMap implements IComponent {
   }
 
   build() {
-    const tiles: TileType[][] = [];
-
     for (let row = 0; row < this.size.y; row++) {
-      tiles.push([]);
+      this.tileTypes.push([]);
       for (let column = 0; column < this.size.x; column++) {
-        tiles[row].push(TileType.JustWall);
+        this.tileTypes[row].push(TileType.JustWall);
       }
     }
 
@@ -69,14 +68,14 @@ export class TileMap implements IComponent {
 
         tileSet.tiles.forEach((row) => {
           row.forEach((cell) => {
-            tiles[position.y][position.x] &= cell;
+            this.tileTypes[position.y][position.x] &= cell;
             position = position.add(Vec2d.from(1, 0));
           });
           position = Vec2d.from(tileSet.position.x, position.y - 1);
         });
       });
 
-      tiles.forEach((row) => {
+      this.tileTypes.forEach((row) => {
         const tileRow: number[] = [];
         row.forEach((cell) => {
           tileRow.push(tileBox.get(cell));
@@ -84,6 +83,32 @@ export class TileMap implements IComponent {
         this.tiles.push(tileRow);
       });
     });
+  }
+
+  isWall(position: Vec2d): boolean {
+    const adjustedPosition = position.sub(
+      this.spriteMap.getTransform().getPosition()
+    );
+    const row = Math.floor(adjustedPosition.y);
+    const column = Math.floor(adjustedPosition.x);
+
+    if (row >= this.tileTypes.length) {
+      return false;
+    }
+
+    const tileType = this.tileTypes[row][column];
+
+    if (tileType === undefined) {
+      return false;
+    }
+
+    if (adjustedPosition.x - row > 0.5) {
+      if (adjustedPosition.y - column > 0.5) return (tileType & 0b0100) > 0;
+      else return (tileType & 0b0010) > 0;
+    } else {
+      if (adjustedPosition.y - column > 0.5) return (tileType & 0b1000) > 0;
+      else return (tileType & 0b0001) > 0;
+    }
   }
 
   drawTiles(resources: DrawingResources) {
