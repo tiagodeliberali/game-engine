@@ -1,7 +1,6 @@
 import { ResourceManager } from "./ResourceManager";
 import { ResourceProcessor } from "./ResourceProcessor";
 import { AudioProcessor } from "./AudioProcessor";
-import { Audio } from "./Audio";
 import { TextProcessor } from "./TextProcessor";
 import { TextureProcessor } from "./TextureProcessor";
 import { MapEntry } from "./MapEntry";
@@ -22,7 +21,6 @@ function getResourceManager() {
 
 export {
   getResourceManager,
-  Audio,
   MapEntry,
   ResourceProcessor,
   ResourceManager,

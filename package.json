@@ -5,7 +5,8 @@
     "prettier": "npx prettier --write .",
     "lint": "npx eslint . --ext .ts,.tsx",
     "all": "npm run prettier && npm run lint  && npm run build",
-    "server": "npx webpack serve"
+    "server": "npx webpack serve",
+    "test": "jest"
   },
   "devDependencies": {
     "@babel/core": "^7.18.2",
@@ -25,6 +26,7 @@
     "webpack-dev-server": "^4.7.4"
   },
   "dependencies": {
-    "gl-matrix": "^3.4.3"
+    "gl-matrix": "^3.4.3",
+    "jest": "^28.1.0"
   }
 }
