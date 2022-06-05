@@ -10,7 +10,7 @@ import {
   walk2d,
 } from "../../engine";
 import { Light } from "../../engine/graphics";
-import { RigidCircle } from "../../engine/physics";
+import { RigidRectangle } from "../../engine/physics";
 import { EggSet } from "./Egg";
 import { HUD } from "./HUD";
 
@@ -20,7 +20,7 @@ export const createCharacter = (camera: Camera, hud: HUD, eggSet: EggSet) => {
   let lastMovement = Movement.idle;
   let collectedEggs = 0;
 
-  const rigidBox = new RigidCircle(gameObject, 1).setPhysics({
+  const rigidBox = new RigidRectangle(gameObject, Vec2d.from(1, 1)).setPhysics({
     friction: 0.5,
     inertia: 0.5,
     mass: 10,

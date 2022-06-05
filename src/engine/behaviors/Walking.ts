@@ -1,7 +1,7 @@
 import { Vec2d } from "../DataStructures";
-import { BoundingBox, ColisionStatus, ITransformable } from "..";
+import { BoundingBox, ColisionStatus, ITransformable, TileMap } from "..";
 import { isKeyPressed, Keys } from "../input";
-import { RigidShape } from "../physics";
+import { RigidRectangle, RigidShape } from "../physics";
 
 export enum Movement {
   up = 1,
@@ -88,6 +88,38 @@ export function rotate(
   // rotate the facing direction with the angle and rate
   angleToRotate *= speed;
   origin.addToRotationInDegree(angleToRotate);
+}
+
+export function clampAtTileMap(character: RigidRectangle, tileMap: TileMap) {
+  let colision = 0;
+
+  const center = character.getCenter();
+  const halfSize = character.scale.scale(0.5);
+
+  if (tileMap.isWall(Vec2d.from(center.x - halfSize.x, center.y + halfSize.y)))
+    colision |= 0b1000;
+  if (tileMap.isWall(Vec2d.from(center.x + halfSize.x, center.y + halfSize.y)))
+    colision |= 0b0100;
+  if (tileMap.isWall(Vec2d.from(center.x + halfSize.x, center.y - halfSize.y)))
+    colision |= 0b0010;
+  if (tileMap.isWall(Vec2d.from(center.x - halfSize.x, center.y - halfSize.y)))
+    colision |= 0b00001;
+
+  if ((colision & 0b1100) === 0b1100 && character.velocity.y > 0) {
+    character.velocity = Vec2d.from(character.velocity.x, 0);
+  }
+
+  if ((colision & 0b0011) === 0b0011 && character.velocity.y < 0) {
+    character.velocity = Vec2d.from(character.velocity.x, 0);
+  }
+
+  if ((colision & 0b0110) === 0b0110 && character.velocity.x > 0) {
+    character.velocity = Vec2d.from(0, character.velocity.y);
+  }
+
+  if ((colision & 0b1001) === 0b1001 && character.velocity.x < 0) {
+    character.velocity = Vec2d.from(0, character.velocity.y);
+  }
 }
 
 export function clampAtBoundary(border: BoundingBox, target: BoundingBox) {

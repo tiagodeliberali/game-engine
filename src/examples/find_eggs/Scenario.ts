@@ -1,10 +1,6 @@
-import {
-  BoundingBox,
-  clampAtBoundary,
-  GameObject,
-  TileMap,
-  Vec2d,
-} from "../../engine";
+import { GameObject, TileMap, Vec2d } from "../../engine";
+import { clampAtTileMap } from "../../engine/behaviors/Walking";
+import { RigidRectangle } from "../../engine/physics";
 
 export const createScenario = (characterGameObject: GameObject) => {
   const tiles = new GameObject();
@@ -13,7 +9,7 @@ export const createScenario = (characterGameObject: GameObject) => {
     "./find_eggs/textures/tileset.png",
     15,
     28,
-    Vec2d.from(0, 0),
+    Vec2d.from(-1, -1),
     Vec2d.from(15, 8)
   );
   tileMap.defineBox("island", 6 * 28);
@@ -26,17 +22,16 @@ export const createScenario = (characterGameObject: GameObject) => {
     .add(tileMap)
     .withBoundingBox("scenario", Vec2d.from(45, 20))
     .withBehavior(() => {
-      const tileBoundingBox = tiles.getLastComponent<BoundingBox>(
-        BoundingBox.name
-      );
-      const characterBoundingBox =
-        characterGameObject.getLastComponent<BoundingBox>(BoundingBox.name);
+      const characterRigidShape =
+        characterGameObject.getLastComponent<RigidRectangle>(
+          RigidRectangle.name
+        );
 
-      if (tileBoundingBox === undefined || characterBoundingBox === undefined) {
+      if (characterRigidShape === undefined) {
         return;
       }
 
-      clampAtBoundary(tileBoundingBox, characterBoundingBox);
+      clampAtTileMap(characterRigidShape, tileMap);
     });
   return tiles;
 };

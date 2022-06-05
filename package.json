@@ -5,23 +5,28 @@
     "prettier": "npx prettier --write .",
     "lint": "npx eslint . --ext .ts,.tsx",
     "all": "npm run prettier && npm run lint  && npm run build",
-    "server": "npx webpack serve"
+    "server": "npx webpack serve",
+    "test": "jest"
   },
   "devDependencies": {
+    "@babel/core": "^7.18.2",
+    "@babel/preset-env": "^7.18.2",
+    "@babel/preset-typescript": "^7.17.12",
     "@typescript-eslint/eslint-plugin": "^5.17.0",
     "@typescript-eslint/parser": "^5.17.0",
+    "babel-loader": "^8.2.5",
     "copy-webpack-plugin": "^10.2.4",
     "eslint": "^8.12.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-tsdoc": "^0.2.16",
     "html-webpack-plugin": "^5.5.0",
-    "ts-loader": "^9.2.8",
     "typescript": "^4.6.3",
     "webpack": "^5.71.0",
     "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^4.7.4"
   },
   "dependencies": {
-    "gl-matrix": "^3.4.3"
+    "gl-matrix": "^3.4.3",
+    "jest": "^28.1.0"
   }
 }
