@@ -19,6 +19,10 @@ export abstract class AbstractRenderable<T extends AbstractShader>
   currentDirection: Vec2d = new Vec2d(1, 0);
   freezeCamera: boolean;
   protected frozenCamera: Camera | undefined;
+
+  /**
+   * Used to orient draw() to never left this renderable without being showed, even when it is off screen.
+   */
   forceDraw: boolean;
 
   constructor() {

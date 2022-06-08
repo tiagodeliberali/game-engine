@@ -5,7 +5,7 @@ import {
   SpriteRenderable,
   Vec2d,
 } from "../../engine";
-import {Audio} from "../../engine/resources/Audio";
+import { Audio } from "../../engine/resources/Audio";
 import { HUD } from "./HUD";
 
 // https://www.spriters-resource.com/pc_computer/bioniclethelegendofmatanuiprototype/sheet/108251/
