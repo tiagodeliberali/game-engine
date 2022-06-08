@@ -1,7 +1,11 @@
 import { EngineError } from "../EngineError";
-import { TileType } from "./Tile";
+import { TileType } from "./TileType";
 
-export class TileBox {
+/**
+ * TileBox is reponsible for mapping all TileTypes to positions in a sprite sheet. For now, it follows a really specific sequency of positions, based on the
+ * sprite sheet I've been using. There is more work to be done to allow some easy to configure way to calculate positions.
+ */
+export class TileTypeConfiguration {
   tileValues: Map<TileType, number> = new Map();
   otherWalls: number[];
 
@@ -72,7 +76,10 @@ export class TileBox {
     const value = this.tileValues.get(type);
 
     if (value === undefined) {
-      throw new EngineError(TileBox.name, `Could not find value for ${type}`);
+      throw new EngineError(
+        TileTypeConfiguration.name,
+        `Could not find value for ${type}`
+      );
     }
 
     return value;

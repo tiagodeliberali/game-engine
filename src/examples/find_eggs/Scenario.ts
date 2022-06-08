@@ -13,10 +13,10 @@ export const createScenario = (characterGameObject: GameObject) => {
     Vec2d.from(15, 8)
   );
   tileMap.defineBox("island", 6 * 28);
-  tileMap.addSquare("island", Vec2d.from(0, 0), 10, 3);
-  tileMap.addSquare("island", Vec2d.from(3, 2), 3, 3);
-  tileMap.addSquare("island", Vec2d.from(3, 4), 10, 3);
-  tileMap.addSquare("island", Vec2d.from(9, 0), 3, 8);
+  tileMap.addTracer("island", Vec2d.from(0, 0), 10, 3);
+  tileMap.addTracer("island", Vec2d.from(3, 2), 3, 3);
+  tileMap.addTracer("island", Vec2d.from(3, 4), 10, 3);
+  tileMap.addTracer("island", Vec2d.from(9, 0), 3, 8);
 
   tiles
     .add(tileMap)
